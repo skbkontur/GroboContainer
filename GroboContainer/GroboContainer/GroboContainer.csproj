@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{04F137F9-3DCB-4093-84A6-8417E2308EE2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GroboContainer</RootNamespace>
+    <AssemblyName>GroboContainer</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Algorithms\DataStructures\BipartiteGraph.cs" />
+    <Compile Include="Algorithms\Builders\IMatchingBuilder.cs" />
+    <Compile Include="Algorithms\DataStructures\Matching.cs" />
+    <Compile Include="Algorithms\Builders\MatchingBuilder.cs" />
+    <Compile Include="Config\AbstractionConfigurator.cs" />
+    <Compile Include="Config\ContainerConfigurator.cs" />
+    <Compile Include="Config\Generic\AbstractionConfigurator.cs" />
+    <Compile Include="Config\Generic\IAbstractionConfigurator.cs" />
+    <Compile Include="Config\IAbstractionConfigurator.cs" />
+    <Compile Include="Config\IContainerConfigurator.cs" />
+    <Compile Include="Core\IContainerForFuncBuilder.cs" />
+    <Compile Include="Impl\ChildContainersSupport\BadSelectorException.cs" />
+    <Compile Include="Impl\ChildContainersSupport\CompositeCollection.cs" />
+    <Compile Include="Impl\ChildContainersSupport\CompositeContainerContext.cs" />
+    <Compile Include="Impl\ChildContainersSupport\Selectors\AttributedChildSelector.cs" />
+    <Compile Include="Impl\ChildContainersSupport\Selectors\AttributedRootSelector.cs" />
+    <Compile Include="Infection\ChildTypeAttribute.cs" />
+    <Compile Include="Impl\ChildContainersSupport\Selectors\IContainerSelector.cs" />
+    <Compile Include="Impl\ChildContainersSupport\Selectors\RootAndChildSelector.cs" />
+    <Compile Include="Infection\RootTypeAttribute.cs" />
+    <Compile Include="New\ITypeSource.cs" />
+    <Compile Include="Impl\Abstractions\AutoConfiguration\AutoImplementationConfiguration.cs" />
+    <Compile Include="Impl\Abstractions\AutoConfiguration\IImplementationConfigurationCache.cs" />
+    <Compile Include="Impl\Abstractions\AutoConfiguration\ImplementationConfigurationCache.cs" />
+    <Compile Include="OldHlam\ContractHelpers.cs" />
+    <Compile Include="Impl\Abstractions\ForbiddenAbstractionConfiguration.cs" />
+    <Compile Include="Impl\Abstractions\ForbiddenAbstractionException.cs" />
+    <Compile Include="Impl\Abstractions\InstanceAbstractionConfiguration.cs" />
+    <Compile Include="Impl\Abstractions\TypeArray.cs" />
+    <Compile Include="Impl\ClassCreation\ClassFactory.cs" />
+    <Compile Include="Impl\ClassCreation\ConstructorSelector.cs" />
+    <Compile Include="Impl\ClassCreation\FuncBuilder.cs" />
+    <Compile Include="Impl\ClassCreation\ContainerConstructorInfo.cs" />
+    <Compile Include="Impl\ClassCreation\IClassFactory.cs" />
+    <Compile Include="Impl\ClassCreation\IConstructorSelector.cs" />
+    <Compile Include="Impl\ClassCreation\IFuncBuilder.cs" />
+    <Compile Include="Impl\ContainerConfigurationException.cs" />
+    <Compile Include="Impl\Contexts\ContextHolder.cs" />
+    <Compile Include="Impl\Contexts\IContextHolder.cs" />
+    <Compile Include="Impl\Contexts\NoContextHolder.cs" />
+    <Compile Include="Impl\Abstractions\StupidAbstractionConfiguration.cs" />
+    <Compile Include="Impl\Exceptions\BadContainerConstructorAttributeException.cs" />
+    <Compile Include="Impl\Exceptions\ContainerException.cs" />
+    <Compile Include="Impl\ClassCreation\FuncHelper.cs" />
+    <Compile Include="Impl\HashtableExtensions.cs" />
+    <Compile Include="Impl\ClassCreation\IFuncHelper.cs" />
+    <Compile Include="Impl\IInternalContainer.cs" />
+    <Compile Include="OldHlam\AbstractionKey.cs" />
+    <Compile Include="Impl\Abstractions\AutoConfiguration\AutoAbstractionConfigurationFactory.cs" />
+    <Compile Include="Impl\Abstractions\AutoConfiguration\IAutoAbstractionConfigurationFactory.cs" />
+    <Compile Include="Core\Container.cs" />
+    <Compile Include="Impl\ContainerContext.cs" />
+    <Compile Include="Impl\IContainerContext.cs" />
+    <Compile Include="Impl\Implementations\ContainerImplementationConfiguration.cs" />
+    <Compile Include="Impl\Implementations\ForbiddenImplementationConfiguration.cs" />
+    <Compile Include="Impl\Implementations\InstanceImplementationConfiguration.cs" />
+    <Compile Include="Impl\Injection\CyclicDependencyException.cs" />
+    <Compile Include="Impl\Injection\IInjectionContext.cs" />
+    <Compile Include="Impl\Logging\ItemType.cs" />
+    <Compile Include="Impl\Logging\LogItem.cs" />
+    <Compile Include="Impl\ContainerConfiguration.cs" />
+    <Compile Include="Impl\Implementations\IImplementationConfiguration.cs" />
+    <Compile Include="New\IImplementationTypesCollection.cs" />
+    <Compile Include="New\ImplementationTypesCollection.cs" />
+    <Compile Include="Impl\Implementations\ITypesHelper.cs" />
+    <Compile Include="Impl\Implementations\TypesHelper.cs" />
+    <Compile Include="Infection\ContainerConstructorAttribute.cs" />
+    <Compile Include="Infection\IgnoredAbstractionAttribute.cs" />
+    <Compile Include="Infection\IgnoredImplementationAttribute.cs" />
+    <Compile Include="Impl\ClassCreation\ClassCreator.cs" />
+    <Compile Include="Impl\InternalContainer.cs" />
+    <Compile Include="Core\IContainer.cs" />
+    <Compile Include="Core\IContainerConfiguration.cs" />
+    <Compile Include="Impl\Exceptions\AmbiguousConstructorException.cs" />
+    <Compile Include="Impl\Exceptions\ManyImplementationsException.cs" />
+    <Compile Include="Impl\Exceptions\NoConstructorException.cs" />
+    <Compile Include="Impl\Exceptions\NoImplementationException.cs" />
+    <Compile Include="Impl\Implementations\IImplementationConfigurationCollection.cs" />
+    <Compile Include="Impl\ClassCreation\IClassCreator.cs" />
+    <Compile Include="Impl\Logging\ILog.cs" />
+    <Compile Include="Impl\Injection\InjectionContext.cs" />
+    <Compile Include="Impl\Abstractions\IAbstractionConfiguration.cs" />
+    <Compile Include="Impl\Abstractions\IAbstractionConfigurationCollection.cs" />
+    <Compile Include="Impl\Logging\Log.cs" />
+    <Compile Include="Impl\Abstractions\AutoConfiguration\AutoAbstractionConfiguration.cs" />
+    <Compile Include="Impl\Abstractions\AbstractionConfigurationCollection.cs" />
+    <Compile Include="New\Abstraction.cs" />
+    <Compile Include="New\AbstractionsCollection.cs" />
+    <Compile Include="New\CreationContext.cs" />
+    <Compile Include="New\IAbstraction.cs" />
+    <Compile Include="New\IAbstractionsCollection.cs" />
+    <Compile Include="New\ICreationContext.cs" />
+    <Compile Include="New\IImplementationCache.cs" />
+    <Compile Include="New\Implementation.cs" />
+    <Compile Include="New\IImplementation.cs" />
+    <Compile Include="New\ImplementationCache.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

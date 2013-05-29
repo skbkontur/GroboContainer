@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+
 using GroboContainer.Config;
 using GroboContainer.Core;
 using GroboContainer.Impl.Abstractions;
@@ -13,13 +14,8 @@ namespace GroboContainer.Impl
 {
     public class InternalContainer : IInternalContainer
     {
-        private readonly IAbstractionConfigurationCollection abstractionConfigurationCollection;
-        private readonly IFuncBuilder builder;
-        private readonly IContainerConfigurator containerConfigurator;
-        private readonly IContainerContext containerContext;
-        private readonly ICreationContext creationContext;
-
-        public InternalContainer(IContainerConfiguration configuration) : this(new ContainerContext(configuration))
+        public InternalContainer(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator)
+            : this(new ContainerContext(configuration, classWrapperCreator))
         {
         }
 
@@ -71,37 +67,37 @@ namespace GroboContainer.Impl
 
         public T Get<T>(IInjectionContext context)
         {
-            return (T) Get(typeof (T), context);
+            return (T)Get(typeof(T), context);
         }
 
         public T Create<T>(IInjectionContext context)
         {
-            return (T) Create(typeof (T), context);
+            return (T)Create(typeof(T), context);
         }
 
         public T Create<T1, T>(IInjectionContext context, T1 arg1)
         {
-            return (T) CreateImpl(typeof (T), context, new[] {typeof (T1)}, arg1);
+            return (T)CreateImpl(typeof(T), context, new[] {typeof(T1)}, arg1);
         }
 
         public T Create<T1, T2, T>(IInjectionContext context, T1 arg1, T2 arg2)
         {
-            return (T) CreateImpl(typeof (T), context, new[] {typeof (T1), typeof (T2)}, arg1, arg2);
+            return (T)CreateImpl(typeof(T), context, new[] {typeof(T1), typeof(T2)}, arg1, arg2);
         }
 
         public T Create<T1, T2, T3, T>(IInjectionContext context, T1 arg1, T2 arg2, T3 arg3)
         {
-            return (T) CreateImpl(typeof (T), context,
-                                  new[] {typeof (T1), typeof (T2), typeof (T3)},
-                                  arg1, arg2, arg3);
+            return (T)CreateImpl(typeof(T), context,
+                                 new[] {typeof(T1), typeof(T2), typeof(T3)},
+                                 arg1, arg2, arg3);
         }
 
         public T Create<T1, T2, T3, T4, T>(IInjectionContext context, T1 arg1, T2 arg2,
                                            T3 arg3, T4 arg4)
         {
-            return (T) CreateImpl(typeof (T), context,
-                                  new[] {typeof (T1), typeof (T2), typeof (T3), typeof (T4)},
-                                  arg1, arg2, arg3, arg4);
+            return (T)CreateImpl(typeof(T), context,
+                                 new[] {typeof(T1), typeof(T2), typeof(T3), typeof(T4)},
+                                 arg1, arg2, arg3, arg4);
         }
 
         public object Get(Type type, IInjectionContext context)
@@ -110,9 +106,9 @@ namespace GroboContainer.Impl
             {
                 context.BeginGet(type);
                 IImplementationConfiguration configuration = GetSingleImplementation(type);
-                return configuration.GetOrCreateInstance(context, creationContext);
+                return UnWrap(type, configuration.GetOrCreateInstance(context, creationContext));
             }
-            catch (Exception)
+            catch(Exception)
             {
                 context.Crash();
                 throw;
@@ -125,13 +121,13 @@ namespace GroboContainer.Impl
 
         public T[] GetAll<T>(IInjectionContext context)
         {
-            Type type = typeof (T);
+            Type type = typeof(T);
             try
             {
                 context.BeginGetAll(type);
                 return GetInstances<T>(context, type);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 context.Crash();
                 throw;
@@ -149,7 +145,7 @@ namespace GroboContainer.Impl
                 context.BeginGetAll(type);
                 return GetInstances<object>(context, type);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 context.Crash();
                 throw;
@@ -165,12 +161,11 @@ namespace GroboContainer.Impl
             return CreateImpl(abstractionType, context, Type.EmptyTypes, new object[0]);
         }
 
-
         public Type[] GetImplementationTypes(Type abstractionType)
         {
             IImplementationConfiguration[] all = GetImplementations(abstractionType);
             var result = new Type[all.Length];
-            for (int i = 0; i < all.Length; i++)
+            for(int i = 0; i < all.Length; i++)
                 result[i] = all[i].ObjectType;
             return result;
         }
@@ -178,20 +173,25 @@ namespace GroboContainer.Impl
         public void CallDispose()
         {
             IAbstractionConfiguration[] configurations = abstractionConfigurationCollection.GetAll();
-            foreach (IAbstractionConfiguration configuration in configurations)
-                if (configuration != null) CallDisposeOnConfiguration(configuration);
+            foreach(var configuration in configurations)
+                if(configuration != null) CallDisposeOnConfiguration(configuration);
         }
 
-
-        public IContainerConfigurator Configurator
-        {
-            get { return containerConfigurator; }
-        }
+        public IContainerConfigurator Configurator { get { return containerConfigurator; } }
 
         public object Create(Type abstractionType, IInjectionContext context,
                              Type[] argumentTypes, object[] args)
         {
             return CreateImpl(abstractionType, context, argumentTypes, args);
+        }
+
+        private static object UnWrap(Type abstractionType, object instance)
+        {
+            if(abstractionType.IsInterface)
+                return instance;
+            if(instance is IClassWrapper)
+                return ((IClassWrapper)instance).UnWrap();
+            return instance;
         }
 
         #endregion
@@ -204,9 +204,9 @@ namespace GroboContainer.Impl
                 context.BeginCreate(abstractionType);
                 IImplementationConfiguration configuration = GetSingleImplementation(abstractionType);
                 IClassFactory factory = configuration.GetFactory(argumentTypes, creationContext);
-                return factory.Create(context, args);
+                return UnWrap(abstractionType, factory.Create(context, args));
             }
-            catch (Exception)
+            catch(Exception)
             {
                 context.Crash();
                 throw;
@@ -220,10 +220,10 @@ namespace GroboContainer.Impl
         private IImplementationConfiguration GetSingleImplementation(Type abstractionType)
         {
             IImplementationConfiguration[] all = GetImplementations(abstractionType);
-            if (all.Length == 0)
+            if(all.Length == 0)
                 throw new NoImplementationException(abstractionType);
 
-            if (all.Length > 1)
+            if(all.Length > 1)
                 throw new ManyImplementationsException(abstractionType, all);
             return all[0];
         }
@@ -232,8 +232,8 @@ namespace GroboContainer.Impl
         {
             IImplementationConfiguration[] implementations = GetImplementations(abstractionType);
             var result = new T[implementations.Length];
-            for (int i = 0; i < result.Length; i++)
-                result[i] = (T) implementations[i].GetOrCreateInstance(context, creationContext);
+            for(int i = 0; i < result.Length; i++)
+                result[i] = (T)UnWrap(abstractionType, implementations[i].GetOrCreateInstance(context, creationContext));
             return result;
         }
 
@@ -241,7 +241,7 @@ namespace GroboContainer.Impl
         {
             Debug.WriteLine("CallDisposeOnConfiguration start");
             IImplementationConfiguration[] implementations = configuration.GetImplementations();
-            foreach (IImplementationConfiguration implementation in implementations)
+            foreach(var implementation in implementations)
                 implementation.DisposeInstance();
             Debug.WriteLine("CallDisposeOnConfiguration end");
         }
@@ -252,5 +252,11 @@ namespace GroboContainer.Impl
                 abstractionConfigurationCollection.Get(type).GetImplementations();
             return implementations;
         }
+
+        private readonly IAbstractionConfigurationCollection abstractionConfigurationCollection;
+        private readonly IFuncBuilder builder;
+        private readonly IContainerConfigurator containerConfigurator;
+        private readonly IContainerContext containerContext;
+        private readonly ICreationContext creationContext;
     }
 }

@@ -1,4 +1,5 @@
 using System;
+
 using GroboContainer.Core;
 using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
@@ -10,10 +11,7 @@ namespace GroboContainer.Impl
 {
     public class ContainerContext : IContainerContext
     {
-        private readonly IAbstractionsCollection abstractionsCollection;
-        private readonly ITypesHelper typesHelper;
-
-        public ContainerContext(IContainerConfiguration configuration)
+        public ContainerContext(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator)
         {
             typesHelper = new TypesHelper();
 
@@ -21,7 +19,7 @@ namespace GroboContainer.Impl
             FuncBuilder = new FuncBuilder();
             var classCreator = new ClassCreator(funcHelper);
             var constructorSelector = new ConstructorSelector();
-            CreationContext = new CreationContext(classCreator, constructorSelector);
+            CreationContext = new CreationContext(classCreator, constructorSelector, classWrapperCreator);
 
             var implementationTypesCollection = new ImplementationTypesCollection(configuration, typesHelper);
             var implementationCache = new ImplementationCache();
@@ -30,7 +28,7 @@ namespace GroboContainer.Impl
             var factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollection,
                                                                   implementationConfigurationCache);
             AbstractionConfigurationCollection = new AbstractionConfigurationCollection(factory);
-            AbstractionConfigurationCollection.Add(typeof (IContainer),
+            AbstractionConfigurationCollection.Add(typeof(IContainer),
                                                    new StupidAbstractionConfiguration(
                                                        new ContainerImplementationConfiguration()));
         }
@@ -48,5 +46,8 @@ namespace GroboContainer.Impl
         }
 
         #endregion
+
+        private readonly IAbstractionsCollection abstractionsCollection;
+        private readonly ITypesHelper typesHelper;
     }
 }

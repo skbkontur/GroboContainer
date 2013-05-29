@@ -19,9 +19,9 @@ namespace Tests.NewTests
             var containerConstructorInfo = new ContainerConstructorInfo();
             constructorSelector.Expect(cs => cs.GetConstructor(typeof (int), parameterTypes)).Return(
                 containerConstructorInfo);
-            classCreator.Expect(creator => creator.BuildFactory(containerConstructorInfo)).Return(classFactory);
+            classCreator.Expect(creator => creator.BuildFactory(containerConstructorInfo, null)).Return(classFactory);
 
-            var creationContext = new CreationContext(classCreator, constructorSelector);
+            var creationContext = new CreationContext(classCreator, constructorSelector, null);
             Assert.AreSame(classFactory, creationContext.BuildFactory(typeof (int), parameterTypes));
         }
     }

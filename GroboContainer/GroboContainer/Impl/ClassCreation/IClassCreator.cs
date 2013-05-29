@@ -5,7 +5,7 @@ namespace GroboContainer.Impl.ClassCreation
 {
     public interface IClassCreator
     {
-        Func<IInternalContainer, IInjectionContext, object[], object> BuildConstructionDelegate(ContainerConstructorInfo constructorInfo);
-        IClassFactory BuildFactory(ContainerConstructorInfo constructorInfo);
+        Func<IInternalContainer, IInjectionContext, object[], object> BuildConstructionDelegate(ContainerConstructorInfo constructorInfo, Type wrapperType);
+        IClassFactory BuildFactory(ContainerConstructorInfo constructorInfo, Type wrapperType);
     }
 }

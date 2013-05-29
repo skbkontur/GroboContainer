@@ -18,7 +18,7 @@ namespace Tests.FunctionalTests.ChildsTests
             base.SetUp();
             var configuration = new ContainerConfiguration(new[] {GetType().Assembly});
             selector = new AttributedChildSelector();
-            container = Container.CreateWithChilds(configuration, selector);
+            container = Container.CreateWithChilds(configuration, null, selector);
         }
 
         public override void TearDown()

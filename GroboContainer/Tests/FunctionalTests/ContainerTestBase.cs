@@ -1,4 +1,6 @@
 using System.Diagnostics;
+
+using GroboContainer;
 using GroboContainer.Core;
 using GroboContainer.Impl;
 
@@ -12,7 +14,7 @@ namespace Tests.FunctionalTests
         {
             base.SetUp();
             configuration = new ContainerConfiguration(new[] {GetType().Assembly});
-            container = new Container(configuration);
+            container = new Container(configuration, new TestClassWrapperCreator());
         }
 
         public override void TearDown()
@@ -23,7 +25,7 @@ namespace Tests.FunctionalTests
 
         #endregion
 
-        private ContainerConfiguration configuration;
         protected IContainer container;
+        private ContainerConfiguration configuration;
     }
 }

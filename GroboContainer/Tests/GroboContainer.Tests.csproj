@@ -51,8 +51,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Assemblies\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="NMock2, Version=1.2.3262.29872, Culture=neutral, PublicKeyToken=cf53a760d95f4c33, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Assemblies\NMock2.dll</HintPath>
@@ -151,6 +156,7 @@
     <Compile Include="LoggingTests\LogTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AbstractionConfigurationCollectionExtensions.cs" />
+    <Compile Include="TestClassWrapperCreator.cs" />
     <Compile Include="TestConfiguration.cs" />
     <Compile Include="ImplTests\TestContext.cs" />
     <Compile Include="TypesHelperTests\TypesHelperAbstractGenericsTest.cs" />

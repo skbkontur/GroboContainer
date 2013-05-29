@@ -125,7 +125,7 @@ namespace Tests.CoreTests
         public void TestDefaultConstructor()
         {
             container = new Container(configuration);
-            container.AssertEqualsTo(new Container(new InternalContainer(configuration), new NoContextHolder(), log));
+            container.AssertEqualsTo(new Container(new InternalContainer(configuration, null), new NoContextHolder(), log));
         }
 
         [Test]

@@ -20,7 +20,7 @@ namespace Tests.ChildContainerSupportTests
         {
             var containerSelector = new RootAndChildSelector();
             var compositeContainerContext = new CompositeContainerContext(
-                new ContainerConfiguration(GetType().Assembly),
+                new ContainerConfiguration(GetType().Assembly), null,
                 containerSelector);
             Assert.IsInstanceOfType(typeof (CompositeCollection),
                                     compositeContainerContext.AbstractionConfigurationCollection);

@@ -10,11 +10,7 @@ namespace GroboContainer.Impl.ChildContainersSupport
 {
     public class CompositeContainerContext : IContainerContext
     {
-        private readonly IAbstractionsCollection abstractionsCollection;
-        private readonly CompositeCollection compositeCollection;
-        private readonly ITypesHelper typesHelper;
-
-        public CompositeContainerContext(IContainerConfiguration configuration, IContainerSelector containerSelector)
+        public CompositeContainerContext(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator, IContainerSelector containerSelector)
         {
             typesHelper = new TypesHelper();
 
@@ -22,7 +18,7 @@ namespace GroboContainer.Impl.ChildContainersSupport
             FuncBuilder = new FuncBuilder();
             var classCreator = new ClassCreator(funcHelper);
             var constructorSelector = new ConstructorSelector();
-            CreationContext = new CreationContext(classCreator, constructorSelector);
+            CreationContext = new CreationContext(classCreator, constructorSelector, classWrapperCreator);
 
             var implementationTypesCollection = new ImplementationTypesCollection(configuration, typesHelper);
             var implementationCache = new ImplementationCache();
@@ -32,7 +28,7 @@ namespace GroboContainer.Impl.ChildContainersSupport
                                                                   implementationConfigurationCache);
             compositeCollection = new CompositeCollection(new[] {new AbstractionConfigurationCollection(factory)},
                                                           containerSelector);
-            compositeCollection.Add(typeof (IContainer),
+            compositeCollection.Add(typeof(IContainer),
                                     new StupidAbstractionConfiguration(
                                         new ContainerImplementationConfiguration()));
         }
@@ -46,7 +42,6 @@ namespace GroboContainer.Impl.ChildContainersSupport
             //NOTE чтобы дочерние контейнеры не тормозили, используем ту же AbstractionsCollection
             abstractionsCollection = source.abstractionsCollection;
 
-
             var implementationConfigurationCache = new ImplementationConfigurationCache();
             var factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollection,
                                                                   implementationConfigurationCache);
@@ -54,7 +49,7 @@ namespace GroboContainer.Impl.ChildContainersSupport
             var abstractionConfigurationCollection = new AbstractionConfigurationCollection(factory);
             compositeCollection =
                 source.compositeCollection.MakeChildCollection(abstractionConfigurationCollection);
-            compositeCollection.Add(typeof (IContainer),
+            compositeCollection.Add(typeof(IContainer),
                                     new StupidAbstractionConfiguration(
                                         new ContainerImplementationConfiguration()));
         }
@@ -65,10 +60,7 @@ namespace GroboContainer.Impl.ChildContainersSupport
 
         public ICreationContext CreationContext { get; private set; }
 
-        public IAbstractionConfigurationCollection AbstractionConfigurationCollection
-        {
-            get { return compositeCollection; }
-        }
+        public IAbstractionConfigurationCollection AbstractionConfigurationCollection { get { return compositeCollection; } }
 
         public IContainerContext MakeChildContext()
         {
@@ -76,5 +68,9 @@ namespace GroboContainer.Impl.ChildContainersSupport
         }
 
         #endregion
+
+        private readonly IAbstractionsCollection abstractionsCollection;
+        private readonly CompositeCollection compositeCollection;
+        private readonly ITypesHelper typesHelper;
     }
 }

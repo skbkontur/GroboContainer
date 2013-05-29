@@ -1,7 +1,7 @@
 using System;
+
 using GroboContainer.Config;
 using GroboContainer.Impl;
-using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.ChildContainersSupport;
 using GroboContainer.Impl.ChildContainersSupport.Selectors;
 using GroboContainer.Impl.Contexts;
@@ -13,10 +13,6 @@ namespace GroboContainer.Core
 {
     public class Container : IContainer, IContainerForFuncBuilder
     {
-        private readonly IContextHolder holder;
-        private readonly IInternalContainer internalContainer;
-        private volatile ILog lastConstructedLog;
-
         internal Container(IInternalContainer internalContainer, IContextHolder holder, ILog currentLog)
         {
             this.internalContainer = internalContainer;
@@ -24,17 +20,20 @@ namespace GroboContainer.Core
             lastConstructedLog = currentLog;
         }
 
+        public Container(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator)
+            : this(new InternalContainer(configuration, classWrapperCreator), new NoContextHolder(), null)
+        {
+        }
+
         public Container(IContainerConfiguration configuration)
-            : this(new InternalContainer(configuration), new NoContextHolder(), null)
+            :
+                this(configuration, null)
         {
         }
 
         #region IContainer Members
 
-        public IContainerConfigurator Configurator
-        {
-            get { return internalContainer.Configurator; }
-        }
+        public IContainerConfigurator Configurator { get { return internalContainer.Configurator; } }
 
         public T Get<T>()
         {
@@ -43,7 +42,7 @@ namespace GroboContainer.Core
             {
                 return internalContainer.Get<T>(context);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw new ContainerException(context.GetLog().GetLog(), e);
             }
@@ -56,7 +55,7 @@ namespace GroboContainer.Core
             {
                 return internalContainer.Get(type, context);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw new ContainerException(context.GetLog().GetLog(), e);
             }
@@ -69,7 +68,7 @@ namespace GroboContainer.Core
             {
                 return internalContainer.GetAll<T>(context);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw new ContainerException(context.GetLog().GetLog(), e);
             }
@@ -82,7 +81,7 @@ namespace GroboContainer.Core
             {
                 return internalContainer.GetAll(type, context);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw new ContainerException(context.GetLog().GetLog(), e);
             }
@@ -95,7 +94,7 @@ namespace GroboContainer.Core
             {
                 return internalContainer.Create<T>(context);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw new ContainerException(context.GetLog().GetLog(), e);
             }
@@ -108,7 +107,7 @@ namespace GroboContainer.Core
             {
                 return internalContainer.Create<T1, T>(context, arg1);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw new ContainerException(context.GetLog().GetLog(), e);
             }
@@ -121,7 +120,7 @@ namespace GroboContainer.Core
             {
                 return internalContainer.Create<T1, T2, T>(context, arg1, arg2);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw new ContainerException(context.GetLog().GetLog(), e);
             }
@@ -134,7 +133,7 @@ namespace GroboContainer.Core
             {
                 return internalContainer.Create<T1, T2, T3, T>(context, arg1, arg2, arg3);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw new ContainerException(context.GetLog().GetLog(), e);
             }
@@ -147,7 +146,7 @@ namespace GroboContainer.Core
             {
                 return internalContainer.Create<T1, T2, T3, T4, T>(context, arg1, arg2, arg3, arg4);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw new ContainerException(context.GetLog().GetLog(), e);
             }
@@ -161,7 +160,7 @@ namespace GroboContainer.Core
             {
                 return internalContainer.Create(abstractionType, context);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw new ContainerException(context.GetLog().GetLog(), e);
             }
@@ -174,7 +173,7 @@ namespace GroboContainer.Core
             {
                 return internalContainer.Create(abstractionType, context, parameterTypes, parameters);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw new ContainerException(context.GetLog().GetLog(), e);
             }
@@ -241,9 +240,9 @@ namespace GroboContainer.Core
             return new Container(internalContainer.MakeChild(), new NoContextHolder(), null);
         }
 
-        public static IContainer CreateWithChilds(IContainerConfiguration configuration, IContainerSelector selector)
+        public static IContainer CreateWithChilds(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator, IContainerSelector selector)
         {
-            return new Container(new InternalContainer(new CompositeContainerContext(configuration, selector)),
+            return new Container(new InternalContainer(new CompositeContainerContext(configuration, classWrapperCreator, selector)),
                                  new NoContextHolder(), null);
         }
 
@@ -253,5 +252,9 @@ namespace GroboContainer.Core
             lastConstructedLog = context.GetLog();
             return context;
         }
+
+        private readonly IContextHolder holder;
+        private readonly IInternalContainer internalContainer;
+        private volatile ILog lastConstructedLog;
     }
 }

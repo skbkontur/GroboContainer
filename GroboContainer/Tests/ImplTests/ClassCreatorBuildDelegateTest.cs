@@ -72,6 +72,18 @@ namespace Tests.ImplTests
             }
         }
 
+        private class I2ImplWrapper
+        {
+            private readonly I2Impl impl;
+
+            public I2ImplWrapper(object impl)
+            {
+                this.impl = (I2Impl)impl;
+            }
+
+            public I1 I1 { get { return impl.i1; } }
+        }
+
         private class C3
         {
             public readonly int a;
@@ -125,7 +137,7 @@ namespace Tests.ImplTests
                                              };
 
             Func<IInternalContainer, IInjectionContext, object[], object> @delegate =
-                classCreator.BuildConstructionDelegate(factoryConstructorInfo);
+                classCreator.BuildConstructionDelegate(factoryConstructorInfo, null);
             object instance = @delegate(internalContainer, context, objects);
             Assert.IsInstanceOfType(typeof (C3), instance);
             Assert.AreSame(i2Mock, ((C3) instance).z);
@@ -151,7 +163,7 @@ namespace Tests.ImplTests
                                              };
 
             Func<IInternalContainer, IInjectionContext, object[], object> @delegate =
-                classCreator.BuildConstructionDelegate(factoryConstructorInfo);
+                classCreator.BuildConstructionDelegate(factoryConstructorInfo, null);
             object instance = @delegate(internalContainer, context, objects);
             Assert.IsInstanceOfType(typeof (C3), instance);
             Assert.AreSame(i1Mock, ((C3) instance).i1Field);
@@ -171,7 +183,7 @@ namespace Tests.ImplTests
                                                            {
                                                                ConstructorInfo =
                                                                    testType.GetConstructor(new[] {typeof (I1[])})
-                                                           });
+                                                           }, null);
             object instance = @delegate(internalContainer, context, new object[0]);
             Assert.IsInstanceOfType(testType, instance);
             Assert.AreSame(i1Mock, ((I2Impl) instance).i1Array);
@@ -187,7 +199,7 @@ namespace Tests.ImplTests
                         {
                             ConstructorInfo =
                                 testType.GetConstructor(new[] {typeof (Func<I1>), typeof (long)})
-                        }));
+                        }, null));
         }
 
 
@@ -206,7 +218,7 @@ namespace Tests.ImplTests
                                              };
 
             Func<IInternalContainer, IInjectionContext, object[], object> @delegate =
-                classCreator.BuildConstructionDelegate(factoryConstructorInfo);
+                classCreator.BuildConstructionDelegate(factoryConstructorInfo, null);
             RunMethodWithException<ArgumentException>(() => @delegate(internalContainer, context, objects), "bad parameter");
         }
 
@@ -223,7 +235,7 @@ namespace Tests.ImplTests
                         {
                             ConstructorInfo =
                                 testType.GetConstructor(new[] {typeof (Func<I1>), typeof (int)})
-                        });
+                        }, null);
             object instance = @delegate(internalContainer, context, new object[0]);
             Assert.IsInstanceOfType(testType, instance);
 
@@ -242,10 +254,26 @@ namespace Tests.ImplTests
                     new ContainerConstructorInfo
                         {
                             ConstructorInfo = testType.GetConstructor(new[] {typeof (I1)})
-                        });
+                        }, null);
             object instance = @delegate(internalContainer, context, new object[0]);
             Assert.IsInstanceOfType(testType, instance);
             Assert.AreSame(i1Mock, ((I2Impl) instance).i1);
+        }
+
+        [Test]
+        public void TestWithWrap()
+        {
+            var i1Mock = NewMock<I1>();
+            internalContainer.ExpectGet(context, i1Mock);
+            Func<IInternalContainer, IInjectionContext, object[], object> @delegate =
+                classCreator.BuildConstructionDelegate(
+                    new ContainerConstructorInfo
+                        {
+                            ConstructorInfo = testType.GetConstructor(new[] {typeof (I1)})
+                        }, typeof(I2ImplWrapper));
+            object instance = @delegate(internalContainer, context, new object[0]);
+            Assert.IsInstanceOfType(typeof(I2ImplWrapper), instance);
+            Assert.AreSame(i1Mock, ((I2ImplWrapper)instance).I1);
         }
 
         [Test]
@@ -259,7 +287,7 @@ namespace Tests.ImplTests
                 new ContainerConstructorInfo
                     {
                         ConstructorInfo = testType.GetConstructor(new[] {typeof (I1)})
-                    });
+                    }, null);
             context.Expect(c => c.BeginConstruct(testType));
             context.Expect(c => c.EndConstruct(testType));
             object instance = classFactory.Create(context, new object[0]);
@@ -278,7 +306,7 @@ namespace Tests.ImplTests
                     new ContainerConstructorInfo
                         {
                             ConstructorInfo = testType.GetConstructor(new[] {typeof (Func<I1>)})
-                        });
+                        }, null);
             object instance = @delegate(internalContainer, context, new object[0]);
             Assert.IsInstanceOfType(testType, instance);
 
@@ -288,7 +316,7 @@ namespace Tests.ImplTests
         }
 
         [Test]
-        public void TestGetWithRequireConracts()
+        public void TestGetWithRequireContracts()
         {
             var i1Mock = NewMock<I1>();
             internalContainer.ExpectGet(context, i1Mock);
@@ -298,7 +326,7 @@ namespace Tests.ImplTests
                     new ContainerConstructorInfo
                         {
                             ConstructorInfo = testType.GetConstructor(new[] {typeof (I1), typeof (int)})
-                        });
+                        }, null);
             object instance = @delegate(internalContainer, context, new object[0]);
             Assert.IsInstanceOfType(testType, instance);
             Assert.AreSame(i1Mock, ((I2Impl) instance).i1);

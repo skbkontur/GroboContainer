@@ -68,7 +68,7 @@ namespace Tests.ImplTests
                     new ContainerConstructorInfo
                         {
                             ConstructorInfo = typeof (C1).GetConstructor(new[] {typeof (Func<int, I2>)})
-                        });
+                        }, null);
             var c2 = new C2(11, new C3());
             Func<int, I2> func = arg =>
                                      {

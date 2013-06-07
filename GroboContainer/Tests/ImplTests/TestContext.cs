@@ -21,6 +21,8 @@ namespace Tests.ImplTests
 
         public IAbstractionConfigurationCollection AbstractionConfigurationCollection { get; set; }
 
+        public IClassWrapperCreator ClassWrapperCreator { get; set; }
+
         public IContainerContext MakeChildContext()
         {
             throw new NotImplementedException();

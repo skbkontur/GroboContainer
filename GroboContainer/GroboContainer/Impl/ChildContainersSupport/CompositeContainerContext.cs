@@ -10,8 +10,13 @@ namespace GroboContainer.Impl.ChildContainersSupport
 {
     public class CompositeContainerContext : IContainerContext
     {
+        private readonly IAbstractionsCollection abstractionsCollection;
+        private readonly CompositeCollection compositeCollection;
+        private readonly ITypesHelper typesHelper;
+
         public CompositeContainerContext(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator, IContainerSelector containerSelector)
         {
+            ClassWrapperCreator = classWrapperCreator;
             typesHelper = new TypesHelper();
 
             var funcHelper = new FuncHelper();
@@ -28,7 +33,7 @@ namespace GroboContainer.Impl.ChildContainersSupport
                                                                   implementationConfigurationCache);
             compositeCollection = new CompositeCollection(new[] {new AbstractionConfigurationCollection(factory)},
                                                           containerSelector);
-            compositeCollection.Add(typeof(IContainer),
+            compositeCollection.Add(typeof (IContainer),
                                     new StupidAbstractionConfiguration(
                                         new ContainerImplementationConfiguration()));
         }
@@ -49,18 +54,23 @@ namespace GroboContainer.Impl.ChildContainersSupport
             var abstractionConfigurationCollection = new AbstractionConfigurationCollection(factory);
             compositeCollection =
                 source.compositeCollection.MakeChildCollection(abstractionConfigurationCollection);
-            compositeCollection.Add(typeof(IContainer),
+            compositeCollection.Add(typeof (IContainer),
                                     new StupidAbstractionConfiguration(
                                         new ContainerImplementationConfiguration()));
         }
 
         #region IContainerContext Members
 
+        public IClassWrapperCreator ClassWrapperCreator { get; private set; }
+
         public IFuncBuilder FuncBuilder { get; private set; }
 
         public ICreationContext CreationContext { get; private set; }
 
-        public IAbstractionConfigurationCollection AbstractionConfigurationCollection { get { return compositeCollection; } }
+        public IAbstractionConfigurationCollection AbstractionConfigurationCollection
+        {
+            get { return compositeCollection; }
+        }
 
         public IContainerContext MakeChildContext()
         {
@@ -68,9 +78,5 @@ namespace GroboContainer.Impl.ChildContainersSupport
         }
 
         #endregion
-
-        private readonly IAbstractionsCollection abstractionsCollection;
-        private readonly CompositeCollection compositeCollection;
-        private readonly ITypesHelper typesHelper;
     }
 }

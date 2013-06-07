@@ -69,7 +69,6 @@
     <Compile Include="Config\Generic\IAbstractionConfigurator.cs" />
     <Compile Include="Config\IAbstractionConfigurator.cs" />
     <Compile Include="Config\IContainerConfigurator.cs" />
-    <Compile Include="Core\IClassWrapper.cs" />
     <Compile Include="Core\IContainerForFuncBuilder.cs" />
     <Compile Include="Core\IClassWrapperCreator.cs" />
     <Compile Include="Impl\ChildContainersSupport\BadSelectorException.cs" />

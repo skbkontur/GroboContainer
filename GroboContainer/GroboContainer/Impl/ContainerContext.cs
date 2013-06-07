@@ -1,5 +1,4 @@
 using System;
-
 using GroboContainer.Core;
 using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
@@ -11,8 +10,12 @@ namespace GroboContainer.Impl
 {
     public class ContainerContext : IContainerContext
     {
+        private readonly IAbstractionsCollection abstractionsCollection;
+        private readonly ITypesHelper typesHelper;
+
         public ContainerContext(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator)
         {
+            ClassWrapperCreator = classWrapperCreator;
             typesHelper = new TypesHelper();
 
             var funcHelper = new FuncHelper();
@@ -28,10 +31,12 @@ namespace GroboContainer.Impl
             var factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollection,
                                                                   implementationConfigurationCache);
             AbstractionConfigurationCollection = new AbstractionConfigurationCollection(factory);
-            AbstractionConfigurationCollection.Add(typeof(IContainer),
+            AbstractionConfigurationCollection.Add(typeof (IContainer),
                                                    new StupidAbstractionConfiguration(
                                                        new ContainerImplementationConfiguration()));
         }
+
+        public IClassWrapperCreator ClassWrapperCreator { get; private set; }
 
         #region IContainerContext Members
 
@@ -46,8 +51,5 @@ namespace GroboContainer.Impl
         }
 
         #endregion
-
-        private readonly IAbstractionsCollection abstractionsCollection;
-        private readonly ITypesHelper typesHelper;
     }
 }

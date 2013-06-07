@@ -185,13 +185,11 @@ namespace GroboContainer.Impl
             return CreateImpl(abstractionType, context, argumentTypes, args);
         }
 
-        private static object UnWrap(Type abstractionType, object instance)
+        private object UnWrap(Type abstractionType, object instance)
         {
-            if(abstractionType.IsInterface)
+            if(abstractionType.IsInterface || containerContext.ClassWrapperCreator == null)
                 return instance;
-            if(instance is IClassWrapper)
-                return ((IClassWrapper)instance).UnWrap();
-            return instance;
+            return containerContext.ClassWrapperCreator.UnWrap(instance);
         }
 
         #endregion

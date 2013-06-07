@@ -10,5 +10,10 @@ namespace Tests
         {
             return null;
         }
+
+        public object UnWrap(object instance)
+        {
+            return instance;
+        }
     }
 }

@@ -86,6 +86,19 @@ namespace Tests.FunctionalTests
         }
 
         [Test]
+        public void TestUseType()
+        {
+            container.Configurator.ForAbstraction<I1>().UseType<C1>();
+            I1[] actual = container.GetAll<I1>();
+            Assert.AreEqual(1, actual.Length);
+            Assert.IsInstanceOf(typeof(C1), actual[0]);
+            Assert.IsInstanceOf(typeof(C1), container.Create<I1>());
+            CollectionAssert.AreEquivalent(new[] { typeof(C1)},
+                                           container.GetImplementationTypes(typeof(I1)));
+            Assert.AreSame(container.Get<I1>(), container.Get<I1>());
+        }
+
+        [Test]
         public void TestSetManyInstances()
         {
             var c2 = new C2();

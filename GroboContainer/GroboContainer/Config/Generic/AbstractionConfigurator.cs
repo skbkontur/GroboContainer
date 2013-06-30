@@ -14,6 +14,11 @@ namespace GroboContainer.Config.Generic
 
         #region IAbstractionConfigurator<T> Members
 
+        public void UseType<TImpl>() where TImpl : T
+        {
+            worker.UseType(typeof(TImpl));
+        }
+
         public void UseInstances(params T[] instances)
         {
             object[] objects = instances.Cast<object>().ToArray();

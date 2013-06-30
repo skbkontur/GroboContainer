@@ -4,5 +4,6 @@ namespace GroboContainer.Config.Generic
     {
         void UseInstances(params T[] instances);
         void Fail();
+        void UseType<TImpl>() where TImpl : T;
     }
 }

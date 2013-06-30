@@ -1,6 +1,8 @@
 using System;
 using GroboContainer.Impl.Abstractions;
+using GroboContainer.Impl.Abstractions.AutoConfiguration;
 using GroboContainer.Impl.Implementations;
+using GroboContainer.New;
 
 namespace GroboContainer.Config
 {
@@ -29,6 +31,13 @@ namespace GroboContainer.Config
             abstractionConfigurationCollection.Add(abstractionType,
                                                    new StupidAbstractionConfiguration(
                                                        new ForbiddenImplementationConfiguration(abstractionType)));
+        }
+
+        public void UseType(Type type)
+        {
+            abstractionConfigurationCollection.Add(abstractionType,
+                                                   new StupidAbstractionConfiguration(new[]
+                                                       {new AutoImplementationConfiguration(new Implementation(type))}));
         }
 
         #endregion

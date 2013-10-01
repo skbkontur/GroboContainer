@@ -25,7 +25,7 @@ namespace GroboContainer.Impl
             creationContext = containerContext.CreationContext;
             builder = containerContext.FuncBuilder;
             abstractionConfigurationCollection = containerContext.AbstractionConfigurationCollection;
-            containerConfigurator = new ContainerConfigurator(containerContext.AbstractionConfigurationCollection);
+            containerConfigurator = new ContainerConfigurator(containerContext.AbstractionConfigurationCollection, containerContext.ClassWrapperCreator);
         }
 
         #region IInternalContainer Members

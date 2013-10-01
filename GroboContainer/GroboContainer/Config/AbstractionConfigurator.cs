@@ -1,4 +1,5 @@
 using System;
+using GroboContainer.Core;
 using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
 using GroboContainer.Impl.Implementations;
@@ -9,13 +10,14 @@ namespace GroboContainer.Config
     public class AbstractionConfigurator : IAbstractionConfigurator
     {
         private readonly IAbstractionConfigurationCollection abstractionConfigurationCollection;
+        private readonly IClassWrapperCreator classWrapperCreator;
         private readonly Type abstractionType;
 
-        public AbstractionConfigurator(Type abstractionType,
-                                       IAbstractionConfigurationCollection abstractionConfigurationCollection)
+        public AbstractionConfigurator(Type abstractionType, IAbstractionConfigurationCollection abstractionConfigurationCollection, IClassWrapperCreator classWrapperCreator)
         {
             this.abstractionType = abstractionType;
             this.abstractionConfigurationCollection = abstractionConfigurationCollection;
+            this.classWrapperCreator = classWrapperCreator;
         }
 
         #region IAbstractionConfigurator Members
@@ -23,7 +25,7 @@ namespace GroboContainer.Config
         public void UseInstances(params object[] instances)
         {
             abstractionConfigurationCollection.Add(abstractionType,
-                                                   new InstanceAbstractionConfiguration(abstractionType, instances));
+                                                   new InstanceAbstractionConfiguration(classWrapperCreator, abstractionType, instances));
         }
 
         public void Fail()

@@ -13,7 +13,7 @@ namespace Tests.ImplTests.ImplementationTests
         public void TestDispose()
         {
             var disposable = NewMock<IDisposable>();
-            var configuration = new InstanceImplementationConfiguration(disposable);
+            var configuration = new InstanceImplementationConfiguration(new TestClassWrapperCreator(), disposable);
             disposable.ExpectDispose();
             configuration.DisposeInstance();
         }
@@ -21,14 +21,14 @@ namespace Tests.ImplTests.ImplementationTests
         [Test]
         public void TestDisposeDoNothingIfNotDisposable()
         {
-            var configuration = new InstanceImplementationConfiguration(new object());
+            var configuration = new InstanceImplementationConfiguration(new TestClassWrapperCreator(), new object());
             configuration.DisposeInstance();
         }
 
         [Test]
         public void TestGetFactoryNotSupported()
         {
-            var configuration = new InstanceImplementationConfiguration(new object());
+            var configuration = new InstanceImplementationConfiguration(new TestClassWrapperCreator(), new object());
             RunMethodWithException<NotSupportedException>(() => configuration.GetFactory(null, null));
         }
 
@@ -36,7 +36,7 @@ namespace Tests.ImplTests.ImplementationTests
         public void TestGetInstance()
         {
             var instance = new object();
-            var configuration = new InstanceImplementationConfiguration(instance);
+            var configuration = new InstanceImplementationConfiguration(new TestClassWrapperCreator(), instance);
             var context = NewMock<IInjectionContext>();
             context.ExpectReused(instance.GetType());
             Assert.AreSame(instance, configuration.GetOrCreateInstance(context, null));

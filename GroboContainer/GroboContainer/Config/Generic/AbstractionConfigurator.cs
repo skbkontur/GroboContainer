@@ -1,4 +1,5 @@
 using System.Linq;
+using GroboContainer.Core;
 using GroboContainer.Impl.Abstractions;
 
 namespace GroboContainer.Config.Generic
@@ -7,9 +8,9 @@ namespace GroboContainer.Config.Generic
     {
         private readonly AbstractionConfigurator worker;
 
-        public AbstractionConfigurator(IAbstractionConfigurationCollection abstractionConfigurationCollection)
+        public AbstractionConfigurator(IAbstractionConfigurationCollection abstractionConfigurationCollection, IClassWrapperCreator classWrapperCreator)
         {
-            worker = new AbstractionConfigurator(typeof (T), abstractionConfigurationCollection);
+            worker = new AbstractionConfigurator(typeof (T), abstractionConfigurationCollection, classWrapperCreator);
         }
 
         #region IAbstractionConfigurator<T> Members

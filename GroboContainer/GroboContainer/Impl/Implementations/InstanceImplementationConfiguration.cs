@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using GroboContainer.Core;
 using GroboContainer.Impl.ClassCreation;
 using GroboContainer.Impl.Injection;
 using GroboContainer.New;
@@ -9,23 +10,25 @@ namespace GroboContainer.Impl.Implementations
     public class InstanceImplementationConfiguration : IImplementationConfiguration
     {
         private readonly object instance;
+        private readonly Type instanceType;
 
-        public InstanceImplementationConfiguration(object instance)
+        public InstanceImplementationConfiguration(IClassWrapperCreator classWrapperCreator, object instance)
         {
-            this.instance = instance;
+            instanceType = instance.GetType();
+            this.instance = classWrapperCreator == null ? instance : classWrapperCreator.WrapAndCreate(instance);
         }
 
         #region IImplementationConfiguration Members
 
         public Type ObjectType
         {
-            get { return instance.GetType(); }
+            get { return instanceType; }
         }
 
 
         public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext)
         {
-            context.Reused(instance.GetType());
+            context.Reused(instanceType);
             return instance;
         }
 
@@ -33,7 +36,7 @@ namespace GroboContainer.Impl.Implementations
         {
             if (instance is IDisposable)
             {
-                Debug.WriteLine(instance.GetType().FullName);
+                Debug.WriteLine(instanceType.FullName);
                 ((IDisposable) instance).Dispose();
             }
         }

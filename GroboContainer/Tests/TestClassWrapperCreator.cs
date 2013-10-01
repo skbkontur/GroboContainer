@@ -11,6 +11,11 @@ namespace Tests
             return null;
         }
 
+        public object WrapAndCreate(object instance)
+        {
+            return instance;
+        }
+
         public object UnWrap(object instance)
         {
             return instance;

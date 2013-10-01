@@ -1,4 +1,5 @@
 using System;
+using GroboContainer.Core;
 using GroboContainer.Impl.Implementations;
 
 namespace GroboContainer.Impl.Abstractions
@@ -7,7 +8,7 @@ namespace GroboContainer.Impl.Abstractions
     {
         private readonly IImplementationConfiguration[] implementationConfigurations;
 
-        public InstanceAbstractionConfiguration(Type abstractionType, object[] instances)
+        public InstanceAbstractionConfiguration(IClassWrapperCreator classWrapperCreator, Type abstractionType, object[] instances)
         {
             if (instances == null || instances.Length == 0)
                 throw new ArgumentException("instances");
@@ -18,7 +19,7 @@ namespace GroboContainer.Impl.Abstractions
                 if (!abstractionType.IsAssignableFrom(type))
                     throw new ArgumentException("Заданная реализация на являются объектами типа " + abstractionType +
                                                 " (реальный тип " + type + ")");
-                implementationConfigurations[i] = new InstanceImplementationConfiguration(instances[i]);
+                implementationConfigurations[i] = new InstanceImplementationConfiguration(classWrapperCreator, instances[i]);
             }
         }
 

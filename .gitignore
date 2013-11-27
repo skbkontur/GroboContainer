@@ -4,4 +4,6 @@ obj
 [Rr]elease
 *.user
 *.suo
+GroboContainer.dll
+GroboContainer.pdb
 _ReSharper.GroboContainer

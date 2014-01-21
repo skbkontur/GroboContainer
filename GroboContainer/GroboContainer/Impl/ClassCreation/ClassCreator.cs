@@ -46,7 +46,7 @@ namespace GroboContainer.Impl.ClassCreation
                                                {
                                                    typeof(IInternalContainer), typeof(IInjectionContext),
                                                    typeof(object[])
-                                               }, true);
+                                               }, typeof(ClassCreator), true);
             ILGenerator generator = method.GetILGenerator();
 
             for(int i = 0; i < constructorInfo.GetParameters().Length; i++)

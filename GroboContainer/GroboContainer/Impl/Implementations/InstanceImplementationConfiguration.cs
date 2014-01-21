@@ -14,8 +14,11 @@ namespace GroboContainer.Impl.Implementations
 
         public InstanceImplementationConfiguration(IClassWrapperCreator classWrapperCreator, object instance)
         {
+            if (classWrapperCreator != null && ReferenceEquals(instance, classWrapperCreator.UnWrap(instance)))
+                this.instance = classWrapperCreator.WrapAndCreate(instance);
+            else
+                this.instance = instance;
             instanceType = instance.GetType();
-            this.instance = classWrapperCreator == null ? instance : classWrapperCreator.WrapAndCreate(instance);
         }
 
         #region IImplementationConfiguration Members

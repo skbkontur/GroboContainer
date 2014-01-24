@@ -28,7 +28,7 @@ namespace GroboContainer.Impl.Injection
         }
 
         public InjectionContext(IInternalContainer internalContainer)
-            : this(internalContainer, new Log(), null)
+            : this(internalContainer, internalContainer.CreateNewLog(), null)
         {
             createHolder = CreateHolder;
         }

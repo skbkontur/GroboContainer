@@ -4,6 +4,7 @@ using GroboContainer.Impl;
 using GroboContainer.Impl.Contexts;
 using GroboContainer.Impl.Injection;
 using NUnit.Framework;
+using Rhino.Mocks;
 
 namespace Tests.ContextsTests
 {
@@ -13,7 +14,9 @@ namespace Tests.ContextsTests
         public void TestAnotherThread()
         {
             int threadId = Thread.CurrentThread.ManagedThreadId;
-            IContextHolder holder = new ContextHolder(new InjectionContext(NewMock<IInternalContainer>()), threadId);
+            IInternalContainer ic = GetMock<IInternalContainer>();
+            ic.Expect(c => c.CreateNewLog()).Return(null);
+            IContextHolder holder = new ContextHolder(new InjectionContext(ic), threadId);
             Action check = () =>
                                {
                                    Assert.AreNotEqual(threadId, Thread.CurrentThread.ManagedThreadId);
@@ -28,10 +31,13 @@ namespace Tests.ContextsTests
         [Test]
         public void TestCurrentThread()
         {
-            var context = new InjectionContext(NewMock<IInternalContainer>());
+            IInternalContainer ic = GetMock<IInternalContainer>();
+            ic.Expect(c => c.CreateNewLog()).Return(null);
+            var context = new InjectionContext(ic);
             IContextHolder holder = new ContextHolder(context, Thread.CurrentThread.ManagedThreadId);
 
-            Assert.AreSame(context, holder.GetContext(NewMock<IInternalContainer>()));
+            IInternalContainer ic2 = GetMock<IInternalContainer>();
+            Assert.AreSame(context, holder.GetContext(ic2));
             holder.KillContext();
             CheckGet(holder);
         }

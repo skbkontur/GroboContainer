@@ -69,6 +69,7 @@
     <Compile Include="Config\Generic\IAbstractionConfigurator.cs" />
     <Compile Include="Config\IAbstractionConfigurator.cs" />
     <Compile Include="Config\IContainerConfigurator.cs" />
+    <Compile Include="Core\ContainerMode.cs" />
     <Compile Include="Core\IContainerForFuncBuilder.cs" />
     <Compile Include="Core\IClassWrapperCreator.cs" />
     <Compile Include="Impl\ChildContainersSupport\BadSelectorException.cs" />
@@ -78,6 +79,8 @@
     <Compile Include="Impl\ChildContainersSupport\Selectors\AttributedRootSelector.cs" />
     <Compile Include="Impl\Exceptions\InaccessibleInterfaceException.cs" />
     <Compile Include="Impl\Exceptions\InaccessibleTypeException.cs" />
+    <Compile Include="Impl\Logging\LogSettings.cs" />
+    <Compile Include="Impl\Logging\ShortLog.cs" />
     <Compile Include="Infection\ChildTypeAttribute.cs" />
     <Compile Include="Impl\ChildContainersSupport\Selectors\IContainerSelector.cs" />
     <Compile Include="Impl\ChildContainersSupport\Selectors\RootAndChildSelector.cs" />

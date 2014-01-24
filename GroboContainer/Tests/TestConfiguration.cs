@@ -21,5 +21,15 @@ namespace Tests
         }
 
         #endregion
+
+        public string ContainerName
+        {
+            get { return "Test"; }
+        }
+
+        public ContainerMode Mode
+        {
+            get { return ContainerMode.Default; }
+        }
     }
 }

@@ -8,6 +8,7 @@ using GroboContainer.Impl.Logging;
 using NUnit.Framework;
 using TestCore;
 using Tests.ImplTests;
+using Rhino.Mocks;
 
 namespace Tests.InjectionTests
 {
@@ -132,14 +133,15 @@ namespace Tests.InjectionTests
         [Test]
         public void TestRealConstructor()
         {
-            var container = NewMock<IInternalContainer>();
+            var container = GetMock<IInternalContainer>();
+            container.Expect(c => c.CreateNewLog()).Return(new Log("root"));
             injectionContext = new InjectionContext(container);
             Assert.IsInstanceOfType(typeof (Container), injectionContext.Container);
             ((Container) injectionContext.Container).AssertEqualsTo(new Container(container,
                                                                                   new ContextHolder(injectionContext,
                                                                                                     Thread.CurrentThread
                                                                                                         .ManagedThreadId),
-                                                                                  new Log()));
+                                                                                  new Log("root")));
         }
 
         [Test]

@@ -11,10 +11,12 @@ namespace GroboContainer.Impl
     public class ContainerContext : IContainerContext
     {
         private readonly IAbstractionsCollection abstractionsCollection;
+        private readonly IContainerConfiguration configuration;
         private readonly ITypesHelper typesHelper;
 
         public ContainerContext(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator)
         {
+            this.configuration = configuration;
             ClassWrapperCreator = classWrapperCreator;
             typesHelper = new TypesHelper();
 
@@ -48,6 +50,11 @@ namespace GroboContainer.Impl
         public IContainerContext MakeChildContext()
         {
             throw new NotSupportedException("Childs");
+        }
+
+        public IContainerConfiguration Configuration
+        {
+            get { return configuration; }
         }
 
         #endregion

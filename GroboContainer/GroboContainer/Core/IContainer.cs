@@ -5,6 +5,7 @@ namespace GroboContainer.Core
 {
     public interface IContainer : IDisposable
     {
+        string Name { get; }
         IContainerConfigurator Configurator { get; }
         string LastConstructionLog { get; }
         IContainer MakeChildContainer();

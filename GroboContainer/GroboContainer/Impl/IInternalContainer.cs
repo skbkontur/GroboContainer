@@ -2,11 +2,14 @@ using System;
 using GroboContainer.Config;
 using GroboContainer.Impl.ClassCreation;
 using GroboContainer.Impl.Injection;
+using GroboContainer.Impl.Logging;
 
 namespace GroboContainer.Impl
 {
     public interface IInternalContainer : IFuncBuilder
     {
+        ILog CreateNewLog();
+        string Name { get; }
         IInternalContainer MakeChild();
         IContainerConfigurator Configurator { get; }
         void CallDispose();

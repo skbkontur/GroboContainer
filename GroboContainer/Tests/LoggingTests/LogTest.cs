@@ -12,7 +12,7 @@ namespace Tests.LoggingTests
         public override void SetUp()
         {
             base.SetUp();
-            log = new Log();
+            log = new Log("root");
         }
 
         #endregion
@@ -34,7 +34,8 @@ namespace Tests.LoggingTests
             }
             log.EndGet(typeof (long));
             Assert.AreEqual(
-                @"Get<System.Int64>()
+                @"Container: 'root'
+Get<System.Int64>()
  Constructing<System.Int32>()
   Constructing<System.String>()
 ",
@@ -62,7 +63,8 @@ namespace Tests.LoggingTests
             log.EndGetAll(typeof (long));
             //Debug.WriteLine(log.GetLog());
             Assert.AreEqual(
-                @"GetAll<System.Object>()
+                @"Container: 'root'
+GetAll<System.Object>()
  Get<System.Guid>()
  EndGet<System.Guid>()
  Get<System.Int64>()

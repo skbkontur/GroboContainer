@@ -6,15 +6,11 @@ namespace Tests.FunctionalTests
 {
     public class ContainerLoggingTest : ContainerTestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
             lastLog = null;
         }
-
-        #endregion
 
         private interface I1
         {
@@ -57,7 +53,6 @@ namespace Tests.FunctionalTests
         {
             public C2(IContainer container)
             {
-                //container.Get<I1>();
                 lastLog = container.LastConstructionLog;
             }
         }
@@ -66,7 +61,8 @@ namespace Tests.FunctionalTests
         public void TestCrash()
         {
             const string log =
-                @"Get<Tests.FunctionalTests.ContainerLoggingTest+ICrash1>()
+                @"Container: 'root'
+Get<Tests.FunctionalTests.ContainerLoggingTest+ICrash1>()
  Constructing<Tests.FunctionalTests.ContainerLoggingTest+Crash1>()
   Get<Tests.FunctionalTests.ContainerLoggingTest+ICrash2>()
    Constructing<Tests.FunctionalTests.ContainerLoggingTest+Crash2>()
@@ -86,7 +82,8 @@ namespace Tests.FunctionalTests
             StringAssert.Contains("Get<System.Int32>()", container.LastConstructionLog);
             container.GetAll<I1>();
             Assert.AreEqual(
-                @"GetAll<Tests.FunctionalTests.ContainerLoggingTest+I1>()
+                @"Container: 'root'
+GetAll<Tests.FunctionalTests.ContainerLoggingTest+I1>()
  Constructing<Tests.FunctionalTests.ContainerLoggingTest+C1>()
  Constructed<Tests.FunctionalTests.ContainerLoggingTest+C1>()
 EndGetAll<Tests.FunctionalTests.ContainerLoggingTest+I1>()
@@ -99,7 +96,8 @@ EndGetAll<Tests.FunctionalTests.ContainerLoggingTest+I1>()
         {
             container.Get<I2>();
             Assert.AreEqual(
-                @"Get<Tests.FunctionalTests.ContainerLoggingTest+I2>()
+                @"Container: 'root'
+Get<Tests.FunctionalTests.ContainerLoggingTest+I2>()
  Constructing<Tests.FunctionalTests.ContainerLoggingTest+C2>()
   Get<GroboContainer.Core.IContainer>()
    Reused<GroboContainer.Core.IContainer>()

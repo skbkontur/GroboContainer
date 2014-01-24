@@ -16,8 +16,11 @@ namespace GroboContainer.Impl
         {
         }
 
-        public ContainerConfiguration(IEnumerable<Assembly> assembliesToScan)
+        public ContainerConfiguration(IEnumerable<Assembly> assembliesToScan, string name = "root",
+                                      ContainerMode mode = ContainerMode.Default)
         {
+            ContainerName = name;
+            Mode = mode;
             var typesSet = new HashSet<Type>();
             foreach (Assembly assembly in assembliesToScan)
             {
@@ -29,11 +32,11 @@ namespace GroboContainer.Impl
                 catch (ReflectionTypeLoadException e)
                 {
                     var sb = new StringBuilder();
-                    foreach (var loaderException in e.LoaderExceptions)
+                    foreach (Exception loaderException in e.LoaderExceptions)
                         sb.AppendLine(loaderException.Message);
                     throw new ContainerConfigurationException(
                         string.Format("Ошибка при получении типов из сборки '{0}'\r\n(Path:'{1}')\n{2}",
-                        assembly.FullName, assembly.Location, sb), e);
+                                      assembly.FullName, assembly.Location, sb), e);
                 }
                 catch (Exception e)
                 {
@@ -47,13 +50,13 @@ namespace GroboContainer.Impl
             types = typesSet.ToArray();
         }
 
-        #region IContainerConfiguration Members
 
         public IEnumerable<Type> GetTypesToScan()
         {
             return types;
         }
 
-        #endregion
+        public string ContainerName { get; private set; }
+        public ContainerMode Mode { get; private set; }
     }
 }

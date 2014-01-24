@@ -16,6 +16,10 @@ namespace GroboContainer.Impl.Logging
 
         public ItemType ItemType { get; private set; }
 
+        public override string ToString()
+        {
+            return String.Format("{0}<{1}>", ItemType, type.Name);
+        }
 
         public void AppendTo(StringBuilder builder)
         {

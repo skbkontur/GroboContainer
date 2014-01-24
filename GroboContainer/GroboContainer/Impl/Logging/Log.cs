@@ -6,24 +6,19 @@ namespace GroboContainer.Impl.Logging
 {
     public class Log : ILog
     {
+        private readonly string containerName;
         private static readonly int[] depthChange;
         private readonly List<LogItem> items = new List<LogItem>();
         private int crashIndex = int.MaxValue;
 
         static Log()
         {
-            depthChange = new int[(int) ItemType.Reused + 1];
-            depthChange[(int) ItemType.Constructing] = 1;
-            depthChange[(int) ItemType.Get] = 1;
-            depthChange[(int) ItemType.Create] = 1;
-            depthChange[(int) ItemType.GetAll] = 1;
+            depthChange = LogSettings.depthChange;
+        }
 
-            depthChange[(int) ItemType.EndGet] = -1;
-            depthChange[(int) ItemType.EndCreate] = -1;
-            depthChange[(int) ItemType.EndGetAll] = -1;
-            depthChange[(int) ItemType.Constructed] = -1;
-
-            depthChange[(int) ItemType.Reused] = 0;
+        public Log(string containerName)
+        {
+            this.containerName = containerName;
         }
 
         #region ILog Members
@@ -83,6 +78,7 @@ namespace GroboContainer.Impl.Logging
         {
             int depth = 0;
             var builder = new StringBuilder();
+            builder.AppendLine(string.Format("Container: '{0}'", containerName));
             int index = 0;
             foreach (LogItem item in items)
             {

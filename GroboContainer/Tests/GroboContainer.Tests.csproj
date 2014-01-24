@@ -130,6 +130,7 @@
     <Compile Include="ImplTests\ImplementationTests\ClassFactoryTest.cs" />
     <Compile Include="ImplTests\ImplementationTests\ImplementationTest.cs" />
     <Compile Include="ImplTests\ImplementationTests\InstanceImplementationConfigurationTest.cs" />
+    <Compile Include="LoggingTests\ShortLogTest.cs" />
     <Compile Include="NewTests\AbstractionCollectionTest.cs" />
     <Compile Include="NewTests\AutoImplementationConfigurationTest.cs" />
     <Compile Include="NewTests\CreationContextTest.cs" />

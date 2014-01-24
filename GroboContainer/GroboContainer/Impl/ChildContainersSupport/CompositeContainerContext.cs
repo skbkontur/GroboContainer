@@ -12,10 +12,13 @@ namespace GroboContainer.Impl.ChildContainersSupport
     {
         private readonly IAbstractionsCollection abstractionsCollection;
         private readonly CompositeCollection compositeCollection;
+        private readonly IContainerConfiguration configuration;
         private readonly ITypesHelper typesHelper;
 
-        public CompositeContainerContext(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator, IContainerSelector containerSelector)
+        public CompositeContainerContext(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator,
+                                         IContainerSelector containerSelector)
         {
+            this.configuration = configuration;
             ClassWrapperCreator = classWrapperCreator;
             typesHelper = new TypesHelper();
 
@@ -40,6 +43,7 @@ namespace GroboContainer.Impl.ChildContainersSupport
 
         private CompositeContainerContext(CompositeContainerContext source)
         {
+            configuration = source.configuration;
             typesHelper = source.typesHelper;
             FuncBuilder = source.FuncBuilder;
             CreationContext = source.CreationContext;
@@ -75,6 +79,11 @@ namespace GroboContainer.Impl.ChildContainersSupport
         public IContainerContext MakeChildContext()
         {
             return new CompositeContainerContext(this);
+        }
+
+        public IContainerConfiguration Configuration
+        {
+            get { return configuration; }
         }
 
         #endregion

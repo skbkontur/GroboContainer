@@ -13,6 +13,6 @@ namespace GroboContainer.Impl
         IClassWrapperCreator ClassWrapperCreator { get; }
         IContainerContext MakeChildContext();
         //IContainerConfigurator ContainerConfigurator { get; }
-        //IContainerConfiguration Configuration { get; }
+        IContainerConfiguration Configuration { get; }
     }
 }

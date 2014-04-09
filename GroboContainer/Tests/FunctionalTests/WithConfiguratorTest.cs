@@ -35,6 +35,11 @@ namespace Tests.FunctionalTests
         {
         }
 
+        [IgnoredImplementation]
+        private class X1Impl2 : IX1, IX2
+        {
+        }
+
         [IgnoredAbstraction]
         private interface IIgnored
         {
@@ -128,6 +133,39 @@ namespace Tests.FunctionalTests
             Assert.AreNotSame(x1, actual);
             CollectionAssert.AreEqual(new IX1[] {x1}, container.GetAll<IX1>());
             CollectionAssert.AreEqual(new[] {actual}, container.GetAll<IX2>());
+        }
+
+        [Test]
+        public void TestConfigureAfterCreate()
+        {
+            var x1 = container.Create<IX1>();
+            container.Configurator.ForAbstraction<IX1>().UseInstances(x1);
+            Assert.AreSame(x1, container.Get<IX1>());
+        }
+
+        [Test]
+        public void TestGetAutoInstanceAfterCreate()
+        {
+            var x1Instance1 = container.Create<IX1>();
+            var x1Instance2 = container.Get<IX1>();
+            Assert.AreNotSame(x1Instance1, x1Instance2);
+        }
+
+        [Test]
+        public void TestCreateAfterConfigureInstances()
+        {
+            var x1 = new X1();
+            container.Configurator.ForAbstraction<IX1>().UseInstances(x1);
+            Assert.AreNotSame(x1, container.Create<IX1>());
+            Assert.AreSame(x1, container.Get<IX1>());
+        }
+
+        [Test]
+        public void TestCreateWithUseTypeConfiguration()
+        {
+            container.Configurator.ForAbstraction<IX1>().UseType<X1Impl2>();
+            Assert.That(container.Create<IX1>(), Is.InstanceOf<X1Impl2>());
+            Assert.That(container.Get<IX1>(), Is.InstanceOf<X1Impl2>());
         }
     }
 }

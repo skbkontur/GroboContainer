@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using GroboContainer.Config;
 using GroboContainer.Impl;
 using GroboContainer.Impl.ChildContainersSupport;
@@ -15,6 +19,11 @@ namespace GroboContainer.Core
         private readonly IContextHolder holder;
         private readonly IInternalContainer internalContainer;
         private volatile ILog lastConstructedLog;
+        private readonly ConcurrentDictionary<Type, Delegate> getLazyDelegates = new ConcurrentDictionary<Type, Delegate>();
+        private static readonly MethodInfo getLazyFuncMethod = typeof(Container).GetMethods(BindingFlags.Public | BindingFlags.Instance).Single(x => x.Name == "GetLazyFunc" && x.IsGenericMethod);
+        private static readonly Type getLazyFuncMethodReturnType = getLazyFuncMethod.ReturnType.GetGenericTypeDefinition();
+        private static readonly IDictionary<Type, MethodInfo> getCreationFuncMethods = typeof(Container).GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(x => x.Name == "GetCreationFunc" && x.IsGenericMethod).ToDictionary(x => x.ReturnType.GetGenericTypeDefinition());
+        private readonly ConcurrentDictionary<Type, Delegate> getCreationDelegates = new ConcurrentDictionary<Type, Delegate>();
 
         internal Container(IInternalContainer internalContainer, IContextHolder holder, ILog currentLog)
         {
@@ -201,6 +210,57 @@ namespace GroboContainer.Core
                 ILog log = lastConstructedLog;
                 return (log != null ? log.GetLog() : "<no>");
             }
+        }
+
+        public Func<T> GetLazyFunc<T>()
+        {
+            return Get<T>;
+        }
+
+        public Func<T> GetCreationFunc<T>()
+        {
+            return Create<T>;
+        }
+
+        public Func<T1, T> GetCreationFunc<T1, T>()
+        {
+            return Create<T1, T>;
+        }
+
+        public Func<T1, T2, T> GetCreationFunc<T1, T2, T>()
+        {
+            return Create<T1, T2, T>;
+        }
+
+        public Func<T1, T2, T3, T> GetCreationFunc<T1, T2, T3, T>()
+        {
+            return Create<T1, T2, T3, T>;
+        }
+
+        public Func<T1, T2, T3, T4, T> GetCreationFunc<T1, T2, T3, T4, T>()
+        {
+            return Create<T1, T2, T3, T4, T>;
+        }
+
+        public Delegate GetLazyFunc(Type funcType)
+        {
+            return getLazyDelegates.GetOrAdd(funcType, type =>
+            {
+                if (!type.IsGenericType || type.GetGenericTypeDefinition() != getLazyFuncMethodReturnType)
+                    throw new InvalidOperationException(string.Format("Тип {0} не поддерживаются в качестве функции получения", type));
+                return (Delegate)getLazyFuncMethod.MakeGenericMethod(type.GetGenericArguments()).Invoke(this, new object[0]);
+            });
+        }
+
+        public Delegate GetCreationFunc(Type funcType)
+        {
+            return getCreationDelegates.GetOrAdd(funcType, type =>
+            {
+                MethodInfo methodInfo;
+                if (!type.IsGenericType || !getCreationFuncMethods.TryGetValue(type.GetGenericTypeDefinition(), out methodInfo))
+                    throw new InvalidOperationException(string.Format("Тип {0} не поддерживаются в качестве функции создания", type));
+                return (Delegate)methodInfo.MakeGenericMethod(type.GetGenericArguments()).Invoke(this, new object[0]);
+            });
         }
 
         public void Dispose()

@@ -23,6 +23,16 @@ namespace GroboContainer.Core
         object Create(Type abstractionType);
         object Create(Type abstractionType, Type[] parameterTypes, object[] parameters);
 
+        Delegate GetLazyFunc(Type funcType);
+        Func<T> GetLazyFunc<T>();
+
+        Delegate GetCreationFunc(Type funcType);
+        Func<T> GetCreationFunc<T>();
+        Func<T1, T> GetCreationFunc<T1, T>();
+        Func<T1, T2, T> GetCreationFunc<T1, T2, T>();
+        Func<T1, T2, T3, T> GetCreationFunc<T1, T2, T3, T>();
+        Func<T1, T2, T3, T4, T> GetCreationFunc<T1, T2, T3, T4, T>();
+
         Type[] GetImplementationTypes(Type abstractionType);
     }
 }

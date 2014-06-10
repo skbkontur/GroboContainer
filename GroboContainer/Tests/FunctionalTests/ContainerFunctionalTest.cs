@@ -116,6 +116,44 @@ namespace Tests.FunctionalTests
         }
 
         [Test]
+        public void TestGetLazyFunc_Static()
+        {
+            var func = container.GetLazyFunc<I1>();
+            var instance = func();
+            Assert.IsInstanceOf<C12>(instance);
+        }
+
+        [Test]
+        public void TestGetLazyFunc_Dynamic()
+        {
+            var func = (Func<I1>) container.GetLazyFunc(typeof(Func<I1>));
+            var instance = func();
+            Assert.IsInstanceOf<C12>(instance);
+        }
+
+        [Test]
+        public void TestGetCreationFunc_Static()
+        {
+            var func = container.GetCreationFunc<I1>();
+            var instance1 = func();
+            var instance2 = func();
+            Assert.IsInstanceOf<C12>(instance1);
+            Assert.IsInstanceOf<C12>(instance2);
+            Assert.AreNotSame(instance1, instance2);
+        }
+
+        [Test]
+        public void TestGetCreationFunc_Dynamic()
+        {
+            var func = (Func<I1>)container.GetCreationFunc(typeof(Func<I1>));
+            var instance1 = func();
+            var instance2 = func();
+            Assert.IsInstanceOf<C12>(instance1);
+            Assert.IsInstanceOf<C12>(instance2);
+            Assert.AreNotSame(instance1, instance2);
+        }
+
+        [Test]
         public void TestGetIgnoredClass()
         {
             RunFail<NoImplementationException>(() => container.Get<IgnoredClass>());

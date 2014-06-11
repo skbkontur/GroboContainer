@@ -31,6 +31,9 @@ namespace GroboContainer.Impl
         object Create(Type abstractionType, IInjectionContext context);
         object Create(Type abstractionType, IInjectionContext context, Type[] parameterTypes, object[] parameters);
 
+        Delegate GetLazyFunc(Type funcType, Func<Type, Delegate> factory);
+        Delegate GetCreationFunc(Type funcType, Func<Type, Delegate> factory);
+
         Type[] GetImplementationTypes(Type abstractionType);
     }
 }

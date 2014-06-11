@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using GroboContainer.Config;
 using GroboContainer.Core;
@@ -19,6 +20,8 @@ namespace GroboContainer.Impl
         private readonly IContainerConfigurator containerConfigurator;
         private readonly IContainerContext containerContext;
         private readonly ICreationContext creationContext;
+        private readonly ConcurrentDictionary<Type, Delegate> getLazyDelegates = new ConcurrentDictionary<Type, Delegate>();
+        private readonly ConcurrentDictionary<Type, Delegate> getCreationDelegates = new ConcurrentDictionary<Type, Delegate>();
 
         public InternalContainer(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator)
             : this(new ContainerContext(configuration, classWrapperCreator))
@@ -215,6 +218,15 @@ namespace GroboContainer.Impl
             return containerContext.ClassWrapperCreator.UnWrap(instance);
         }
 
+        public Delegate GetLazyFunc(Type funcType, Func<Type, Delegate> factory)
+        {
+            return getLazyDelegates.GetOrAdd(funcType, factory);
+        }
+
+        public Delegate GetCreationFunc(Type funcType, Func<Type, Delegate> factory)
+        {
+            return getCreationDelegates.GetOrAdd(funcType, factory);
+        }
         #endregion
 
         private object CreateImpl(Type abstractionType, IInjectionContext context,

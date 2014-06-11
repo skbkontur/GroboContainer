@@ -19,11 +19,9 @@ namespace GroboContainer.Core
         private readonly IContextHolder holder;
         private readonly IInternalContainer internalContainer;
         private volatile ILog lastConstructedLog;
-        private readonly ConcurrentDictionary<Type, Delegate> getLazyDelegates = new ConcurrentDictionary<Type, Delegate>();
         private static readonly MethodInfo getLazyFuncMethod = typeof(Container).GetMethods(BindingFlags.Public | BindingFlags.Instance).Single(x => x.Name == "GetLazyFunc" && x.IsGenericMethod);
         private static readonly Type getLazyFuncMethodReturnType = getLazyFuncMethod.ReturnType.GetGenericTypeDefinition();
         private static readonly IDictionary<Type, MethodInfo> getCreationFuncMethods = typeof(Container).GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(x => x.Name == "GetCreationFunc" && x.IsGenericMethod).ToDictionary(x => x.ReturnType.GetGenericTypeDefinition());
-        private readonly ConcurrentDictionary<Type, Delegate> getCreationDelegates = new ConcurrentDictionary<Type, Delegate>();
 
         internal Container(IInternalContainer internalContainer, IContextHolder holder, ILog currentLog)
         {
@@ -244,7 +242,7 @@ namespace GroboContainer.Core
 
         public Delegate GetLazyFunc(Type funcType)
         {
-            return getLazyDelegates.GetOrAdd(funcType, type =>
+            return internalContainer.GetLazyFunc(funcType, type =>
             {
                 if (!type.IsGenericType || type.GetGenericTypeDefinition() != getLazyFuncMethodReturnType)
                     throw new InvalidOperationException(string.Format("Тип {0} не поддерживаются в качестве функции получения", type));
@@ -254,7 +252,7 @@ namespace GroboContainer.Core
 
         public Delegate GetCreationFunc(Type funcType)
         {
-            return getCreationDelegates.GetOrAdd(funcType, type =>
+            return internalContainer.GetCreationFunc(funcType, type =>
             {
                 MethodInfo methodInfo;
                 if (!type.IsGenericType || !getCreationFuncMethods.TryGetValue(type.GetGenericTypeDefinition(), out methodInfo))

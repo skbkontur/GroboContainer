@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using GroboContainer.Impl.Exceptions;
 using GroboContainer.Infection;
@@ -69,6 +70,16 @@ namespace Tests.FunctionalTests
             }
 
             public IInterfaceManyImpls[] Args { get; private set; }
+        }
+
+        private class WithEnumerableArgument
+        {
+            public WithEnumerableArgument(IEnumerable<IInterfaceManyImpls> args)
+            {
+                Args = args;
+            }
+
+            public IEnumerable<IInterfaceManyImpls> Args { get; private set; }
         }
 
         private interface IInterfaceManyImpls
@@ -193,6 +204,14 @@ namespace Tests.FunctionalTests
         public void TestWithArrayArguments()
         {
             var instance = container.Get<WithArrayArgument>();
+            CollectionAssert.AreEquivalent(new[] {typeof (InterfaceManyImpls1), typeof (InterfaceManyImpls2)},
+                                           instance.Args.Select(impls => impls.GetType()).ToArray());
+        }
+
+        [Test]
+        public void TestWithEnumerableArguments()
+        {
+            var instance = container.Get<WithEnumerableArgument>();
             CollectionAssert.AreEquivalent(new[] {typeof (InterfaceManyImpls1), typeof (InterfaceManyImpls2)},
                                            instance.Args.Select(impls => impls.GetType()).ToArray());
         }

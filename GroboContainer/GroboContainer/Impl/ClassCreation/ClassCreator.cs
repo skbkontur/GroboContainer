@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -93,7 +94,9 @@ namespace GroboContainer.Impl.ClassCreation
                 generator.Emit(OpCodes.Ldarg_0); //container -> this for methods
                 generator.Emit(OpCodes.Ldarg_1); //arg0: context
                 if(parameterType.IsArray)
-                    ProcessArray(generator, parameterType);
+                    ProcessArray(generator, parameterType.GetElementType());
+                else if(parameterType.IsGenericType && parameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                    ProcessArray(generator, parameterType.GetGenericArguments()[0]);
                 else
                     ProcessNonArray(parameterInfo, generator, parameterType);
             }
@@ -137,10 +140,10 @@ namespace GroboContainer.Impl.ClassCreation
                 generator.Emit(OpCodes.Callvirt, getMethod.MakeGenericMethod(parameterType));
         }
 
-        private void ProcessArray(ILGenerator generator, Type parameterType)
+        private void ProcessArray(ILGenerator generator, Type elementType)
         {
             generator.Emit(OpCodes.Callvirt,
-                           getAllMethod.MakeGenericMethod(parameterType.GetElementType()));
+                           getAllMethod.MakeGenericMethod(elementType));
         }
 
         private void ProcessFuncParameter(ParameterInfo parameterInfo, ILGenerator generator, Type parameterType)

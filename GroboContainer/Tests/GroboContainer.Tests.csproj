@@ -136,6 +136,8 @@
     <Compile Include="NewTests\CreationContextTest.cs" />
     <Compile Include="NewTests\ImplementationCacheTest.cs" />
     <Compile Include="NewTests\ImplementationConfigurationCacheTest.cs" />
+    <Compile Include="PerfTests\ExponentialHistogram.cs" />
+    <Compile Include="PerfTests\PerfTest.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="ImplTests\InjectionContextExtenstions.cs" />
     <Compile Include="ImplTests\InternalContainerExtensions.cs" />

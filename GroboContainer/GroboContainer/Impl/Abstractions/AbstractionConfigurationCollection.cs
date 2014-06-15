@@ -1,56 +1,39 @@
 using System;
-using System.Collections;
+using System.Collections.Concurrent;
+using System.Linq;
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
 
 namespace GroboContainer.Impl.Abstractions
 {
     public class AbstractionConfigurationCollection : IAbstractionConfigurationCollection
     {
-        private readonly Hashtable cache = new Hashtable();
-        private readonly IAutoAbstractionConfigurationFactory factory;
-        private readonly object lockObject = new object();
+        private readonly ConcurrentDictionary<Type, IAbstractionConfiguration> cache = new ConcurrentDictionary<Type, IAbstractionConfiguration>();
+        private readonly Func<Type, IAbstractionConfiguration> createByType;
 
         public AbstractionConfigurationCollection(IAutoAbstractionConfigurationFactory factory)
         {
-            this.factory = factory;
+            createByType = factory.CreateByType;
         }
 
         #region IAbstractionConfigurationCollection Members
 
         public IAbstractionConfiguration Get(Type abstractionType)
         {
-            IAbstractionConfiguration result = Read(abstractionType);
-            if (result == null)
-                lock (lockObject)
-                {
-                    result = Read(abstractionType);
-                    if (result == null)
-                        cache.Add(abstractionType, result = factory.CreateByType(abstractionType));
-                }
-            return result;
+            return cache.GetOrAdd(abstractionType, createByType);
         }
 
         public void Add(Type abstractionType,
                         IAbstractionConfiguration abstractionConfiguration)
         {
-            lock (lockObject)
-            {
-                if (cache.ContainsKey(abstractionType))
-                    throw new InvalidOperationException(string.Format("Тип {0} уже сконфигурирован", abstractionType));
-                cache.Add(abstractionType, abstractionConfiguration);
-            }
+            if (!cache.TryAdd(abstractionType, abstractionConfiguration))
+                throw new InvalidOperationException(string.Format("Тип {0} уже сконфигурирован", abstractionType));
         }
 
         public IAbstractionConfiguration[] GetAll()
         {
-            return cache.GetValues<IAbstractionConfiguration>();
+            return cache.Values.ToArray();
         }
 
         #endregion
-
-        private IAbstractionConfiguration Read(Type key)
-        {
-            return (IAbstractionConfiguration) cache[key];
-        }
     }
 }

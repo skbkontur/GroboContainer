@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
 
@@ -7,7 +7,9 @@ namespace GroboContainer.Impl.Abstractions
 {
     public class AbstractionConfigurationCollection : IAbstractionConfigurationCollection
     {
-        private readonly ConcurrentDictionary<Type, IAbstractionConfiguration> cache = new ConcurrentDictionary<Type, IAbstractionConfiguration>();
+        private readonly IDictionary<Type, IAbstractionConfiguration> cache = new Dictionary<Type, IAbstractionConfiguration>();
+        private readonly object lockObject = new object();
+
         private readonly Func<Type, IAbstractionConfiguration> createByType;
 
         public AbstractionConfigurationCollection(IAutoAbstractionConfigurationFactory factory)
@@ -19,14 +21,32 @@ namespace GroboContainer.Impl.Abstractions
 
         public IAbstractionConfiguration Get(Type abstractionType)
         {
-            return cache.GetOrAdd(abstractionType, createByType);
+            IAbstractionConfiguration result;
+
+            if (!cache.TryGetValue(abstractionType, out result))
+            {
+                lock (lockObject)
+                {
+                    if (!cache.TryGetValue(abstractionType, out result))
+                    {
+                        cache.Add(abstractionType, result = createByType(abstractionType));
+                    }
+                }
+            }
+
+            return result;
         }
 
-        public void Add(Type abstractionType,
-                        IAbstractionConfiguration abstractionConfiguration)
+        public void Add(Type abstractionType, IAbstractionConfiguration abstractionConfiguration)
         {
-            if (!cache.TryAdd(abstractionType, abstractionConfiguration))
-                throw new InvalidOperationException(string.Format("Тип {0} уже сконфигурирован", abstractionType));
+            lock (lockObject)
+            {
+                IAbstractionConfiguration existedConfiguration;
+                if (cache.TryGetValue(abstractionType, out existedConfiguration) && existedConfiguration.GetImplementations().Length != 0)
+                    throw new InvalidOperationException(string.Format("Тип {0} уже сконфигурирован", abstractionType));
+
+                cache[abstractionType] = abstractionConfiguration;
+            }
         }
 
         public IAbstractionConfiguration[] GetAll()

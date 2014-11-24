@@ -104,6 +104,8 @@
     <Compile Include="FunctionalTests\ChildsTests\ChildContainerTest.cs" />
     <Compile Include="ChildContainerSupportTests\CompositeCollectionTest.cs" />
     <Compile Include="FunctionalTests\ChildsTests\ChildContainerWithContainersTest.cs" />
+    <Compile Include="FunctionalTests\GenericsConflict.cs" />
+    <Compile Include="FunctionalTests\NestedGenerics.cs" />
     <Compile Include="FunctionalTests\ReuseImplementationsWithExplicitUseTypeConfigurationTest.cs" />
     <Compile Include="FunctionalTests\ContainerArrayTest.cs" />
     <Compile Include="FunctionalTests\ContainerConfigurationTest.cs" />

@@ -15,7 +15,7 @@ namespace GroboContainer.Impl.Implementations
 			}
 		}
 
-		public static bool TryMatch(Type pattern, Type value, Type[] matched)
+		public static bool MatchWith(this Type pattern, Type value, Type[] matched)
 		{
 			if (pattern.IsGenericParameter)
 			{
@@ -27,18 +27,16 @@ namespace GroboContainer.Impl.Implementations
 			}
 			if (pattern.IsGenericType ^ value.IsGenericType)
 				return false;
-			if (pattern.IsGenericType)
-			{
-				if (pattern.GetGenericTypeDefinition() != value.GetGenericTypeDefinition())
+			if (!pattern.IsGenericType)
+				return pattern == value;
+			if (pattern.GetGenericTypeDefinition() != value.GetGenericTypeDefinition())
+				return false;
+			var patternArguments = pattern.GetGenericArguments();
+			var valueArguments = value.GetGenericArguments();
+			for (var i = 0; i < patternArguments.Length; i++)
+				if (!patternArguments[i].MatchWith(valueArguments[i], matched))
 					return false;
-				var whatArguments = pattern.GetGenericArguments();
-				var byArguments = value.GetGenericArguments();
-				for (var i = 0; i < whatArguments.Length; i++)
-					if (!TryMatch(whatArguments[i], byArguments[i], matched))
-						return false;
-				return true;
-			}
-			return pattern == value;
+			return true;
 		}
 	}
 }

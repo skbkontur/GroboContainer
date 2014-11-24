@@ -27,7 +27,7 @@ namespace GroboContainer.Impl.Implementations
 			foreach (var candidateInterface in candidateInterfaces)
 			{
 				var arguments = new Type[argumentsCount];
-				if (ReflectionHelpers.TryMatch(candidateInterface, abstractionType, arguments) && arguments.All(x => x != null))
+				if (candidateInterface.MatchWith(abstractionType, arguments) && arguments.All(x => x != null))
 					return candidate.MakeGenericType(arguments);
 			}
 			return null;

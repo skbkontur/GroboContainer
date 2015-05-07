@@ -29,11 +29,11 @@ namespace GroboContainer.Impl.ChildContainersSupport
             CreationContext = new CreationContext(classCreator, constructorSelector, classWrapperCreator);
 
             var implementationTypesCollection = new ImplementationTypesCollection(configuration, typesHelper);
-            var implementationCache = new ImplementationCache();
-            abstractionsCollection = new AbstractionsCollection(implementationTypesCollection, implementationCache);
-            var implementationConfigurationCache = new ImplementationConfigurationCache();
+            ImplementationCache = new ImplementationCache();
+			abstractionsCollection = new AbstractionsCollection(implementationTypesCollection, ImplementationCache);
+			ImplementationConfigurationCache = new ImplementationConfigurationCache();
             var factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollection,
-                                                                  implementationConfigurationCache);
+																  ImplementationConfigurationCache);
             compositeCollection = new CompositeCollection(new[] {new AbstractionConfigurationCollection(factory)},
                                                           containerSelector);
             compositeCollection.Add(typeof (IContainer),
@@ -50,10 +50,11 @@ namespace GroboContainer.Impl.ChildContainersSupport
 
             //NOTE чтобы дочерние контейнеры не тормозили, используем ту же AbstractionsCollection
             abstractionsCollection = source.abstractionsCollection;
+			ImplementationCache = source.ImplementationCache;
 
-            var implementationConfigurationCache = new ImplementationConfigurationCache();
+			ImplementationConfigurationCache = new ImplementationConfigurationCache();
             var factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollection,
-                                                                  implementationConfigurationCache);
+																  ImplementationConfigurationCache);
             //NOTE для каждого экземпляра контейнера должна быть своя AbstractionConfigurationCollection
             var abstractionConfigurationCollection = new AbstractionConfigurationCollection(factory);
             compositeCollection =
@@ -65,7 +66,9 @@ namespace GroboContainer.Impl.ChildContainersSupport
 
         #region IContainerContext Members
 
-        public IClassWrapperCreator ClassWrapperCreator { get; private set; }
+	    public IImplementationCache ImplementationCache { get; private set; }
+	    public IImplementationConfigurationCache ImplementationConfigurationCache { get; private set; }
+	    public IClassWrapperCreator ClassWrapperCreator { get; private set; }
 
         public IFuncBuilder FuncBuilder { get; private set; }
 

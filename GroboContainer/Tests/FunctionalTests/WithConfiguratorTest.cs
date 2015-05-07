@@ -135,7 +135,7 @@ namespace Tests.FunctionalTests
             CollectionAssert.AreEqual(new[] {actual}, container.GetAll<IX2>());
         }
 
-        [Test]
+        [Test, Ignore("Не понятно, нужно ли поддержать такую функциональность")]
         public void TestConfigureAfterCreate()
         {
             var x1 = container.Create<IX1>();
@@ -151,7 +151,7 @@ namespace Tests.FunctionalTests
             Assert.AreNotSame(x1Instance1, x1Instance2);
         }
 
-        [Test]
+        [Test, Ignore("Не понятно, нужно ли поддержать такую функциональность")]
         public void TestCreateAfterConfigureInstances()
         {
             var x1 = new X1();

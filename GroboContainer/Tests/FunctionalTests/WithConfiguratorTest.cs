@@ -205,13 +205,18 @@ namespace Tests.FunctionalTests
         {
             var implementationTypes = container.GetImplementationTypes(typeof(INotImplemented));
             Assert.AreEqual(0, implementationTypes.Length);
-            
+
             var proxyType = CreateProxyType(typeof(INotImplemented));
             container.Configurator.ForAbstraction(typeof(INotImplemented)).UseType(proxyType);
 
-            var instance = container.Get<INotImplemented>();
-            Assert.NotNull(instance);
-            Assert.AreEqual(proxyType, instance.GetType());
+            Assert.That(container.Create<INotImplemented>(), Is.InstanceOf(proxyType));
+            Assert.That(container.Get<INotImplemented>(), Is.InstanceOf(proxyType));
+
+            Assert.That(container.Create<INotImplemented>(), Is.InstanceOf<INotImplemented>());
+            Assert.That(container.Get<INotImplemented>(), Is.InstanceOf<INotImplemented>());
+
+            var proxyType2 = CreateProxyType(typeof(INotImplemented));
+            Assert.Throws<InvalidOperationException>(() => container.Configurator.ForAbstraction(typeof (INotImplemented)).UseType(proxyType2));
         }
     }
 }

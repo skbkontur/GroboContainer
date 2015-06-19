@@ -1,6 +1,8 @@
 using System.Linq;
 using GroboContainer.Core;
 using GroboContainer.Impl.Abstractions;
+using GroboContainer.Impl.Abstractions.AutoConfiguration;
+using GroboContainer.New;
 
 namespace GroboContainer.Config.Generic
 {
@@ -8,9 +10,12 @@ namespace GroboContainer.Config.Generic
     {
         private readonly AbstractionConfigurator worker;
 
-        public AbstractionConfigurator(IAbstractionConfigurationCollection abstractionConfigurationCollection, IClassWrapperCreator classWrapperCreator)
+        public AbstractionConfigurator(IAbstractionConfigurationCollection abstractionConfigurationCollection,
+			IClassWrapperCreator classWrapperCreator, IImplementationConfigurationCache implementationConfigurationCache,
+			IImplementationCache implementationCache)
         {
-            worker = new AbstractionConfigurator(typeof (T), abstractionConfigurationCollection, classWrapperCreator);
+	        worker = new AbstractionConfigurator(typeof (T), abstractionConfigurationCollection, classWrapperCreator,
+		        implementationConfigurationCache, implementationCache);
         }
 
         #region IAbstractionConfigurator<T> Members

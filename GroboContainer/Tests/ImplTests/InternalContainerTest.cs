@@ -3,6 +3,7 @@ using GroboContainer.Config;
 using GroboContainer.Core;
 using GroboContainer.Impl;
 using GroboContainer.Impl.Abstractions;
+using GroboContainer.Impl.Abstractions.AutoConfiguration;
 using GroboContainer.Impl.ClassCreation;
 using GroboContainer.Impl.Exceptions;
 using GroboContainer.Impl.Implementations;
@@ -30,6 +31,8 @@ namespace Tests.ImplTests
             configurator = NewMock<IContainerConfigurator>();
             creationContext = GetMock<ICreationContext>();
             classFactory = GetMock<IClassFactory>();
+			var implementationConfigurationCache = GetMock<IImplementationConfigurationCache>();
+			var implementationCache = GetMock<IImplementationCache>();
             internalContainer =
                 new InternalContainer(new TestContext
                                           {
@@ -37,7 +40,9 @@ namespace Tests.ImplTests
                                               Configuration = configuration,
                                               ContainerConfigurator = configurator,
                                               FuncBuilder = new FuncBuilder(),
-                                              CreationContext = creationContext
+                                              CreationContext = creationContext,
+											  ImplementationConfigurationCache = implementationConfigurationCache,
+											  ImplementationCache = implementationCache
                                           });
             context = NewMock<IInjectionContext>();
         }

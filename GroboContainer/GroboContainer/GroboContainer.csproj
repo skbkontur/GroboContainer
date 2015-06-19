@@ -80,6 +80,7 @@
     <Compile Include="Impl\ConcurrentDictionaryExtensions.cs" />
     <Compile Include="Impl\Exceptions\InaccessibleInterfaceException.cs" />
     <Compile Include="Impl\Exceptions\InaccessibleTypeException.cs" />
+    <Compile Include="Impl\Implementations\ReflectionHelpers.cs" />
     <Compile Include="Impl\Logging\LogSettings.cs" />
     <Compile Include="Impl\Logging\ShortLog.cs" />
     <Compile Include="Infection\ChildTypeAttribute.cs" />

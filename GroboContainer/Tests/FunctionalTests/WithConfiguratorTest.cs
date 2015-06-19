@@ -167,7 +167,7 @@ namespace Tests.FunctionalTests
             CollectionAssert.AreEqual(new[] {actual}, container.GetAll<IX2>());
         }
 
-        [Test, Ignore("Тест противоречит коду. Проверяется невыполниемое. Нужно разобраться. From upstream: Не понятно, нужно ли поддержать такую функциональность")]
+        [Test, Ignore("Не понятно, нужно ли поддержать такую функциональность")]
         public void TestConfigureAfterCreate()
         {
             var x1 = container.Create<IX1>();
@@ -183,7 +183,7 @@ namespace Tests.FunctionalTests
             Assert.AreNotSame(x1Instance1, x1Instance2);
         }
 
-        [Test, Ignore("Тест противоречит коду. Проверяется невыполниемое. Нужно разобраться. From upstream: Не понятно, нужно ли поддержать такую функциональность")]
+        [Test, Ignore("Не понятно, нужно ли поддержать такую функциональность")]
         public void TestCreateAfterConfigureInstances()
         {
             var x1 = new X1();
@@ -203,14 +203,15 @@ namespace Tests.FunctionalTests
         [Test]
         public void TestWithDynamicType()
         {
-            if (container.GetImplementationTypes(typeof(INotImplemented)).Length == 0)
-            {
-                var proxyType = CreateProxyType(typeof(INotImplemented));
-                container.Configurator.ForAbstraction(typeof(INotImplemented)).UseType(proxyType);
-            }
+            var implementationTypes = container.GetImplementationTypes(typeof(INotImplemented));
+            Assert.AreEqual(0, implementationTypes.Length);
+            
+            var proxyType = CreateProxyType(typeof(INotImplemented));
+            container.Configurator.ForAbstraction(typeof(INotImplemented)).UseType(proxyType);
 
             var instance = container.Get<INotImplemented>();
             Assert.NotNull(instance);
+            Assert.AreEqual(proxyType, instance.GetType());
         }
     }
 }

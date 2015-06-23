@@ -11,14 +11,21 @@ namespace GroboContainer.Config
     {
         private readonly IAbstractionConfigurationCollection abstractionConfigurationCollection;
         private readonly IClassWrapperCreator classWrapperCreator;
-        private readonly Type abstractionType;
+	    private readonly IImplementationConfigurationCache implementationConfigurationCache;
+	    private readonly IImplementationCache implementationCache;
+	    private readonly Type abstractionType;
 
-        public AbstractionConfigurator(Type abstractionType, IAbstractionConfigurationCollection abstractionConfigurationCollection, IClassWrapperCreator classWrapperCreator)
-        {
-            this.abstractionType = abstractionType;
-            this.abstractionConfigurationCollection = abstractionConfigurationCollection;
-            this.classWrapperCreator = classWrapperCreator;
-        }
+	    public AbstractionConfigurator(Type abstractionType,
+		    IAbstractionConfigurationCollection abstractionConfigurationCollection,
+		    IClassWrapperCreator classWrapperCreator, IImplementationConfigurationCache implementationConfigurationCache,
+		    IImplementationCache implementationCache)
+	    {
+		    this.abstractionType = abstractionType;
+		    this.abstractionConfigurationCollection = abstractionConfigurationCollection;
+		    this.classWrapperCreator = classWrapperCreator;
+		    this.implementationConfigurationCache = implementationConfigurationCache;
+		    this.implementationCache = implementationCache;
+	    }
 
         #region IAbstractionConfigurator Members
 
@@ -37,9 +44,10 @@ namespace GroboContainer.Config
 
         public void UseType(Type type)
         {
-            abstractionConfigurationCollection.Add(abstractionType,
-                                                   new StupidAbstractionConfiguration(new[]
-                                                       {new AutoImplementationConfiguration(new Implementation(type))}));
+			var implementation = implementationCache.GetOrCreate(type);
+			var implementationConfiguration = implementationConfigurationCache.GetOrCreate(implementation);
+			var abstractionConfiguration = new StupidAbstractionConfiguration(new[] { implementationConfiguration });
+			abstractionConfigurationCollection.Add(abstractionType, abstractionConfiguration);
         }
 
         #endregion

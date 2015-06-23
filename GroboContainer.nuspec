@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>GroboContainer</id>
+    <version>1.0.1</version>
+    <title>GroboContainer</title>
+    <projectUrl>https://git.skbkontur.ru/codebases/grobocontainer</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	  <authors>Dmitry Gorlov, Igor Chevdar</authors>
+	  <description>Simple DI-container</description>
+    <copyright>Copyright 2010-2015</copyright>
+  </metadata>
+<files>
+  <file src="Assemblies\GroboContainer.pdb" target="lib\net40\" />
+  <file src="Assemblies\GroboContainer.dll" target="lib\net40\" />  
+</files>
+</package>

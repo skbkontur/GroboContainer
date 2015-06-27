@@ -22,10 +22,9 @@ namespace GroboContainer.Impl.Abstractions
             return cache.GetOrAdd(abstractionType, createByType);
         }
 
-        public void Add(Type abstractionType,
-                        IAbstractionConfiguration abstractionConfiguration)
+        public void Add(Type abstractionType, IAbstractionConfiguration abstractionConfiguration)
         {
-            if (!cache.TryAdd(abstractionType, abstractionConfiguration))
+            if (!cache.TryAddOrUpdate(abstractionType, abstractionConfiguration, c => c.GetImplementations().Length == 0))
                 throw new InvalidOperationException(string.Format("Тип {0} уже сконфигурирован", abstractionType));
         }
 

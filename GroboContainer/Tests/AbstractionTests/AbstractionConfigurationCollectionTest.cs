@@ -1,6 +1,7 @@
 using System;
 using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
+using GroboContainer.Impl.Implementations;
 using NUnit.Framework;
 using Rhino.Mocks;
 using TestCore;
@@ -26,7 +27,11 @@ namespace Tests.AbstractionTests
         [Test]
         public void TestAdd()
         {
-            var configuration = NewMock<IAbstractionConfiguration>();
+            var configuration = GetMock<IAbstractionConfiguration>();
+            configuration
+                .Expect(c => c.GetImplementations())
+                .Return(new IImplementationConfiguration[] {new InstanceImplementationConfiguration(null, 1)});
+
             configurationCollection.Add(typeof (int), configuration);
             Assert.AreSame(configuration, configurationCollection.Get(typeof (int)));
             Assert.AreSame(configuration, configurationCollection.Get(typeof (int)));

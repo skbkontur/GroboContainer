@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 
+using GrEmit;
+
 using GroboContainer.Impl.Exceptions;
 using GroboContainer.Impl.Injection;
 
@@ -34,7 +36,7 @@ namespace GroboContainer.Impl.ClassCreation
 
         private static MethodInfo GetMethod(string methodname, Type type, params Type[] types)
         {
-            MethodInfo method = type.GetMethod(methodname, types);
+            var method = type.GetMethod(methodname, types);
             if(method == null)
                 throw new MissingMethodException(type.ToString(), methodname);
             return method;
@@ -48,75 +50,74 @@ namespace GroboContainer.Impl.ClassCreation
                                                    typeof(IInternalContainer), typeof(IInjectionContext),
                                                    typeof(object[])
                                                }, typeof(ClassCreator), true);
-            ILGenerator generator = method.GetILGenerator();
-
-            for(int i = 0; i < constructorInfo.GetParameters().Length; i++)
+            using(var il = new GroboIL(method))
             {
-                ParameterInfo parameterInfo = constructorInfo.GetParameters()[i];
-                ProcessParameter(parameterInfo, generator, parametersInfo != null ? parametersInfo[i] : -1);
-            }
-            generator.Emit(OpCodes.Newobj, constructorInfo);
+                var constructorParameters = constructorInfo.GetParameters();
+                for(var i = 0; i < constructorParameters.Length; i++)
+                    ProcessParameter(constructorParameters[i], il, parametersInfo != null ? parametersInfo[i] : -1);
+                il.Newobj(constructorInfo);
 
-            if(wrapperType != null)
-            {
-                var wrapperConstructor = wrapperType.GetConstructor(new[] {typeof(object)});
-                if(wrapperConstructor == null)
-                    throw new NoConstructorException(wrapperType);
-                generator.Emit(OpCodes.Newobj, wrapperConstructor);
-            }
+                if(wrapperType != null)
+                {
+                    var wrapperConstructor = wrapperType.GetConstructor(new[] {typeof(object)});
+                    if(wrapperConstructor == null)
+                        throw new NoConstructorException(wrapperType);
+                    il.Newobj(wrapperConstructor);
+                }
 
-            generator.Emit(OpCodes.Ret);
+                il.Ret();
+            }
             var @delegate =
                 (Func<IInternalContainer, IInjectionContext, object[], object>)
                 method.CreateDelegate(typeof(Func<IInternalContainer, IInjectionContext, object[], object>));
             return @delegate;
         }
 
-        private void ProcessParameter(ParameterInfo parameterInfo, ILGenerator generator, int parameterMarker)
+        private void ProcessParameter(ParameterInfo parameterInfo, GroboIL il, int parameterMarker)
         {
-            Type parameterType = parameterInfo.ParameterType;
+            var parameterType = parameterInfo.ParameterType;
             if(parameterMarker != -1)
             {
-                generator.Emit(OpCodes.Ldarg_2); //parameters
-                generator.Emit(OpCodes.Ldc_I4, parameterMarker);
-                generator.Emit(OpCodes.Ldelem_Ref);
+                il.Ldarg(2); //parameters
+                il.Ldc_I4(parameterMarker);
+                il.Ldelem(typeof(object));
                 if(parameterType.IsValueType)
                 {
                     if(!IsNullable(parameterType))
-                        EmitCrashIfValueIsNull(generator);
-                    generator.Emit(OpCodes.Unbox_Any, parameterType);
+                        EmitCrashIfValueIsNull(il);
+                    il.Unbox_Any(parameterType);
                 }
                 else
-                    generator.Emit(OpCodes.Castclass, parameterType);
+                    il.Castclass(parameterType);
             }
             else
             {
-                generator.Emit(OpCodes.Ldarg_0); //container -> this for methods
-                generator.Emit(OpCodes.Ldarg_1); //arg0: context
+                il.Ldarg(0); //container -> this for methods
+                il.Ldarg(1); //arg0: context
                 if(parameterType.IsArray)
-                    ProcessArray(generator, parameterType.GetElementType());
+                    ProcessArray(il, parameterType.GetElementType());
                 else if(parameterType.IsGenericType && parameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                    ProcessArray(generator, parameterType.GetGenericArguments()[0]);
+                    ProcessArray(il, parameterType.GetGenericArguments()[0]);
                 else
-                    ProcessNonArray(parameterInfo, generator, parameterType);
+                    ProcessNonArray(parameterInfo, il, parameterType);
             }
         }
 
-        private static void EmitCrashIfValueIsNull(ILGenerator generator)
+        private static void EmitCrashIfValueIsNull(GroboIL il)
         {
-            Label box = generator.DefineLabel();
-            generator.Emit(OpCodes.Dup);
-            generator.Emit(OpCodes.Brtrue, box);
-            ConstructorInfo crashConstructor = typeof(ArgumentException).GetConstructor(new[] {typeof(string)});
-            generator.Emit(OpCodes.Ldstr, "bad parameter");
-            generator.Emit(OpCodes.Newobj, crashConstructor);
-            generator.Emit(OpCodes.Throw);
-            generator.MarkLabel(box);
+            var box = il.DefineLabel("box");
+            il.Dup();
+            il.Brtrue(box);
+            var crashConstructor = typeof(ArgumentException).GetConstructor(new[] {typeof(string)});
+            il.Ldstr("bad parameter");
+            il.Newobj(crashConstructor);
+            il.Throw();
+            il.MarkLabel(box);
         }
 
         private static bool IsNullable(Type parameterType)
         {
-            return (parameterType.IsGenericType && parameterType.GetGenericTypeDefinition() == typeof(Nullable<>));
+            return parameterType.IsGenericType && parameterType.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
         //private static void PushRequiredContracts(ILGenerator generator, string[] requireContracts)
@@ -132,29 +133,25 @@ namespace GroboContainer.Impl.ClassCreation
         //    }
         //}
 
-        private void ProcessNonArray(ParameterInfo parameterInfo, ILGenerator generator, Type parameterType)
+        private void ProcessNonArray(ParameterInfo parameterInfo, GroboIL il, Type parameterType)
         {
             if(funcHelper.IsFunc(parameterType))
-                ProcessFuncParameter(parameterInfo, generator, parameterType);
+                ProcessFuncParameter(parameterInfo, il, parameterType);
             else
-                generator.Emit(OpCodes.Callvirt, getMethod.MakeGenericMethod(parameterType));
+                il.Call(getMethod.MakeGenericMethod(parameterType));
         }
 
-        private void ProcessArray(ILGenerator generator, Type elementType)
+        private void ProcessArray(GroboIL il, Type elementType)
         {
-            generator.Emit(OpCodes.Callvirt,
-                           getAllMethod.MakeGenericMethod(elementType));
+            il.Call(getAllMethod.MakeGenericMethod(elementType));
         }
 
-        private void ProcessFuncParameter(ParameterInfo parameterInfo, ILGenerator generator, Type parameterType)
+        private void ProcessFuncParameter(ParameterInfo parameterInfo, GroboIL il, Type parameterType)
         {
             if(parameterInfo.Name.StartsWith("get", StringComparison.InvariantCultureIgnoreCase))
-                generator.Emit(OpCodes.Callvirt, funcHelper.GetBuildGetFuncMethodInfo(parameterType));
+                il.Call(funcHelper.GetBuildGetFuncMethodInfo(parameterType));
             else if(parameterInfo.Name.StartsWith("create", StringComparison.InvariantCultureIgnoreCase))
-            {
-                generator.Emit(OpCodes.Callvirt,
-                               funcHelper.GetBuildCreateFuncMethodInfo(parameterInfo.ParameterType));
-            }
+                il.Call(funcHelper.GetBuildCreateFuncMethodInfo(parameterInfo.ParameterType));
             else
             {
                 throw new NotSupportedException(

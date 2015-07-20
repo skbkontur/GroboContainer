@@ -3,42 +3,41 @@ using System.Collections;
 using System.Reflection;
 using System.Reflection.Emit;
 
+using GrEmit;
+
 namespace GroboContainer.Impl
 {
     public static class HashtableExtensions
     {
-        private static readonly Action<Hashtable, Array, int> copyValuesDelegate = EmitCopyValues();
-
-        private static void EmitXPlusPlus(this ILGenerator il, LocalBuilder intLocalBuilder)
+        private static void EmitXPlusPlus(this GroboIL il, GroboIL.Local intLocal)
         {
-            il.Emit(OpCodes.Ldloc_S, intLocalBuilder);
-            il.Emit(OpCodes.Dup);
-            il.Emit(OpCodes.Ldc_I4_1);
-            il.Emit(OpCodes.Add);
-            il.Emit(OpCodes.Stloc_S, intLocalBuilder);
+            il.Ldloc(intLocal);
+            il.Dup();
+            il.Ldc_I4(1);
+            il.Add();
+            il.Stloc(intLocal);
         }
 
-        private static void EmitMinusMinusX(this ILGenerator il, LocalBuilder intLocalBuilder)
+        private static void EmitMinusMinusX(this GroboIL il, GroboIL.Local intLocal)
         {
-            il.Emit(OpCodes.Ldloc_S, intLocalBuilder);
-            il.Emit(OpCodes.Ldc_I4_1);
-            il.Emit(OpCodes.Sub);
-            il.Emit(OpCodes.Dup);
-            il.Emit(OpCodes.Stloc_S, intLocalBuilder);
+            il.Ldloc(intLocal);
+            il.Ldc_I4(1);
+            il.Sub();
+            il.Dup();
+            il.Stloc(intLocal);
         }
 
-        private static void EmitLoadArrayItemRef(this ILGenerator il, LocalBuilder arrayLocalBuilder,
-                                                 LocalBuilder indexLocalBuilder, Type elementType)
+        private static void EmitLoadArrayItemRef(this GroboIL il, GroboIL.Local arrayLocal, GroboIL.Local indexLocal, Type elementType)
         {
-            il.Emit(OpCodes.Ldloc_S, arrayLocalBuilder);
-            il.Emit(OpCodes.Ldloc_S, indexLocalBuilder);
-            il.Emit(OpCodes.Ldelema, elementType);
+            il.Ldloc(arrayLocal);
+            il.Ldloc(indexLocal);
+            il.Ldelema(elementType);
         }
 
-        private static void EmitSetIntToZero(this ILGenerator il, LocalBuilder intLocalBuilder)
+        private static void EmitSetIntToZero(this GroboIL il, GroboIL.Local intLocal)
         {
-            il.Emit(OpCodes.Ldc_I4_0);
-            il.Emit(OpCodes.Stloc_S, intLocalBuilder);
+            il.Ldc_I4(0);
+            il.Stloc(intLocal);
         }
 
         private static Action<Hashtable, Array, int> EmitCopyValues()
@@ -62,76 +61,78 @@ namespace GroboContainer.Impl
             }
             */
             var dynamicMethod = new DynamicMethod(
-                Guid.NewGuid().ToString(), typeof (void), new[] {typeof (Hashtable), typeof (Array), typeof (int)},
-                typeof (Hashtable), true);
+                Guid.NewGuid().ToString(), typeof(void), new[] {typeof(Hashtable), typeof(Array), typeof(int)},
+                typeof(Hashtable), true);
 
-            FieldInfo bucketsFieldInfo = typeof (Hashtable).GetField("buckets",
-                                                                     BindingFlags.Instance | BindingFlags.NonPublic);
-            Type bucketType = typeof (Hashtable).GetNestedType("bucket", BindingFlags.NonPublic);
-            Type bucketArrayType = bucketType.MakeArrayType();
+            var bucketsFieldInfo = typeof(Hashtable).GetField("buckets",
+                                                              BindingFlags.Instance | BindingFlags.NonPublic);
+            var bucketType = typeof(Hashtable).GetNestedType("bucket", BindingFlags.NonPublic);
+            var bucketArrayType = bucketType.MakeArrayType();
 
-            FieldInfo keyFieldInfo = bucketType.GetField("key", BindingFlags.Instance | BindingFlags.Public);
-            FieldInfo valFieldInfo = bucketType.GetField("val", BindingFlags.Instance | BindingFlags.Public);
-            MethodInfo setValueMethodInfo = typeof (Array).GetMethod("SetValue", new[] {typeof (object), typeof (int)});
+            var keyFieldInfo = bucketType.GetField("key", BindingFlags.Instance | BindingFlags.Public);
+            var valFieldInfo = bucketType.GetField("val", BindingFlags.Instance | BindingFlags.Public);
+            var setValueMethodInfo = typeof(Array).GetMethod("SetValue", new[] {typeof(object), typeof(int)});
 
-            ILGenerator il = dynamicMethod.GetILGenerator();
-            LocalBuilder buckets = il.DeclareLocal(bucketArrayType);
-            LocalBuilder length = il.DeclareLocal(typeof (int));
-            LocalBuilder arrayIndex = il.DeclareLocal(typeof (int));
-            LocalBuilder key = il.DeclareLocal(typeof (object));
+            using(var il = new GroboIL(dynamicMethod))
+            {
+                var buckets = il.DeclareLocal(bucketArrayType, "buckets");
+                var length = il.DeclareLocal(typeof(int), "length");
+                var arrayIndex = il.DeclareLocal(typeof(int), "arrayIndex");
+                var key = il.DeclareLocal(typeof(object), "key");
 
-            Label cycleStart = il.DefineLabel();
-            Label cycleNext = il.DefineLabel();
-            Label end = il.DefineLabel();
+                var cycleStartLabel = il.DefineLabel("cycleStart");
+                var cycleNextLabel = il.DefineLabel("cycleNext");
+                var endLabel = il.DefineLabel("end");
 
-            il.EmitSetIntToZero(arrayIndex);
+                il.EmitSetIntToZero(arrayIndex);
 
-            il.Emit(OpCodes.Ldarg_0); // stack: hashtable
-            il.Emit(OpCodes.Ldfld, bucketsFieldInfo); // stack: hashtable::buckets
-            il.Emit(OpCodes.Stloc_S, buckets);
+                il.Ldarg(0); // stack: hashtable
+                il.Ldfld(bucketsFieldInfo); // stack: hashtable::buckets
+                il.Stloc(buckets);
 
-            il.Emit(OpCodes.Ldloc_S, buckets); // stack: hashtable::buckets
-            il.Emit(OpCodes.Ldlen); // stack: buckets.length 
-            il.Emit(OpCodes.Conv_I4); // stack: buckets.length (i4)
-            il.Emit(OpCodes.Stloc_S, length);
-            il.Emit(OpCodes.Br_S, cycleNext); // jump(cycleNext)
+                il.Ldloc(buckets); // stack: hashtable::buckets
+                il.Ldlen(); // stack: buckets.length 
+                il.Conv<int>(); // stack: buckets.length (i4)
+                il.Stloc(length);
+                il.Br(cycleNextLabel); // jump(cycleNext)
 
-            il.MarkLabel(cycleStart);
+                il.MarkLabel(cycleStartLabel);
 
-            il.EmitLoadArrayItemRef(buckets, length, bucketType); // stack: *bucket[current]
+                il.EmitLoadArrayItemRef(buckets, length, bucketType); // stack: *bucket[current]
 
-            il.Emit(OpCodes.Ldfld, keyFieldInfo); // stack: key
-            il.Emit(OpCodes.Stloc_S, key); // 2: key
-            il.Emit(OpCodes.Ldloc_S, key); // stack: key
-            il.Emit(OpCodes.Brfalse_S, cycleNext); // jump(cycleNext) if key == null
-            il.Emit(OpCodes.Ldloc_S, key); // stack: key
-            il.Emit(OpCodes.Ldarg_0); // stack+: hashtable
-            il.Emit(OpCodes.Ldfld, bucketsFieldInfo); // stack: key, hashtable::buckets
-            il.Emit(OpCodes.Beq_S, cycleNext);
-            // jump(cycleNext) if key == hashtable::buckets (какой-то хитрый хак hashtable-а)
+                il.Ldfld(keyFieldInfo); // stack: key
+                il.Stloc(key); // 2: key
+                il.Ldloc(key); // stack: key
+                il.Brfalse(cycleNextLabel); // jump(cycleNext) if key == null
+                il.Ldloc(key); // stack: key
+                il.Ldarg(0); // stack+: hashtable
+                il.Ldfld(bucketsFieldInfo); // stack: key, hashtable::buckets
+                il.Beq(cycleNextLabel);
+                // jump(cycleNext) if key == hashtable::buckets (какой-то хитрый хак hashtable-а)
 
-            il.Emit(OpCodes.Ldloc_S, arrayIndex); // stack: arrayIndex
-            il.Emit(OpCodes.Ldarg_2); // stack+: arrayLength
-            il.Emit(OpCodes.Bge_S, end); // jump(end) if arrayIndex >= arrayLength
+                il.Ldloc(arrayIndex); // stack: arrayIndex
+                il.Ldarg(2); // stack+: arrayLength
+                il.Bge(endLabel, false); // jump(end) if arrayIndex >= arrayLength
 
-            il.Emit(OpCodes.Ldarg_1); // stack: array (arg1)
+                il.Ldarg(1); // stack: array (arg1)
 
-            il.EmitLoadArrayItemRef(buckets, length, bucketType); // stack: array (arg1), *bucket[current]
-            il.Emit(OpCodes.Ldfld, valFieldInfo); // stack: array (arg1), bucket[current].val
-            il.EmitXPlusPlus(arrayIndex); // stack: array (arg1), bucket[current].val, arrayIndex++
+                il.EmitLoadArrayItemRef(buckets, length, bucketType); // stack: array (arg1), *bucket[current]
+                il.Ldfld(valFieldInfo); // stack: array (arg1), bucket[current].val
+                il.EmitXPlusPlus(arrayIndex); // stack: array (arg1), bucket[current].val, arrayIndex++
 
-            il.Emit(OpCodes.Callvirt, setValueMethodInfo); // array.SetValue(bucket[current].val, old_arrayIndex);
+                il.Call(setValueMethodInfo); // array.SetValue(bucket[current].val, old_arrayIndex);
 
-            il.MarkLabel(cycleNext);
+                il.MarkLabel(cycleNextLabel);
 
-            il.EmitMinusMinusX(length); // stack: --current
-            il.Emit(OpCodes.Ldc_I4_0); // stack+: 0
-            il.Emit(OpCodes.Bge_S, cycleStart); // jump(cycleStart) if --current >= 0
+                il.EmitMinusMinusX(length); // stack: --current
+                il.Ldc_I4(0); // stack+: 0
+                il.Bge(cycleStartLabel, false); // jump(cycleStart) if --current >= 0
 
-            il.MarkLabel(end);
-            il.Emit(OpCodes.Ret);
+                il.MarkLabel(endLabel);
+                il.Ret();
+            }
 
-            return (Action<Hashtable, Array, int>) dynamicMethod.CreateDelegate(typeof (Action<Hashtable, Array, int>));
+            return (Action<Hashtable, Array, int>)dynamicMethod.CreateDelegate(typeof(Action<Hashtable, Array, int>));
         }
 
         public static T[] GetValues<T>(this Hashtable hashtable)
@@ -140,5 +141,7 @@ namespace GroboContainer.Impl
             copyValuesDelegate(hashtable, result, result.Length);
             return result;
         }
+
+        private static readonly Action<Hashtable, Array, int> copyValuesDelegate = EmitCopyValues();
     }
 }

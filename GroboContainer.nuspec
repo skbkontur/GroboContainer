@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>GroboContainer</id>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <title>GroboContainer</title>
     <projectUrl>https://git.skbkontur.ru/codebases/grobocontainer</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

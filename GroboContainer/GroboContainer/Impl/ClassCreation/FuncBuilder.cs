@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using GroboContainer.Impl.Injection;
 
 namespace GroboContainer.Impl.ClassCreation
@@ -6,6 +7,12 @@ namespace GroboContainer.Impl.ClassCreation
     public class FuncBuilder : IFuncBuilder
     {
         #region IFuncBuilder Members
+
+        public Lazy<T> BuildLazy<T>(IInjectionContext context)
+        {
+            var @class = new Context(context);
+            return new Lazy<T>(@class.Get<T>, LazyThreadSafetyMode.ExecutionAndPublication);
+        }
 
         public Func<T> BuildGetFunc<T>(IInjectionContext context)
         {

@@ -52,14 +52,44 @@ namespace Tests.FunctionalTests
             public ClassWithoutArguments Dependency { get; private set; }
         }
 
-        private class ClassWithFunc
+        private class ClassWithFuncDependecy
         {
-            public ClassWithFunc(Func<IInterface> getDependency)
+            public ClassWithFuncDependecy(Func<IInterface> getDependency)
             {
                 Dependency = getDependency;
             }
 
             public Func<IInterface> Dependency { get; private set; }
+        }
+
+        private class ClassWithSameFuncDependecy
+        {
+            public ClassWithSameFuncDependecy(Func<IInterface> getDependency)
+            {
+                Dependency = getDependency;
+            }
+
+            public Func<IInterface> Dependency { get; private set; }
+        }
+
+        private class ClassWithLazyDependecy
+        {
+            public ClassWithLazyDependecy(Lazy<IInterface> dependency)
+            {
+                Dependency = dependency;
+            }
+
+            public Lazy<IInterface> Dependency { get; private set; }
+        }
+
+        private class ClassWithSameLazyDependecy
+        {
+            public ClassWithSameLazyDependecy(Lazy<IInterface> dependency)
+            {
+                Dependency = dependency;
+            }
+
+            public Lazy<IInterface> Dependency { get; private set; }
         }
 
         private class WithArrayArgument
@@ -118,12 +148,27 @@ namespace Tests.FunctionalTests
 
 
         [Test]
-        public void TestFunc()
+        public void TestFuncDependecy()
         {
-            var instance = container.Get<ClassWithFunc>();
-            Assert.IsInstanceOfType(typeof (Func<IInterface>), instance.Dependency);
-            IInterface dependency = instance.Dependency();
-            Assert.IsInstanceOfType(typeof (ClassWithoutArguments), dependency);
+            var instance = container.Get<ClassWithFuncDependecy>();
+            Assert.IsInstanceOf<Func<IInterface>>(instance.Dependency);
+            var dependency = instance.Dependency();
+            Assert.IsInstanceOf<ClassWithoutArguments>(dependency);
+
+            Assert.That(container.Get<ClassWithFuncDependecy>().Dependency(), Is.SameAs(dependency));
+            Assert.That(container.Get<ClassWithSameFuncDependecy>().Dependency(), Is.SameAs(dependency));
+        }
+
+        [Test]
+        public void TestLazyDependecy()
+        {
+            var instance = container.Get<ClassWithLazyDependecy>();
+            Assert.IsInstanceOf<Lazy<IInterface>>(instance.Dependency);
+            var dependency = instance.Dependency.Value;
+            Assert.IsInstanceOf<ClassWithoutArguments>(dependency);
+
+            Assert.That(container.Get<ClassWithLazyDependecy>().Dependency.Value, Is.SameAs(dependency));
+            Assert.That(container.Get<ClassWithSameLazyDependecy>().Dependency.Value, Is.SameAs(dependency));
         }
 
         [Test]

@@ -7,6 +7,8 @@ namespace GroboContainer.Impl.ClassCreation
     {
         MethodInfo GetBuildCreateFuncMethodInfo(Type funcType);
         MethodInfo GetBuildGetFuncMethodInfo(Type funcType);
+        MethodInfo GetBuildLazyMethodInfo(Type lazyType);
+        bool IsLazy(Type type);
         bool IsFunc(Type type);
     }
 }

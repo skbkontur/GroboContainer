@@ -60,14 +60,19 @@ namespace GroboContainer.Impl
             return new InternalContainer(containerContext.MakeChildContext());
         }
 
-        public Func<T> BuildCreateFunc<T>(IInjectionContext context)
+        public Lazy<T> BuildLazy<T>(IInjectionContext context)
         {
-            return builder.BuildCreateFunc<T>(context);
+            return builder.BuildLazy<T>(context);
         }
 
         public Func<T> BuildGetFunc<T>(IInjectionContext context)
         {
             return builder.BuildGetFunc<T>(context);
+        }
+
+        public Func<T> BuildCreateFunc<T>(IInjectionContext context)
+        {
+            return builder.BuildCreateFunc<T>(context);
         }
 
         public Func<T1, T> BuildCreateFunc<T1, T>(IInjectionContext context)

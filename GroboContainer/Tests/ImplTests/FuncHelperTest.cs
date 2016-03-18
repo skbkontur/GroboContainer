@@ -39,6 +39,15 @@ namespace Tests.ImplTests
         }
 
         [Test]
+        public void TestGetBuildLazyMethodInfo()
+        {
+            Type type = typeof (Lazy<object>);
+            MethodInfo expected = typeof (IFuncBuilder).GetMethods().Single(info => info.Name.Contains("BuildLazy"));
+            MethodInfo actual = helper.GetBuildLazyMethodInfo(type);
+            Assert.AreSame(expected.MakeGenericMethod(type.GetGenericArguments()), actual);
+        }
+
+        [Test]
         public void TestGetBuildMethodInfo()
         {
             Type type = typeof (Func<object>);
@@ -86,6 +95,22 @@ namespace Tests.ImplTests
             Assert.That(helper.IsFunc(typeof (Func<int, long, Guid>)));
             Assert.That(helper.IsFunc(typeof (Func<int, long, Guid, string>)));
             Assert.That(helper.IsFunc(typeof (Func<int, long, Guid, string, object>)));
+        }
+
+        [Test]
+        public void TestIsLazyFalse()
+        {
+            Assert.IsFalse(helper.IsLazy(typeof(Lazy<>)));
+            Assert.IsFalse(helper.IsLazy(typeof(Zzz<int>)));
+            Assert.IsFalse(helper.IsLazy(typeof(int)));
+            Assert.IsFalse(helper.IsLazy(typeof(Func<int>)));
+        }
+
+        [Test]
+        public void TestIsLazyTrue()
+        {
+            Assert.That(helper.IsLazy(typeof(Lazy<int>)));
+            Assert.That(helper.IsLazy(typeof(Lazy<object>)));
         }
     }
 }

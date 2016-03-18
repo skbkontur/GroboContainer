@@ -135,7 +135,9 @@ namespace GroboContainer.Impl.ClassCreation
 
         private void ProcessNonArray(ParameterInfo parameterInfo, GroboIL il, Type parameterType)
         {
-            if(funcHelper.IsFunc(parameterType))
+            if(funcHelper.IsLazy(parameterType))
+                ProcessLazyParameter(il, parameterType);
+            else if(funcHelper.IsFunc(parameterType))
                 ProcessFuncParameter(parameterInfo, il, parameterType);
             else
                 il.Call(getMethod.MakeGenericMethod(parameterType));
@@ -144,6 +146,11 @@ namespace GroboContainer.Impl.ClassCreation
         private void ProcessArray(GroboIL il, Type elementType)
         {
             il.Call(getAllMethod.MakeGenericMethod(elementType));
+        }
+
+        private void ProcessLazyParameter(GroboIL il, Type parameterType)
+        {
+            il.Call(funcHelper.GetBuildLazyMethodInfo(parameterType));
         }
 
         private void ProcessFuncParameter(ParameterInfo parameterInfo, GroboIL il, Type parameterType)

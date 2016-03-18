@@ -6,6 +6,7 @@ namespace GroboContainer.Impl.ClassCreation
 {
     public class FuncHelper : IFuncHelper
     {
+        private readonly MethodInfo buildLazyMethodInfo;
         private readonly MethodInfo buildGetFuncMethodInfo;
         private readonly IDictionary<int, MethodInfo> funcArgumentCountToMethodMap = new Dictionary<int, MethodInfo>();
         private readonly HashSet<Type> supportedFuncs = new HashSet<Type>();
@@ -26,13 +27,28 @@ namespace GroboContainer.Impl.ClassCreation
                             throw new InvalidOperationException("Duplicate method 'BuildGetFunc'");
                         buildGetFuncMethodInfo = info;
                         break;
+                    case "BuildLazy":
+                        if (buildLazyMethodInfo != null)
+                            throw new InvalidOperationException("Duplicate method 'BuildLazy'");
+                        buildLazyMethodInfo = info;
+                        break;
                 }
             }
+            if (buildLazyMethodInfo == null)
+                throw new MissingMethodException(type.ToString(), "BuildLazy");
             if (buildGetFuncMethodInfo == null)
                 throw new MissingMethodException(type.ToString(), "BuildGetFunc");
         }
 
         #region IFuncHelper Members
+
+        public MethodInfo GetBuildLazyMethodInfo(Type lazyType)
+        {
+            var genericArguments = lazyType.GetGenericArguments();
+            if (genericArguments.Length != 1)
+                throw new InvalidOperationException(string.Format("Invalid lazyType: {0}", lazyType.FullName));
+            return buildLazyMethodInfo.MakeGenericMethod(genericArguments);
+        }
 
         public MethodInfo GetBuildGetFuncMethodInfo(Type funcType)
         {
@@ -55,6 +71,11 @@ namespace GroboContainer.Impl.ClassCreation
                                                         "Функции создания с {0} аргументами на поддерживаются",
                                                         length - 1));
             return result.MakeGenericMethod(genericArguments);
+        }
+
+        public bool IsLazy(Type type)
+        {
+            return type.IsGenericType && !type.IsGenericTypeDefinition && type.GetGenericTypeDefinition() == typeof(Lazy<>);
         }
 
         public bool IsFunc(Type type)

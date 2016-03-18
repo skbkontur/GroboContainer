@@ -5,6 +5,7 @@ namespace GroboContainer.Impl.ClassCreation
 {
     public interface IFuncBuilder
     {
+        Lazy<T> BuildLazy<T>(IInjectionContext context);
         Func<T> BuildGetFunc<T>(IInjectionContext context);
         Func<T> BuildCreateFunc<T>(IInjectionContext context);
         Func<T1, T> BuildCreateFunc<T1, T>(IInjectionContext context);

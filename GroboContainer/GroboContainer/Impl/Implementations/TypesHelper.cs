@@ -20,17 +20,40 @@ namespace GroboContainer.Impl.Implementations
 			if (!abstractionType.IsGenericType)
 				return null;
 
-			var argumentsCount = candidate.GetGenericArguments().Length;
+			var candidateArguments = candidate.GetGenericArguments();
+			var argumentsCount = candidateArguments.Length;
 			var candidateInterfaces = abstractionType.IsInterface
 				? candidate.GetInterfaces()
 				: (abstractionType.IsAbstract ? candidate.ParentsOrSelf() : Enumerable.Repeat(candidate, 1));
+
 			foreach (var candidateInterface in candidateInterfaces)
 			{
 				var arguments = new Type[argumentsCount];
-				if (candidateInterface.MatchWith(abstractionType, arguments) && arguments.All(x => x != null))
+				if (candidateInterface.MatchWith(abstractionType, arguments) && ValidateGenericArguments(arguments, candidateArguments))
 					return candidate.MakeGenericType(arguments);
 			}
 			return null;
+		}
+
+		private static bool ValidateGenericArguments(Type[] arguments, Type[] candidateArguments)
+		{
+			if (arguments.Any(x => x == null))
+				return false;
+
+			for (var i = 0; i < candidateArguments.Length; i++)
+			{
+				var candidateArgument = candidateArguments[i];
+				var argument = arguments[i];
+
+				var candidateArgumentConstraints = candidateArgument.GetGenericParameterConstraints();
+				foreach (var candidateArgumentConstraint in candidateArgumentConstraints)
+				{
+					if (!candidateArgumentConstraint.IsAssignableFrom(argument))
+						return false;
+				}
+			}
+
+			return true;
 		}
 
 		public bool IsIgnoredImplementation(ICustomAttributeProvider provider)

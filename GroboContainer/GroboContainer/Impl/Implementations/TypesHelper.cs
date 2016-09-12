@@ -45,15 +45,64 @@ namespace GroboContainer.Impl.Implementations
 				var candidateArgument = candidateArguments[i];
 				var argument = arguments[i];
 
-				var candidateArgumentConstraints = candidateArgument.GetGenericParameterConstraints();
-				foreach (var candidateArgumentConstraint in candidateArgumentConstraints)
+				if (!ValidateGenericParameterAttributes(candidateArgument, argument) ||
+					!ValidateGenericParameterInheritance(candidateArgument, argument))
 				{
-					if (!candidateArgumentConstraint.IsAssignableFrom(argument))
-						return false;
+					return false;
 				}
 			}
 
 			return true;
+		}
+
+		private static bool ValidateGenericParameterAttributes(Type candidateArgument, Type argument)
+		{
+			var constraints = candidateArgument.GenericParameterAttributes & GenericParameterAttributes.SpecialConstraintMask;
+			if (constraints == GenericParameterAttributes.None)
+			{
+				return true;
+			}
+
+			if (ContainsConstraint(constraints, GenericParameterAttributes.ReferenceTypeConstraint))
+			{
+				if (!argument.IsClass)
+				{
+					return false;
+				}
+			}
+
+			if (ContainsConstraint(constraints, GenericParameterAttributes.NotNullableValueTypeConstraint))
+			{
+				if (!argument.IsValueType)
+				{
+					return false;
+				}
+			}
+
+			if (ContainsConstraint(constraints, GenericParameterAttributes.DefaultConstructorConstraint))
+			{
+				if (!argument.IsValueType)
+				{
+					var defaultConstructor = argument.GetConstructor(Type.EmptyTypes);
+					if (defaultConstructor == null)
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
+		private static bool ValidateGenericParameterInheritance(Type candidateArgument, Type argument)
+		{
+			var candidateArgumentConstraints = candidateArgument.GetGenericParameterConstraints();
+			return candidateArgumentConstraints.All(candidateArgumentConstraint => candidateArgumentConstraint.IsAssignableFrom(argument));
+		}
+
+		private static bool ContainsConstraint(GenericParameterAttributes constraints, GenericParameterAttributes element)
+		{
+			return (constraints & element) != 0;
 		}
 
 		public bool IsIgnoredImplementation(ICustomAttributeProvider provider)

@@ -63,7 +63,7 @@ namespace GroboContainer.Impl.Implementations
 				return true;
 			}
 
-			if (ContainsConstraint(constraints, GenericParameterAttributes.ReferenceTypeConstraint))
+			if (constraints.HasFlag(GenericParameterAttributes.ReferenceTypeConstraint))
 			{
 				if (!argument.IsClass)
 				{
@@ -71,7 +71,7 @@ namespace GroboContainer.Impl.Implementations
 				}
 			}
 
-			if (ContainsConstraint(constraints, GenericParameterAttributes.NotNullableValueTypeConstraint))
+			if (constraints.HasFlag(GenericParameterAttributes.NotNullableValueTypeConstraint))
 			{
 				if (!argument.IsValueType)
 				{
@@ -79,7 +79,7 @@ namespace GroboContainer.Impl.Implementations
 				}
 			}
 
-			if (ContainsConstraint(constraints, GenericParameterAttributes.DefaultConstructorConstraint))
+			if (constraints.HasFlag(GenericParameterAttributes.DefaultConstructorConstraint))
 			{
 				if (!argument.IsValueType)
 				{
@@ -98,11 +98,6 @@ namespace GroboContainer.Impl.Implementations
 		{
 			var candidateArgumentConstraints = candidateArgument.GetGenericParameterConstraints();
 			return candidateArgumentConstraints.All(candidateArgumentConstraint => candidateArgumentConstraint.IsAssignableFrom(argument));
-		}
-
-		private static bool ContainsConstraint(GenericParameterAttributes constraints, GenericParameterAttributes element)
-		{
-			return (constraints & element) != 0;
 		}
 
 		public bool IsIgnoredImplementation(ICustomAttributeProvider provider)

@@ -169,6 +169,7 @@
     <Compile Include="ImplTests\TestContext.cs" />
     <Compile Include="TypesHelperTests\TypesHelperAbstractGenericsTest.cs" />
     <Compile Include="TypesHelperTests\TypesHelperExpensions.cs" />
+    <Compile Include="TypesHelperTests\TypesHelperGenericConstraintsTest.cs" />
     <Compile Include="TypesHelperTests\TypesHelperGenericParametersTest.cs" />
     <Compile Include="TypesHelperTests\TypesHelperManyGenericsAbstractTest.cs" />
     <Compile Include="TypesHelperTests\TypesHelperManyGenericsTest.cs" />

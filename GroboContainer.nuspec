@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>GroboContainer</id>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <title>GroboContainer</title>
     <projectUrl>https://git.skbkontur.ru/codebases/grobocontainer</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -11,7 +11,7 @@
     <copyright>Copyright 2010-2016</copyright>
   </metadata>
 <files>
-  <file src="Assemblies\GroboContainer.pdb" target="lib\net40\" />
-  <file src="Assemblies\GroboContainer.dll" target="lib\net40\" />  
+  <file src="Output\GroboContainer.pdb" target="lib\net40\" />
+  <file src="Output\GroboContainer.dll" target="lib\net40\" />  
 </files>
 </package>

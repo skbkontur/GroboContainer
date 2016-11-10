@@ -174,7 +174,7 @@ namespace Tests.FunctionalTests
             var i1 = (C1) container.Get<I1>();
             var c2 = (C2) i1.i2;
             Assert.AreEqual(10, c2.a);
-            Assert.IsInstanceOfType(typeof (C3), c2.service);
+            Assert.IsInstanceOfType(typeof(C3), c2.service);
 
             var i1Another = (C1) container.Get<I1>();
             Assert.AreSame(c2, i1Another.i2);
@@ -188,6 +188,61 @@ namespace Tests.FunctionalTests
             C1TwoArgs.C1TwoArgsInner c2 = obj.createI2(1, true);
             Assert.AreEqual(true, c2.b);
             Assert.AreEqual(1, c2.a);
+        }
+
+        [Test]
+        public void TestDependecyIsReusedWithFactoryFunc()
+        {
+            var factory = container.Get<TestDependecyIsReusedWithFactoryFuncClass>();
+            var svc1 = factory.CreateService();
+            var svc2 = factory.CreateService();
+            Assert.AreNotSame(svc1, svc2);
+            Assert.AreSame(svc1.ReusedDependendecy, svc2.ReusedDependendecy);
+            Assert.AreNotEqual(svc1.Ticks, svc2.Ticks);
+        }
+
+
+        private interface IReusedDependendecy
+        {
+        }
+
+        private interface ICreatedService
+        {
+            IReusedDependendecy ReusedDependendecy { get; }
+            long Ticks { get; }
+        }
+
+
+        private class ReusedDependendecyImpl : IReusedDependendecy
+        {
+        }
+
+        private class CreatedServiceImpl : ICreatedService
+        {
+            public IReusedDependendecy ReusedDependendecy { get; private set; }
+            public long Ticks { get; private set; }
+
+            public CreatedServiceImpl(IReusedDependendecy reusedDependendecy, long ticks)
+            {
+                ReusedDependendecy = reusedDependendecy;
+                Ticks = ticks;
+            }
+        }
+
+        private class TestDependecyIsReusedWithFactoryFuncClass
+        {
+            private int ticks;
+            private readonly Func<long, ICreatedService> createService;
+
+            public TestDependecyIsReusedWithFactoryFuncClass(Func<long, ICreatedService> createService)
+            {
+                this.createService = createService;
+            }
+
+            public ICreatedService CreateService()
+            {
+                return createService(++ticks);
+            }
         }
     }
 }

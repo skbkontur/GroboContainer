@@ -2,8 +2,8 @@ bin
 obj
 [Dd]ebug
 [Rr]elease
+_ReSharper.*
 *.user
 *.suo
 GroboContainer.dll
 GroboContainer.pdb
-_ReSharper.GroboContainer

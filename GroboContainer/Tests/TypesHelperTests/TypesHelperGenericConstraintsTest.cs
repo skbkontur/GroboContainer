@@ -62,13 +62,20 @@ namespace Tests.TypesHelperTests
 
         public class ConstrainedImpl<T, TConstraint> : IGeneric<T, TConstraint>
             where T : TConstraint
-        { }
+        {
+        }
 
-        public class Constraint { }
+        public class Constraint
+        {
+        }
 
-        public class ConstrainedEntity : Constraint { }
+        public class ConstrainedEntity : Constraint
+        {
+        }
 
-        public class ConstrainedEntity2 : ConstrainedEntity { }
+        public class ConstrainedEntity2 : ConstrainedEntity
+        {
+        }
 
         public interface IGenericFromSelf<T> where T : IGenericFromSelf<T>
         {
@@ -82,15 +89,17 @@ namespace Tests.TypesHelperTests
         {
         }
 
-        public interface IGenericFromManyArguments<T1, T2, T3, T4> 
-            where T1 : T2 
+        public interface IGenericFromManyArguments<T1, T2, T3, T4>
+            where T1 : T2
             where T2 : T3, T4
-        { }
+        {
+        }
 
         public class GenericFromManyArguments<T1, T2, T3, T4> : IGenericFromManyArguments<T1, T2, T3, T4>
-            where T1 : T2 
+            where T1 : T2
             where T2 : T3, T4
-        { }
+        {
+        }
 
         [Test]
         public void TestConstraintOnGenericArgument()
@@ -100,23 +109,9 @@ namespace Tests.TypesHelperTests
         }
 
         [Test]
-        public void TestManyConstraintsOnGenericArguments()
-        {
-            CheckTrue<IGenericFromManyArguments<ConstrainedEntity2, ConstrainedEntity, Constraint, Constraint>,
-                GenericFromManyArguments<ConstrainedEntity2, ConstrainedEntity, Constraint, Constraint>>(
-                typeof(GenericFromManyArguments<,,,>));
-        }
-
-        [Test]
         public void TestConstraintOnGenericFromSelf()
         {
             CheckTrue<IGenericFromSelf<GenericArg>, GenericFromSelf<GenericArg>>(typeof(GenericFromSelf<>));
-        }
-
-        [Test]
-        public void TestHardConstraints()
-        {
-            CheckTrue<IGeneric<GenericArg, GenericFromSelf<GenericArg>>, ConstrainedImpl<GenericArg, GenericFromSelf<GenericArg>>>(typeof(ConstrainedImpl<,>));
         }
 
         [Test]
@@ -137,6 +132,21 @@ namespace Tests.TypesHelperTests
         {
             CheckTrue<IAbstract2<ConcreteEntity3>, GenericClassWithDefaultConstructorConstraint<ConcreteEntity3>>(
                 typeof(GenericClassWithDefaultConstructorConstraint<>));
+        }
+
+        [Test]
+        public void TestHardConstraints()
+        {
+            CheckTrue<IGeneric<GenericArg, GenericFromSelf<GenericArg>>,
+                ConstrainedImpl<GenericArg, GenericFromSelf<GenericArg>>>(typeof(ConstrainedImpl<,>));
+        }
+
+        [Test]
+        public void TestManyConstraintsOnGenericArguments()
+        {
+            CheckTrue<IGenericFromManyArguments<ConstrainedEntity2, ConstrainedEntity, Constraint, Constraint>,
+                GenericFromManyArguments<ConstrainedEntity2, ConstrainedEntity, Constraint, Constraint>>(
+                typeof(GenericFromManyArguments<,,,>));
         }
 
         [Test]

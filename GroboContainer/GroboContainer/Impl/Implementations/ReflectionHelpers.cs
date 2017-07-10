@@ -27,6 +27,14 @@ namespace GroboContainer.Impl.Implementations
 			}
 			if (pattern.IsGenericType ^ value.IsGenericType)
 				return false;
+		    if (pattern.IsArray && value.IsArray)
+		    {
+		        var type = pattern.GetElementType();
+		        var value_type = value.GetElementType();
+		        if (!MatchWith(type, value_type, matched))
+		            return false;
+		        return true;
+		    }
 			if (!pattern.IsGenericType)
 				return pattern == value;
 			if (pattern.GetGenericTypeDefinition() != value.GetGenericTypeDefinition())

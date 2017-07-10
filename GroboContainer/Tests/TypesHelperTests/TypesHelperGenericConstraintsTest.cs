@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using GroboContainer.Impl.Implementations;
+using GroboContainer.Infection;
 using NUnit.Framework;
 
 namespace Tests.TypesHelperTests
@@ -28,6 +32,27 @@ namespace Tests.TypesHelperTests
 		private class GenericClassWithReferenceTypeConstraint<T> : IAbstract2<T> where T: class {}
 
 		private class GenericClassWithDefaultConstructorConstraint<T> : IAbstract2<T> where T: new() {}
+
+        private class ArrayGenericClass<T> : IAbstract2<GenericClassWithReferenceTypeConstraint<T>[]> where T : class { }
+
+	    public interface IGeneric<T, TConstraint>
+	        where T : TConstraint
+	    {
+	    }
+
+	    public class ConstrainedImpl<T, TConstraint> : IGeneric<T, TConstraint>
+	        where T : TConstraint
+	    {
+	    }
+
+	    public class Constraint { }
+	    public class ConstrainedEntity : Constraint { }
+
+        public interface IGenericFromSelf<T> where T : IGenericFromSelf<T> { }
+
+        public class GenericFromSelf<T> : IGenericFromSelf<T> where T : GenericFromSelf<T> { }
+
+        public class GenericArg : GenericFromSelf<GenericArg> { }
 
 		[Test]
 		public void TestTypeConstraintFailed()
@@ -82,5 +107,23 @@ namespace Tests.TypesHelperTests
 		{
 			CheckTrue<IAbstract2<ConcreteEntity1>, GenericClassWithDefaultConstructorConstraint<ConcreteEntity1>>(typeof(GenericClassWithDefaultConstructorConstraint<>));
 		}
+
+	    [Test]
+	    public void TestResolveTypeOfArrayElement()
+	    {
+            CheckTrue<IAbstract2<GenericClassWithReferenceTypeConstraint<string>[]>, ArrayGenericClass<string>>(typeof(ArrayGenericClass<>));
+	    }
+
+	    [Test]
+	    public void TestConstraintOnGenericArgument()
+	    {
+	        CheckTrue<IGeneric<ConstrainedEntity, Constraint>, ConstrainedImpl<ConstrainedEntity, Constraint>>(typeof(ConstrainedImpl<,>));
+	    }
+
+	    [Test]
+	    public void TestConstraintOnGenericFromSelf()
+	    {
+	        CheckTrue<IGenericFromSelf<GenericArg>, GenericFromSelf<GenericArg>>(typeof(GenericFromSelf<>));
+	    }
 	}
 }

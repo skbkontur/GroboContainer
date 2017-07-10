@@ -29,75 +29,21 @@ namespace GroboContainer.Impl.Implementations
 			foreach (var candidateInterface in candidateInterfaces)
 			{
 				var arguments = new Type[argumentsCount];
-				if (candidateInterface.MatchWith(abstractionType, arguments) && ValidateGenericArguments(arguments, candidateArguments))
-					return candidate.MakeGenericType(arguments);
+			    if (candidateInterface.MatchWith(abstractionType, arguments))
+			    {
+                    Type genericType;
+                    try
+                    {
+                        genericType = candidate.MakeGenericType(arguments);
+                    }
+                    catch (Exception e)
+                    {
+                        continue;
+                    }
+                    return genericType;
+			    }
 			}
 			return null;
-		}
-
-		private static bool ValidateGenericArguments(Type[] arguments, Type[] candidateArguments)
-		{
-			if (arguments.Any(x => x == null))
-				return false;
-
-			for (var i = 0; i < candidateArguments.Length; i++)
-			{
-				var candidateArgument = candidateArguments[i];
-				var argument = arguments[i];
-
-				if (!ValidateGenericParameterAttributes(candidateArgument, argument) ||
-					!ValidateGenericParameterInheritance(candidateArgument, argument))
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		private static bool ValidateGenericParameterAttributes(Type candidateArgument, Type argument)
-		{
-			var constraints = candidateArgument.GenericParameterAttributes & GenericParameterAttributes.SpecialConstraintMask;
-			if (constraints == GenericParameterAttributes.None)
-			{
-				return true;
-			}
-
-			if (constraints.HasFlag(GenericParameterAttributes.ReferenceTypeConstraint))
-			{
-				if (!argument.IsClass)
-				{
-					return false;
-				}
-			}
-
-			if (constraints.HasFlag(GenericParameterAttributes.NotNullableValueTypeConstraint))
-			{
-				if (!argument.IsValueType)
-				{
-					return false;
-				}
-			}
-
-			if (constraints.HasFlag(GenericParameterAttributes.DefaultConstructorConstraint))
-			{
-				if (!argument.IsValueType)
-				{
-					var defaultConstructor = argument.GetConstructor(Type.EmptyTypes);
-					if (defaultConstructor == null)
-					{
-						return false;
-					}
-				}
-			}
-
-			return true;
-		}
-
-		private static bool ValidateGenericParameterInheritance(Type candidateArgument, Type argument)
-		{
-			var candidateArgumentConstraints = candidateArgument.GetGenericParameterConstraints();
-			return candidateArgumentConstraints.All(candidateArgumentConstraint => candidateArgumentConstraint.IsAssignableFrom(argument));
 		}
 
 		public bool IsIgnoredImplementation(ICustomAttributeProvider provider)

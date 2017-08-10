@@ -27,7 +27,7 @@ namespace Tests.TypesHelperTests
         {
             Expect.Once.On(mock)
                 .Method("TryGetImplementation")
-                .With(abstractionType, type)
+                .With(abstractionType, type, Is.Anything)
                 .Will(Return.Value(result));
         }
     }

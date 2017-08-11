@@ -5,32 +5,32 @@ using GroboContainer.Infection;
 
 namespace GroboContainer.Impl.Implementations
 {
-	public class TypesHelper : ITypesHelper
-	{
-		public Type TryGetImplementation(Type abstractionType, Type candidate)
-		{
-			if (candidate.IsAbstract || candidate.IsInterface) return null;
-			if (!candidate.ContainsGenericParameters)
-			{
-				if (abstractionType.IsAbstract || abstractionType.IsInterface)
-					return abstractionType.IsAssignableFrom(candidate) ? candidate : null;
-				return abstractionType == candidate ? candidate : null;
-			}
+    public class TypesHelper : ITypesHelper
+    {
+        public Type TryGetImplementation(Type abstractionType, Type candidate)
+        {
+            if (candidate.IsAbstract || candidate.IsInterface) return null;
+            if (!candidate.ContainsGenericParameters)
+            {
+                if (abstractionType.IsAbstract || abstractionType.IsInterface)
+                    return abstractionType.IsAssignableFrom(candidate) ? candidate : null;
+                return abstractionType == candidate ? candidate : null;
+            }
 
-			if (!abstractionType.IsGenericType)
-				return null;
+            if (!abstractionType.IsGenericType)
+                return null;
 
-			var candidateArguments = candidate.GetGenericArguments();
-			var argumentsCount = candidateArguments.Length;
-			var candidateInterfaces = abstractionType.IsInterface
-				? candidate.GetInterfaces()
-				: (abstractionType.IsAbstract ? candidate.ParentsOrSelf() : Enumerable.Repeat(candidate, 1));
+            var candidateArguments = candidate.GetGenericArguments();
+            var argumentsCount = candidateArguments.Length;
+            var candidateInterfaces = abstractionType.IsInterface
+                ? candidate.GetInterfaces()
+                : (abstractionType.IsAbstract ? candidate.ParentsOrSelf() : Enumerable.Repeat(candidate, 1));
 
-			foreach (var candidateInterface in candidateInterfaces)
-			{
-				var arguments = new Type[argumentsCount];
-			    if (candidateInterface.MatchWith(abstractionType, arguments))
-			    {
+            foreach (var candidateInterface in candidateInterfaces)
+            {
+                var arguments = new Type[argumentsCount];
+                if (candidateInterface.MatchWith(abstractionType, arguments))
+                {
                     Type genericType;
                     try
                     {
@@ -41,19 +41,19 @@ namespace GroboContainer.Impl.Implementations
                         continue;
                     }
                     return genericType;
-			    }
-			}
-			return null;
-		}
+                }
+            }
+            return null;
+        }
 
-		public bool IsIgnoredImplementation(ICustomAttributeProvider provider)
-		{
-			return provider.IsDefined(typeof (IgnoredImplementationAttribute), false);
-		}
+        public bool IsIgnoredImplementation(ICustomAttributeProvider provider)
+        {
+            return provider.IsDefined(typeof(IgnoredImplementationAttribute), false);
+        }
 
-		public bool IsIgnoredAbstraction(ICustomAttributeProvider provider)
-		{
-			return provider.IsDefined(typeof (IgnoredAbstractionAttribute), false);
-		}
-	}
+        public bool IsIgnoredAbstraction(ICustomAttributeProvider provider)
+        {
+            return provider.IsDefined(typeof(IgnoredAbstractionAttribute), false);
+        }
+    }
 }

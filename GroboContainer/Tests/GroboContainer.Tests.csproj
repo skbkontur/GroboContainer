@@ -106,6 +106,7 @@
     <Compile Include="FunctionalTests\ChildsTests\ChildContainerTest.cs" />
     <Compile Include="ChildContainerSupportTests\CompositeCollectionTest.cs" />
     <Compile Include="FunctionalTests\ChildsTests\ChildContainerWithContainersTest.cs" />
+    <Compile Include="FunctionalTests\GenericConstraintsTest.cs" />
     <Compile Include="FunctionalTests\GenericsConflict.cs" />
     <Compile Include="FunctionalTests\NestedGenerics.cs" />
     <Compile Include="FunctionalTests\ReuseImplementationsWithExplicitUseTypeConfigurationTest.cs" />
@@ -167,6 +168,8 @@
     <Compile Include="TestClassWrapperCreator.cs" />
     <Compile Include="TestConfiguration.cs" />
     <Compile Include="ImplTests\TestContext.cs" />
+    <Compile Include="TypesHelperTests\GenericConstraints\ResolveGenericFromConstraintsOnGenericArgumentsTest.cs" />
+    <Compile Include="TypesHelperTests\GenericConstraints\ResolveGenericFromConstraintsTest.cs" />
     <Compile Include="TypesHelperTests\TypesHelperAbstractGenericsTest.cs" />
     <Compile Include="TypesHelperTests\TypesHelperExpensions.cs" />
     <Compile Include="TypesHelperTests\GenericConstraints\CreateProperConstrainedGenericTest.cs" />

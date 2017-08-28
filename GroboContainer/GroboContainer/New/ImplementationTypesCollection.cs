@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GroboContainer.Core;
 using GroboContainer.Impl.Implementations;
 
 namespace GroboContainer.New
@@ -42,7 +43,7 @@ namespace GroboContainer.New
         {
             if (typesHelper.IsIgnoredImplementation(candidate))
                 return false;
-            Type implementation = typesHelper.TryGetImplementation(abstractionType, candidate);
+            Type implementation = typesHelper.TryGetImplementation(abstractionType, candidate, GetImplementationTypes);
             if (implementation != null)
                 implementationTypes.Add(implementation);
             return implementation == abstractionType;

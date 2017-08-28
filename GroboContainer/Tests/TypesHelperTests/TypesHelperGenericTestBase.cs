@@ -25,6 +25,12 @@ namespace Tests.TypesHelperTests
             Assert.AreEqual(typeof (TImpl), implementation);
         }
 
+        protected void CheckTrue<TInterface, TImpl>(Type type, Func<Type, Type[]> getImplementations) where TImpl : TInterface
+        {
+            Type implementation = helpers.TryGetImplementation(typeof(TInterface), type, getImplementations);
+            Assert.AreEqual(typeof(TImpl), implementation);
+        }
+
         protected void CheckFalse<TInterface>(Type type)
         {
             Assert.IsNull(helpers.TryGetImplementation(typeof (TInterface), type));

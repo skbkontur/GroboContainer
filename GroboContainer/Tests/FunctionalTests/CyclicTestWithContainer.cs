@@ -95,7 +95,7 @@ namespace Tests.FunctionalTests
             RunMethodWithException<ContainerException>(
                 () => container.Get<MyClass1>(),
                 exception =>
-                Assert.IsInstanceOfType(typeof (CyclicDependencyException), exception.InnerException.InnerException));
+                Assert.That(exception.InnerException.InnerException, Is.InstanceOf<CyclicDependencyException>()));
         }
 
         [Test]
@@ -104,7 +104,7 @@ namespace Tests.FunctionalTests
             RunMethodWithException<ContainerException>(
                 () => container.Get<I4>(),
                 exception =>
-                Assert.IsInstanceOfType(typeof (CyclicDependencyException), exception.InnerException.InnerException));
+                Assert.That(exception.InnerException.InnerException, Is.InstanceOf<CyclicDependencyException>()));
         }
 
         [Test]

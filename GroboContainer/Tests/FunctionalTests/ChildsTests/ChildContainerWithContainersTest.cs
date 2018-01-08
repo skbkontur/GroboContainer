@@ -11,8 +11,6 @@ namespace Tests.FunctionalTests.ChildsTests
 {
     public class ChildContainerWithContainersTest : TestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
@@ -26,8 +24,6 @@ namespace Tests.FunctionalTests.ChildsTests
             Debug.WriteLine(container.LastConstructionLog);
             base.TearDown();
         }
-
-        #endregion
 
         private IContainerSelector selector;
         private IContainer container;
@@ -49,14 +45,10 @@ namespace Tests.FunctionalTests.ChildsTests
                 container.Get<Rot2>();
             }
 
-            #region IRoot Members
-
             public void Dispose()
             {
                 disposed = true;
             }
-
-            #endregion
         }
 
         [ChildType]
@@ -84,14 +76,10 @@ namespace Tests.FunctionalTests.ChildsTests
                 child2 = container.Get<Child2>();
             }
 
-            #region IChild Members
-
             public void Dispose()
             {
                 disposed = true;
             }
-
-            #endregion
         }
 
         [Test]
@@ -102,8 +90,8 @@ namespace Tests.FunctionalTests.ChildsTests
                 () => childContainerA.Configurator.ForAbstraction<IRoot>().Fail());
             RunMethodWithException<InvalidOperationException>(
                 () => container.Configurator.ForAbstraction<IChild>().Fail());
-            Assert.IsInstanceOfType(typeof (Child), childContainerA.Get<IChild>());
-            Assert.IsInstanceOfType(typeof (Root), container.Get<IRoot>());
+            Assert.That(childContainerA.Get<IChild>(), Is.InstanceOf<Child>());
+            Assert.That(container.Get<IRoot>(), Is.InstanceOf<Root>());
         }
 
         [Test]
@@ -111,12 +99,12 @@ namespace Tests.FunctionalTests.ChildsTests
         {
             IContainer childContainerA = container.MakeChildContainer();
             var childA = childContainerA.Get<IChild>();
-            Assert.IsInstanceOfType(typeof (Child), childA);
+            Assert.That(childA, Is.InstanceOf<Child>());
             var childClassA = (Child) childA;
 
             IContainer childContainerB = container.MakeChildContainer();
             var childB = childContainerB.Get<IChild>();
-            Assert.IsInstanceOfType(typeof (Child), childB);
+            Assert.That(childB, Is.InstanceOf<Child>());
             var childClassB = (Child) childB;
 
             Assert.AreNotSame(childClassA, childClassB);

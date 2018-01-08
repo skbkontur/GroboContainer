@@ -32,21 +32,21 @@ namespace Tests.FunctionalTests
         public void TestGenericClass()
         {
             var genericInterface = container.Get<IGenericInterface2<int>>();
-            Assert.IsInstanceOfType(typeof (ImplementationGenericClass<int>), genericInterface);
+            Assert.That(genericInterface, Is.InstanceOf<ImplementationGenericClass<int>>());
         }
 
         [Test]
         public void TestGetGenericNonAbstract()
         {
-            Assert.IsInstanceOfType(typeof (GBase<int>), container.Get<GBase<int>>());
-            Assert.IsInstanceOfType(typeof (GImpl<int>), container.Get<GImpl<int>>());
+            Assert.That(container.Get<GBase<int>>(), Is.InstanceOf<GBase<int>>());
+            Assert.That(container.Get<GImpl<int>>(), Is.InstanceOf<GImpl<int>>());
         }
 
         [Test]
         public void TestSimpleGeneric()
         {
             var genericInterface = container.Get<IGenericInterface<int>>();
-            Assert.IsInstanceOfType(typeof (ImplementationClass), genericInterface);
+            Assert.That(genericInterface, Is.InstanceOf<ImplementationClass>());
         }
     }
 }

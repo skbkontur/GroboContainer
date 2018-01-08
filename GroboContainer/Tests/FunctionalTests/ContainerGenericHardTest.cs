@@ -35,15 +35,15 @@ namespace Tests.FunctionalTests
         public void TestGet()
         {
             var @interface = container.Get<IGenericInterface<int, string, long, Guid>>();
-            Assert.IsInstanceOfType(typeof (GenericClassOneArg<long>), @interface);
+            Assert.That(@interface, Is.InstanceOf<GenericClassOneArg<long>>());
         }
 
         [Test]
         public void TestGetWithDependency()
         {
             var @class = container.Get<SimpleClass<long>>();
-            Assert.IsInstanceOfType(typeof (SimpleClass<long>), @class);
-            Assert.IsInstanceOfType(typeof (GenericClassOneArg<long>), @class.interf);
+            Assert.That(@class, Is.InstanceOf<SimpleClass<long>>());
+            Assert.That(@class.interf, Is.InstanceOf<GenericClassOneArg<long>>());
         }
     }
 }

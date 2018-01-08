@@ -22,8 +22,7 @@ namespace Tests.ChildContainerSupportTests
             var compositeContainerContext = new CompositeContainerContext(
                 new ContainerConfiguration(GetType().Assembly), null,
                 containerSelector);
-            Assert.IsInstanceOfType(typeof (CompositeCollection),
-                                    compositeContainerContext.AbstractionConfigurationCollection);
+            Assert.That(compositeContainerContext.AbstractionConfigurationCollection, Is.InstanceOf<CompositeCollection>());
 
             IContainerContext childContextA = compositeContainerContext.MakeChildContext();
             IClassFactory factoryFromA = childContextA.AbstractionConfigurationCollection.Get(typeof (CChild)).

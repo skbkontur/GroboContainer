@@ -7,15 +7,11 @@ namespace Tests.NewTests
 {
     public class ImplementationConfigurationCacheTest : TestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
             implementationCache = new ImplementationConfigurationCache();
         }
-
-        #endregion
 
         private IImplementationConfigurationCache implementationCache;
 
@@ -24,7 +20,7 @@ namespace Tests.NewTests
         {
             var implementation = new Implementation(typeof (int));
             IImplementationConfiguration cfg1 = implementationCache.GetOrCreate(implementation);
-            Assert.IsInstanceOfType(typeof (AutoImplementationConfiguration), cfg1);
+            Assert.That(cfg1, Is.InstanceOf<AutoImplementationConfiguration>());
             Assert.AreEqual(typeof (int), cfg1.ObjectType);
 
             Assert.AreSame(cfg1, implementationCache.GetOrCreate(implementation));

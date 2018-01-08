@@ -5,15 +5,11 @@ namespace Tests.NewTests
 {
     public class ImplementationCacheTest : TestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
             implementationCache = new ImplementationCache();
         }
-
-        #endregion
 
         private ImplementationCache implementationCache;
 
@@ -21,7 +17,7 @@ namespace Tests.NewTests
         public void TestCacheWorks()
         {
             IImplementation implementation = implementationCache.GetOrCreate(typeof (int));
-            Assert.IsInstanceOfType(typeof (Implementation), implementation);
+            Assert.That(implementation, Is.InstanceOf<Implementation>());
             Assert.AreEqual(typeof (int), implementation.ObjectType);
 
             Assert.AreSame(implementation, implementationCache.GetOrCreate(typeof (int)));

@@ -127,25 +127,22 @@ namespace Tests.FunctionalTests
         [Test]
         public void TestChildContainersDisabled()
         {
-            RunMethodWithException<NotSupportedException>(() =>
-                                                          container.MakeChildContainer());
+            RunMethodWithException<NotSupportedException>(() => container.MakeChildContainer());
         }
 
         [Test]
         public void TestConstructorAgruments()
         {
             var instance = container.Get<ClassWithArguments>();
-            Assert.IsInstanceOfType(typeof (ClassWithArguments), instance);
-            Assert.IsInstanceOfType(typeof (ClassWithoutArguments), instance.Dependency);
+            Assert.That(instance, Is.InstanceOf<ClassWithArguments>());
+            Assert.That(instance.Dependency, Is.InstanceOf<ClassWithoutArguments>());
         }
 
         [Test]
         public void TestErrorManyImplementations()
         {
-            RunFail<ManyImplementationsException>(() => container.Get<IInterfaceManyImpls>(),
-                                                  typeof (IInterfaceManyImpls).Name);
+            RunFail<ManyImplementationsException>(() => container.Get<IInterfaceManyImpls>(), typeof (IInterfaceManyImpls).Name);
         }
-
 
         [Test]
         public void TestFuncDependecy()
@@ -225,8 +222,8 @@ namespace Tests.FunctionalTests
         [Test]
         public void TestGetNonAbstract()
         {
-            Assert.IsInstanceOfType(typeof (Base), container.Get<Base>());
-            Assert.IsInstanceOfType(typeof (Impl), container.Get<Impl>());
+            Assert.That(container.Get<Base>(), Is.InstanceOf<Base>());
+            Assert.That(container.Get<Impl>(), Is.InstanceOf<Impl>());
         }
 
         [Test]
@@ -234,7 +231,7 @@ namespace Tests.FunctionalTests
         {
             var instance1 = container.Get<I1>();
             var instance2 = container.Get<I2>();
-            Assert.IsInstanceOfType(typeof (C12), instance1);
+            Assert.That(instance1, Is.InstanceOf<C12>());
             Assert.AreSame(instance1, instance2);
         }
 
@@ -242,7 +239,7 @@ namespace Tests.FunctionalTests
         public void TestSimple()
         {
             var instance = container.Get<ClassWithoutArguments>();
-            Assert.IsInstanceOfType(typeof (ClassWithoutArguments), instance);
+            Assert.That(instance, Is.InstanceOf<ClassWithoutArguments>());
         }
 
         [Test]
@@ -265,7 +262,7 @@ namespace Tests.FunctionalTests
         public void TestWithInterface()
         {
             var instance = container.Get<IInterface>();
-            Assert.IsInstanceOfType(typeof (ClassWithoutArguments), instance);
+            Assert.That(instance, Is.InstanceOf<ClassWithoutArguments>());
         }
     }
 }

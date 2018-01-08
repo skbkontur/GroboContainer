@@ -6,16 +6,14 @@ using GroboContainer.Impl.Exceptions;
 using GroboContainer.Impl.Injection;
 using GroboContainer.Impl.Logging;
 using NUnit.Framework;
-using TestCore;
 using Tests.ImplTests;
 using Tests.InjectionTests;
+using Tests.NMockHelpers;
 
 namespace Tests.CoreTests
 {
     public class ContainerTest : CoreTestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
@@ -26,8 +24,6 @@ namespace Tests.CoreTests
             log = NewMock<ILog>();
             container = new Container(internalContainer, holder, log);
         }
-
-        #endregion
 
         private IContainerConfiguration configuration;
         private Container container;

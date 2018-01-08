@@ -2,8 +2,8 @@ using GroboContainer.Impl;
 using GroboContainer.Impl.Contexts;
 using GroboContainer.Impl.Injection;
 using NUnit.Framework;
-using TestCore;
 using Rhino.Mocks;
+using Tests.NMockHelpers;
 
 namespace Tests.ContextsTests
 {
@@ -11,10 +11,10 @@ namespace Tests.ContextsTests
     {
         protected static void CheckGet(IContextHolder holder)
         {
-            var container =GetMock<IInternalContainer>();
+            var container = GetMock<IInternalContainer>();
             container.Expect(c => c.CreateNewLog()).Return(null);
-            IInjectionContext context = holder.GetContext(container);
-            Assert.IsInstanceOfType(typeof (InjectionContext), context);
+            var context = holder.GetContext(container);
+            Assert.That(context, Is.InstanceOf<InjectionContext>());
             container.Expect(c => c.CreateNewLog()).Return(null);
             ((InjectionContext) context).AssertEqualsTo(new InjectionContext(container));
         }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using GroboContainer.Impl;
 using NUnit.Framework;
-using TestCore;
 
 namespace Tests.FunctionalTests
 {

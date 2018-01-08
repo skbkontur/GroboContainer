@@ -3,7 +3,6 @@ using System.Reflection;
 using GroboContainer.Impl.Implementations;
 using GroboContainer.Infection;
 using NUnit.Framework;
-using TestCore;
 
 namespace Tests.TypesHelperTests
 {

@@ -1,7 +1,6 @@
 using System;
 using GroboContainer.Impl.Implementations;
 using NUnit.Framework;
-using TestCore;
 
 namespace Tests.TypesHelperTests
 {

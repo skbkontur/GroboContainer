@@ -6,16 +6,14 @@ using GroboContainer.Impl.Contexts;
 using GroboContainer.Impl.Injection;
 using GroboContainer.Impl.Logging;
 using NUnit.Framework;
-using TestCore;
 using Tests.ImplTests;
 using Rhino.Mocks;
+using Tests.NMockHelpers;
 
 namespace Tests.InjectionTests
 {
     public class InjectionContextTest : CoreTestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
@@ -24,8 +22,6 @@ namespace Tests.InjectionTests
             holder = null;
             injectionContext = new InjectionContext(internalContainer, log, GetHolder);
         }
-
-        #endregion
 
         private IContextHolder GetHolder(IInjectionContext context)
         {
@@ -65,7 +61,7 @@ namespace Tests.InjectionTests
             IContextHolder contextHolder = holder;
             Assert.IsNotNull(contextHolder);
 
-            Assert.IsInstanceOfType(typeof (Container), returnedContainer);
+            Assert.That(returnedContainer, Is.InstanceOf<Container>());
             ((Container) returnedContainer).AssertEqualsTo(new Container(internalContainer, holder, log));
 
             Assert.AreSame(returnedContainer, injectionContext.Container);
@@ -136,7 +132,7 @@ namespace Tests.InjectionTests
             var container = GetMock<IInternalContainer>();
             container.Expect(c => c.CreateNewLog()).Return(new Log("root"));
             injectionContext = new InjectionContext(container);
-            Assert.IsInstanceOfType(typeof (Container), injectionContext.Container);
+            Assert.That(injectionContext.Container, Is.InstanceOf<Container>());
             ((Container) injectionContext.Container).AssertEqualsTo(new Container(container,
                                                                                   new ContextHolder(injectionContext,
                                                                                                     Thread.CurrentThread

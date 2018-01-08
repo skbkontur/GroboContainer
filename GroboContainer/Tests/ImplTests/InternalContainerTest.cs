@@ -11,7 +11,6 @@ using GroboContainer.Impl.Injection;
 using GroboContainer.New;
 using NUnit.Framework;
 using Rhino.Mocks;
-using TestCore;
 
 namespace Tests.ImplTests
 {

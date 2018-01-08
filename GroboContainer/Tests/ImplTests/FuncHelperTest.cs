@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using GroboContainer.Impl.ClassCreation;
 using NUnit.Framework;
-using TestCore;
 
 namespace Tests.ImplTests
 {

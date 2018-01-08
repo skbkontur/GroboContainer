@@ -1,9 +1,8 @@
 using System;
 using GroboContainer.Impl.Implementations;
 using GroboContainer.Impl.Injection;
+using NMock2;
 using NUnit.Framework;
-using TestCore;
-using TestCore.TestingHelpers;
 
 namespace Tests.ImplTests.ImplementationTests
 {
@@ -14,7 +13,7 @@ namespace Tests.ImplTests.ImplementationTests
         {
             var disposable = NewMock<IDisposable>();
             var configuration = new InstanceImplementationConfiguration(new TestClassWrapperCreator(), disposable);
-            disposable.ExpectDispose();
+            Expect.Once.On(disposable).Method("Dispose");
             configuration.DisposeInstance();
         }
 

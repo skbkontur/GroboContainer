@@ -3,7 +3,6 @@ using System.Diagnostics;
 using GroboContainer.Core;
 using GroboContainer.Impl;
 using NUnit.Framework;
-using TestCore;
 
 namespace Tests.FunctionalTests
 {

@@ -8,7 +8,6 @@ using GroboContainer.Impl.Logging;
 using NUnit.Framework;
 using Tests.ImplTests;
 using Tests.InjectionTests;
-using Tests.NMockHelpers;
 
 namespace Tests.CoreTests
 {
@@ -115,13 +114,6 @@ namespace Tests.CoreTests
             context.ExpectGetLog(log);
             internalContainer.ExpectCreate(context, "s", 1);
             Assert.AreEqual(1, container.Create<string, int>("s"));
-        }
-
-        [Test]
-        public void TestDefaultConstructor()
-        {
-            container = new Container(configuration);
-            container.AssertEqualsTo(new Container(new InternalContainer(configuration, null), new NoContextHolder(), log));
         }
 
         [Test]

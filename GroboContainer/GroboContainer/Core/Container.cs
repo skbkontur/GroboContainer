@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -14,7 +13,7 @@ using GroboContainer.Impl.Logging;
 
 namespace GroboContainer.Core
 {
-    public class Container : IContainer, IContainerForFuncBuilder
+    public class Container : IContainer, IContainerForFuncBuilder, IContainerInternals
     {
         private readonly IContextHolder holder;
         private readonly IInternalContainer internalContainer;
@@ -36,25 +35,21 @@ namespace GroboContainer.Core
         }
 
         public Container(IContainerConfiguration configuration)
-            :
-                this(configuration, null)
+            : this(configuration, null)
         {
         }
+
+        IContextHolder IContainerInternals.ContextHolder => holder;
 
         #region IContainer Members
 
-        public string Name {
-            get { return internalContainer.Name; }
-        }
+        public string Name => internalContainer.Name;
 
-        public IContainerConfigurator Configurator
-        {
-            get { return internalContainer.Configurator; }
-        }
+        public IContainerConfigurator Configurator => internalContainer.Configurator;
 
         public T Get<T>()
         {
-            IInjectionContext context = GetContext();
+            var context = GetContext();
             try
             {
                 return internalContainer.Get<T>(context);
@@ -67,7 +62,7 @@ namespace GroboContainer.Core
 
         public object Get(Type type)
         {
-            IInjectionContext context = GetContext();
+            var context = GetContext();
             try
             {
                 return internalContainer.Get(type, context);
@@ -80,7 +75,7 @@ namespace GroboContainer.Core
 
         public T[] GetAll<T>()
         {
-            IInjectionContext context = GetContext();
+            var context = GetContext();
             try
             {
                 return internalContainer.GetAll<T>(context);
@@ -93,7 +88,7 @@ namespace GroboContainer.Core
 
         public object[] GetAll(Type type)
         {
-            IInjectionContext context = GetContext();
+            var context = GetContext();
             try
             {
                 return internalContainer.GetAll(type, context);
@@ -106,7 +101,7 @@ namespace GroboContainer.Core
 
         public T Create<T>()
         {
-            IInjectionContext context = GetContext();
+            var context = GetContext();
             try
             {
                 return internalContainer.Create<T>(context);
@@ -119,7 +114,7 @@ namespace GroboContainer.Core
 
         public T Create<T1, T>(T1 arg1)
         {
-            IInjectionContext context = GetContext();
+            var context = GetContext();
             try
             {
                 return internalContainer.Create<T1, T>(context, arg1);
@@ -132,7 +127,7 @@ namespace GroboContainer.Core
 
         public T Create<T1, T2, T>(T1 arg1, T2 arg2)
         {
-            IInjectionContext context = GetContext();
+            var context = GetContext();
             try
             {
                 return internalContainer.Create<T1, T2, T>(context, arg1, arg2);
@@ -145,7 +140,7 @@ namespace GroboContainer.Core
 
         public T Create<T1, T2, T3, T>(T1 arg1, T2 arg2, T3 arg3)
         {
-            IInjectionContext context = GetContext();
+            var context = GetContext();
             try
             {
                 return internalContainer.Create<T1, T2, T3, T>(context, arg1, arg2, arg3);
@@ -158,7 +153,7 @@ namespace GroboContainer.Core
 
         public T Create<T1, T2, T3, T4, T>(T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         {
-            IInjectionContext context = GetContext();
+            var context = GetContext();
             try
             {
                 return internalContainer.Create<T1, T2, T3, T4, T>(context, arg1, arg2, arg3, arg4);
@@ -171,8 +166,7 @@ namespace GroboContainer.Core
 
         public object Create(Type abstractionType)
         {
-            //return Create(abstractionType, Type.EmptyTypes, new object[0]);
-            IInjectionContext context = GetContext();
+            var context = GetContext();
             try
             {
                 return internalContainer.Create(abstractionType, context);
@@ -185,7 +179,7 @@ namespace GroboContainer.Core
 
         public object Create(Type abstractionType, Type[] parameterTypes, object[] parameters)
         {
-            IInjectionContext context = GetContext();
+            var context = GetContext();
             try
             {
                 return internalContainer.Create(abstractionType, context, parameterTypes, parameters);
@@ -205,7 +199,7 @@ namespace GroboContainer.Core
         {
             get
             {
-                ILog log = lastConstructedLog;
+                var log = lastConstructedLog;
                 return (log != null ? log.GetLog() : "<no>");
             }
         }
@@ -254,8 +248,7 @@ namespace GroboContainer.Core
         {
             return internalContainer.GetCreationFunc(funcType, type =>
             {
-                MethodInfo methodInfo;
-                if (!type.IsGenericType || !getCreationFuncMethods.TryGetValue(type.GetGenericTypeDefinition(), out methodInfo))
+                if (!type.IsGenericType || !getCreationFuncMethods.TryGetValue(type.GetGenericTypeDefinition(), out var methodInfo))
                     throw new InvalidOperationException(string.Format("Тип {0} не поддерживаются в качестве функции создания", type));
                 return (Delegate)methodInfo.MakeGenericMethod(type.GetGenericArguments()).Invoke(this, new object[0]);
             });
@@ -263,7 +256,7 @@ namespace GroboContainer.Core
 
         public void Dispose()
         {
-            IInjectionContext context = holder.GetContext(internalContainer);
+            var context = holder.GetContext(internalContainer);
             context.InternalContainer.CallDispose();
         }
 
@@ -319,7 +312,7 @@ namespace GroboContainer.Core
 
         private IInjectionContext GetContext()
         {
-            IInjectionContext context = holder.GetContext(internalContainer);
+            var context = holder.GetContext(internalContainer);
             lastConstructedLog = context.GetLog();
             return context;
         }

@@ -1,9 +1,9 @@
+using System.Threading;
 using GroboContainer.Impl;
 using GroboContainer.Impl.Contexts;
 using GroboContainer.Impl.Injection;
 using NUnit.Framework;
 using Rhino.Mocks;
-using Tests.NMockHelpers;
 
 namespace Tests.ContextsTests
 {
@@ -15,8 +15,7 @@ namespace Tests.ContextsTests
             container.Expect(c => c.CreateNewLog()).Return(null);
             var context = holder.GetContext(container);
             Assert.That(context, Is.InstanceOf<InjectionContext>());
-            container.Expect(c => c.CreateNewLog()).Return(null);
-            ((InjectionContext) context).AssertEqualsTo(new InjectionContext(container));
+            Assert.That(((InjectionContext)context).ThreadId, Is.EqualTo(Thread.CurrentThread.ManagedThreadId));
         }
     }
 }

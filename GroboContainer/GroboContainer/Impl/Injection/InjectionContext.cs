@@ -11,20 +11,18 @@ namespace GroboContainer.Impl.Injection
     {
         private readonly HashSet<Type> constructed = new HashSet<Type>();
         private readonly Func<IInjectionContext, IContextHolder> createHolder;
-        private readonly IInternalContainer internalContainer;
         private readonly object lockObject = new object();
         private readonly ILog log;
-        private readonly int threadId;
         private volatile Container container;
         private volatile IContextHolder contextHolder;
 
         internal InjectionContext(IInternalContainer internalContainer, ILog log,
                                   Func<IInjectionContext, IContextHolder> createHolder)
         {
-            this.internalContainer = internalContainer;
+            InternalContainer = internalContainer;
             this.log = log;
             this.createHolder = createHolder;
-            threadId = Thread.CurrentThread.ManagedThreadId;
+            ThreadId = Thread.CurrentThread.ManagedThreadId;
         }
 
         public InjectionContext(IInternalContainer internalContainer)
@@ -33,12 +31,11 @@ namespace GroboContainer.Impl.Injection
             createHolder = CreateHolder;
         }
 
+        public int ThreadId { get; }
+
         #region IInjectionContext Members
 
-        public IContainerForFuncBuilder ContainerForFunc
-        {
-            get { return GetContainer(); }
-        }
+        public IContainerForFuncBuilder ContainerForFunc => GetContainer();
 
         public void BeginConstruct(Type classType)
         {
@@ -97,15 +94,9 @@ namespace GroboContainer.Impl.Injection
             return log;
         }
 
-        public IContainer Container
-        {
-            get { return GetContainer(); }
-        }
+        public IContainer Container => GetContainer();
 
-        public IInternalContainer InternalContainer
-        {
-            get { return internalContainer; }
-        }
+        public IInternalContainer InternalContainer { get; }
 
         #endregion
 
@@ -115,14 +106,14 @@ namespace GroboContainer.Impl.Injection
             if (container == null)
             {
                 contextHolder = createHolder(this);
-                container = new Container(internalContainer, contextHolder, log);
+                container = new Container(InternalContainer, contextHolder, log);
             }
             return container;
         }
 
         private IContextHolder CreateHolder(IInjectionContext context)
         {
-            return new ContextHolder(context, threadId);
+            return new ContextHolder(context, ThreadId);
         }
 
         private void Begin(Type type)

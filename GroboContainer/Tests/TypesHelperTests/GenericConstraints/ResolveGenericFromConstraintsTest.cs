@@ -3,8 +3,7 @@ using NUnit.Framework;
 
 namespace Tests.TypesHelperTests.GenericConstraints
 {
-    [TestFixture]
-    class ResolveGenericFromConstraintsTest : TypesHelperGenericTestBase
+    public class ResolveGenericFromConstraintsTest : TypesHelperGenericTestBase
     {
         // Добавить тест такой, чтобы T1 наследовался от нескольких интерфейсов, а может и ещё некоторые constraint-ы на него навесить. И сделать так, чтобы только один класс подошёл.
         public interface IEntity

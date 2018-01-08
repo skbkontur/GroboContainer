@@ -7,15 +7,11 @@ namespace Tests.TypesHelperTests
 {
     public abstract class TypesHelperGenericTestBase : CoreTestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
             helpers = new TypesHelper();
         }
-
-        #endregion
 
         private ITypesHelper helpers;
 

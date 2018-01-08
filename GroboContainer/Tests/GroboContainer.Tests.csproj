@@ -168,11 +168,11 @@
     <Compile Include="TestClassWrapperCreator.cs" />
     <Compile Include="TestConfiguration.cs" />
     <Compile Include="ImplTests\TestContext.cs" />
+    <Compile Include="TypesHelperTests\GenericConstraints\CreateProperConstrainedGenericTest.cs" />
     <Compile Include="TypesHelperTests\GenericConstraints\ResolveGenericFromConstraintsOnGenericArgumentsTest.cs" />
     <Compile Include="TypesHelperTests\GenericConstraints\ResolveGenericFromConstraintsTest.cs" />
     <Compile Include="TypesHelperTests\TypesHelperAbstractGenericsTest.cs" />
     <Compile Include="TypesHelperTests\TypesHelperExpensions.cs" />
-    <Compile Include="TypesHelperTests\GenericConstraints\CreateProperConstrainedGenericTest.cs" />
     <Compile Include="TypesHelperTests\TypesHelperGenericParametersTest.cs" />
     <Compile Include="TypesHelperTests\TypesHelperManyGenericsAbstractTest.cs" />
     <Compile Include="TypesHelperTests\TypesHelperManyGenericsTest.cs" />

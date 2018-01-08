@@ -3,7 +3,6 @@ using NUnit.Framework;
 
 namespace Tests.TypesHelperTests.GenericConstraints
 {
-    [TestFixture]
     public class ResolveGenericFromConstraintsOnGenericArgumentsTest : TypesHelperGenericTestBase
     {
         private interface I<T>

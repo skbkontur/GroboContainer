@@ -6,7 +6,6 @@ using GroboContainer.Impl.Exceptions;
 using GroboContainer.Impl.Injection;
 using GroboContainer.Impl.Logging;
 using NUnit.Framework;
-using TestCore;
 using Tests.ImplTests;
 using Tests.InjectionTests;
 
@@ -14,8 +13,6 @@ namespace Tests.CoreTests
 {
     public class ContainerTest : CoreTestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
@@ -26,8 +23,6 @@ namespace Tests.CoreTests
             log = NewMock<ILog>();
             container = new Container(internalContainer, holder, log);
         }
-
-        #endregion
 
         private IContainerConfiguration configuration;
         private Container container;
@@ -119,13 +114,6 @@ namespace Tests.CoreTests
             context.ExpectGetLog(log);
             internalContainer.ExpectCreate(context, "s", 1);
             Assert.AreEqual(1, container.Create<string, int>("s"));
-        }
-
-        [Test]
-        public void TestDefaultConstructor()
-        {
-            container = new Container(configuration);
-            container.AssertEqualsTo(new Container(new InternalContainer(configuration, null), new NoContextHolder(), log));
         }
 
         [Test]

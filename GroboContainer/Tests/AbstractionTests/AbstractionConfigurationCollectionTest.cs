@@ -4,7 +4,6 @@ using GroboContainer.Impl.Abstractions.AutoConfiguration;
 using GroboContainer.Impl.Implementations;
 using NUnit.Framework;
 using Rhino.Mocks;
-using TestCore;
 
 namespace Tests.AbstractionTests
 {

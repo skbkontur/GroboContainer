@@ -56,10 +56,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Assemblies\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="NMock2, Version=1.2.3262.29872, Culture=neutral, PublicKeyToken=cf53a760d95f4c33, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Assemblies\NMock2.dll</HintPath>
@@ -76,18 +72,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="WebPersonal.TestCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Assemblies\WebPersonal.TestCore.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractionTests\AbstractionKeyTest.cs" />
@@ -101,7 +86,10 @@
     <Compile Include="ContextsTests\ContextHolderTest.cs" />
     <Compile Include="ContextsTests\ContextTestBase.cs" />
     <Compile Include="ContextsTests\NoContextHolderTest.cs" />
+    <Compile Include="CoreTestBase.cs" />
     <Compile Include="CoreTests\ContainerTest.cs" />
+    <Compile Include="FieldsCleaner.cs" />
+    <Compile Include="FieldsCleanerCache.cs" />
     <Compile Include="FunctionalTests\ChildsTests\ChildContainerBugsTest.cs" />
     <Compile Include="FunctionalTests\ChildsTests\ChildContainerTest.cs" />
     <Compile Include="ChildContainerSupportTests\CompositeCollectionTest.cs" />
@@ -137,6 +125,7 @@
     <Compile Include="ImplTests\ImplementationTests\ImplementationTest.cs" />
     <Compile Include="ImplTests\ImplementationTests\InstanceImplementationConfigurationTest.cs" />
     <Compile Include="LoggingTests\ShortLogTest.cs" />
+    <Compile Include="MockRepositoryWrapper.cs" />
     <Compile Include="NewTests\AbstractionCollectionTest.cs" />
     <Compile Include="NewTests\AutoImplementationConfigurationTest.cs" />
     <Compile Include="NewTests\CreationContextTest.cs" />

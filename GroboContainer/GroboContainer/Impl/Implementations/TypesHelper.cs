@@ -56,7 +56,7 @@ namespace GroboContainer.Impl.Implementations
                     {
                         genericType = candidate.MakeGenericType(arguments);
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         continue;
                     }

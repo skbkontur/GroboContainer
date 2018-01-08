@@ -6,7 +6,6 @@ using GroboContainer.Impl.Contexts;
 using GroboContainer.Impl.Injection;
 using GroboContainer.Impl.Logging;
 using NUnit.Framework;
-using TestCore;
 using Tests.ImplTests;
 using Rhino.Mocks;
 
@@ -14,8 +13,6 @@ namespace Tests.InjectionTests
 {
     public class InjectionContextTest : CoreTestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
@@ -25,14 +22,10 @@ namespace Tests.InjectionTests
             injectionContext = new InjectionContext(internalContainer, log, GetHolder);
         }
 
-        #endregion
-
         private IContextHolder GetHolder(IInjectionContext context)
         {
-            Assert.AreSame(injectionContext,
-                           context);
-            Assert.IsNull(holder,
-                          "duplicate call");
+            Assert.AreSame(injectionContext, context);
+            Assert.IsNull(holder, "duplicate call");
             holder = NewMock<IContextHolder>();
             return holder;
         }
@@ -61,13 +54,10 @@ namespace Tests.InjectionTests
         public void TestGetContainers()
         {
             Assert.IsNull(holder);
-            IContainer returnedContainer = injectionContext.Container;
-            IContextHolder contextHolder = holder;
+            var returnedContainer = injectionContext.Container;
+            var contextHolder = holder;
             Assert.IsNotNull(contextHolder);
-
-            Assert.IsInstanceOfType(typeof (Container), returnedContainer);
-            ((Container) returnedContainer).AssertEqualsTo(new Container(internalContainer, holder, log));
-
+            Assert.That(returnedContainer, Is.InstanceOf<Container>());
             Assert.AreSame(returnedContainer, injectionContext.Container);
             Assert.AreSame(contextHolder, holder);
         }
@@ -136,12 +126,8 @@ namespace Tests.InjectionTests
             var container = GetMock<IInternalContainer>();
             container.Expect(c => c.CreateNewLog()).Return(new Log("root"));
             injectionContext = new InjectionContext(container);
-            Assert.IsInstanceOfType(typeof (Container), injectionContext.Container);
-            ((Container) injectionContext.Container).AssertEqualsTo(new Container(container,
-                                                                                  new ContextHolder(injectionContext,
-                                                                                                    Thread.CurrentThread
-                                                                                                        .ManagedThreadId),
-                                                                                  new Log("root")));
+            Assert.That(injectionContext.Container, Is.InstanceOf<Container>());
+            Assert.That(((ContextHolder)((IContainerInternals)injectionContext.Container).ContextHolder).OwnerThreadId, Is.EqualTo(Thread.CurrentThread.ManagedThreadId));
         }
 
         [Test]

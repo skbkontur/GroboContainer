@@ -24,7 +24,7 @@ namespace GroboContainer.Impl.ClassCreation
                 context.BeginConstruct(constructedType);
                 return creatorFunc(context.InternalContainer, context, args);
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 context.Crash();
                 throw;

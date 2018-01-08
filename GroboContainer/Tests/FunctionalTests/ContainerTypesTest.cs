@@ -1,6 +1,5 @@
 using GroboContainer.Core;
 using NUnit.Framework;
-using TestCore;
 
 namespace Tests.FunctionalTests
 {

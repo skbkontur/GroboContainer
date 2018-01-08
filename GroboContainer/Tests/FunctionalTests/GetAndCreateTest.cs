@@ -2,22 +2,17 @@ using System;
 using GroboContainer.Core;
 using GroboContainer.Impl;
 using NUnit.Framework;
-using TestCore;
 
 namespace Tests.FunctionalTests
 {
     public class GetAndCreateTest : CoreTestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
             configuration = new ContainerConfiguration(new[] {GetType().Assembly});
             container = new Container(configuration);
         }
-
-        #endregion
 
         private ContainerConfiguration configuration;
         private Container container;
@@ -83,7 +78,7 @@ namespace Tests.FunctionalTests
         {
             var instance1 = container.Create<IClassReuseNever>();
             var instance2 = container.Create<IClassReuseNever>();
-            Assert.IsInstanceOfType(typeof (ClassReuseNever), instance1);
+            Assert.That(instance1, Is.InstanceOf<ClassReuseNever>());
             Assert.AreNotSame(instance1, instance2);
         }
     }

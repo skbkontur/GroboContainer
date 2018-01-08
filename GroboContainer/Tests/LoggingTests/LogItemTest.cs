@@ -1,7 +1,6 @@
 using System.Text;
 using GroboContainer.Impl.Logging;
 using NUnit.Framework;
-using TestCore;
 
 namespace Tests.LoggingTests
 {

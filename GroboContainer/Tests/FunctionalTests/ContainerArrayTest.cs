@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using GroboContainer.Impl.Exceptions;
 using NUnit.Framework;
 
 namespace Tests.FunctionalTests
@@ -50,7 +49,7 @@ namespace Tests.FunctionalTests
         {
             object[] types = container.GetAll(typeof (Type1));
             Assert.AreEqual(1, types.Length);
-            Assert.IsInstanceOfType(typeof (Type1), types[0]);
+            Assert.That(types[0], Is.InstanceOf<Type1>());
         }
     }
 }

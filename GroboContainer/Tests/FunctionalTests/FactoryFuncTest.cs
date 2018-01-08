@@ -174,7 +174,7 @@ namespace Tests.FunctionalTests
             var i1 = (C1) container.Get<I1>();
             var c2 = (C2) i1.i2;
             Assert.AreEqual(10, c2.a);
-            Assert.IsInstanceOfType(typeof(C3), c2.service);
+            Assert.That(c2.service, Is.InstanceOf<C3>());
 
             var i1Another = (C1) container.Get<I1>();
             Assert.AreSame(c2, i1Another.i2);

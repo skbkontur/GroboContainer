@@ -4,15 +4,12 @@ using GroboContainer.Impl.Implementations;
 using GroboContainer.New;
 using NUnit.Framework;
 using Rhino.Mocks;
-using TestCore;
 using Tests.TypesHelperTests;
 
 namespace Tests.AbstractionTests
 {
     public class AutoAbstractionConfigurationFactoryTest : CoreTestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
@@ -22,8 +19,6 @@ namespace Tests.AbstractionTests
             factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollection,
                                                               implementationConfigurationCache);
         }
-
-        #endregion
 
         private ITypesHelper typesHelper;
         private AutoAbstractionConfigurationFactory factory;
@@ -35,7 +30,7 @@ namespace Tests.AbstractionTests
         {
             typesHelper.ExpectIsIgnoredAbstraction(typeof (int), true);
             IAbstractionConfiguration configuration = factory.CreateByType(typeof (int));
-            Assert.IsInstanceOfType(typeof (StupidAbstractionConfiguration), configuration);
+            Assert.That(configuration, Is.InstanceOf<StupidAbstractionConfiguration>());
             IImplementationConfiguration[] implementations = configuration.GetImplementations();
             CollectionAssert.AllItemsAreInstancesOfType(implementations, typeof (ForbiddenImplementationConfiguration));
         }
@@ -60,7 +55,7 @@ namespace Tests.AbstractionTests
                 implementationConfigs[1]);
 
             IAbstractionConfiguration configuration = factory.CreateByType(typeof (int));
-            Assert.IsInstanceOfType(typeof (AutoAbstractionConfiguration), configuration);
+            Assert.That(configuration, Is.InstanceOf<AutoAbstractionConfiguration>());
             IImplementationConfiguration[] configurations = configuration.GetImplementations();
             CollectionAssert.AreEqual(implementationConfigs, configurations);
         }

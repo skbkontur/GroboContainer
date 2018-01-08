@@ -6,8 +6,6 @@ namespace Tests.NewTests
 {
     public class AbstractionCollectionTest : TestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
@@ -15,8 +13,6 @@ namespace Tests.NewTests
             implementationCache = GetMock<IImplementationCache>();
             abstractionsCollection = new AbstractionsCollection(implementationTypesCollection, implementationCache);
         }
-
-        #endregion
 
         private IImplementationTypesCollection implementationTypesCollection;
         private IImplementationCache implementationCache;
@@ -32,7 +28,7 @@ namespace Tests.NewTests
             implementationCache.Expect(mock => mock.GetOrCreate(implTypes[1])).Return(expectedImpls[1]);
 
             IAbstraction abstraction = abstractionsCollection.Get(typeof (int));
-            Assert.IsInstanceOfType(typeof (Abstraction), abstraction);
+            Assert.That(abstraction, Is.InstanceOf<Abstraction>());
             CollectionAssert.AreEqual(expectedImpls, abstraction.GetImplementations());
             CollectionAssert.AreEqual(expectedImpls, abstraction.GetImplementations());
         }

@@ -1,7 +1,6 @@
 ﻿using System;
 using GroboContainer.Impl.Exceptions;
 using NUnit.Framework;
-using TestCore;
 
 namespace Tests
 {
@@ -17,10 +16,8 @@ namespace Tests
             RunMethodWithException<ContainerException>(action,
                                                        exception =>
                                                            {
-                                                               Assert.IsInstanceOfType(typeof (TE),
-                                                                                       exception.InnerException);
-                                                               StringAssert.Contains(msg,
-                                                                                     exception.InnerException.Message);
+                                                               Assert.That(exception.InnerException, Is.InstanceOf<TE>());
+                                                               StringAssert.Contains(msg, exception.InnerException.Message);
                                                            });
         }
     }

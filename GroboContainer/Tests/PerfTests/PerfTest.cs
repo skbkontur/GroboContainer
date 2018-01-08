@@ -23,7 +23,7 @@ namespace Tests.PerfTests
         public void Test()
         {
             const int containerCount = 1000;
-            const int threadCount = 8;
+            const int threadCount = 4;
             var containers = new IContainer[containerCount];
             var threads = new Thread[threadCount];
             for (var i = 0; i < containers.Length; i++)

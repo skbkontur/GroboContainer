@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Text;
 using GroboContainer.Impl.Implementations;
 
@@ -8,7 +8,7 @@ namespace GroboContainer.Impl.Exceptions
     {
         public ManyImplementationsException(Type requested, IImplementationConfiguration[] existingConfigs)
             : base(
-                string.Format("Тип {0} имеет более 1 реализации. Реализации:\r\n{1}", requested, DumpExistingTypes(existingConfigs))
+                string.Format("РўРёРї {0} РёРјРµРµС‚ Р±РѕР»РµРµ 1 СЂРµР°Р»РёР·Р°С†РёРё. Р РµР°Р»РёР·Р°С†РёРё:\r\n{1}", requested, DumpExistingTypes(existingConfigs))
                 )
         {
         }

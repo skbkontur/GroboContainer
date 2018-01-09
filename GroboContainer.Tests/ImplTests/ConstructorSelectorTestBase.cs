@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Reflection;
 
 using GroboContainer.Impl.ClassCreation;
@@ -24,11 +24,11 @@ namespace GroboContainer.Tests.ImplTests
         protected static void CheckConstructor<T>(Type[] types, ContainerConstructorInfo constructor,
                                                   int[] expectedPermutation)
         {
-            Assert.IsNotNull(constructor.ConstructorInfo, "Конструктор не найден");
+            Assert.IsNotNull(constructor.ConstructorInfo, "РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РЅРµ РЅР°Р№РґРµРЅ");
             Assert.AreEqual(typeof (T), constructor.ConstructorInfo.ReflectedType);
             ConstructorInfo expected = typeof (T).GetConstructor(types);
-            Assert.IsNotNull(expected, "Ожидаемый конструктор не найден");
-            Assert.AreEqual(expected, constructor.ConstructorInfo, "не тот конструктор");
+            Assert.IsNotNull(expected, "РћР¶РёРґР°РµРјС‹Р№ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РЅРµ РЅР°Р№РґРµРЅ");
+            Assert.AreEqual(expected, constructor.ConstructorInfo, "РЅРµ С‚РѕС‚ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ");
             CollectionAssert.AreEqual(expectedPermutation, constructor.ParametersInfo);
         }
     }

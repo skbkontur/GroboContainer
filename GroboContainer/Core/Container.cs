@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -239,7 +239,7 @@ namespace GroboContainer.Core
             return internalContainer.GetLazyFunc(funcType, type =>
             {
                 if (!type.IsGenericType || type.GetGenericTypeDefinition() != getLazyFuncMethodReturnType)
-                    throw new InvalidOperationException(string.Format("Тип {0} не поддерживаются в качестве функции получения", type));
+                    throw new InvalidOperationException(string.Format("РўРёРї {0} РЅРµ РїРѕРґРґРµСЂР¶РёРІР°СЋС‚СЃСЏ РІ РєР°С‡РµСЃС‚РІРµ С„СѓРЅРєС†РёРё РїРѕР»СѓС‡РµРЅРёСЏ", type));
                 return (Delegate)getLazyFuncMethod.MakeGenericMethod(type.GetGenericArguments()).Invoke(this, new object[0]);
             });
         }
@@ -249,7 +249,7 @@ namespace GroboContainer.Core
             return internalContainer.GetCreationFunc(funcType, type =>
             {
                 if (!type.IsGenericType || !getCreationFuncMethods.TryGetValue(type.GetGenericTypeDefinition(), out var methodInfo))
-                    throw new InvalidOperationException(string.Format("Тип {0} не поддерживаются в качестве функции создания", type));
+                    throw new InvalidOperationException(string.Format("РўРёРї {0} РЅРµ РїРѕРґРґРµСЂР¶РёРІР°СЋС‚СЃСЏ РІ РєР°С‡РµСЃС‚РІРµ С„СѓРЅРєС†РёРё СЃРѕР·РґР°РЅРёСЏ", type));
                 return (Delegate)methodInfo.MakeGenericMethod(type.GetGenericArguments()).Invoke(this, new object[0]);
             });
         }

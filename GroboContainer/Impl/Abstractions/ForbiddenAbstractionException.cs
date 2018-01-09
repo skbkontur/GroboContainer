@@ -1,10 +1,10 @@
-using System;
+п»їusing System;
 
 namespace GroboContainer.Impl.Abstractions
 {
     public class ForbiddenAbstractionException : Exception
     {
-        public ForbiddenAbstractionException(Type type) : base(string.Format("Тип {0} запрещен", type))
+        public ForbiddenAbstractionException(Type type) : base(string.Format("РўРёРї {0} Р·Р°РїСЂРµС‰РµРЅ", type))
         {
         }
     }

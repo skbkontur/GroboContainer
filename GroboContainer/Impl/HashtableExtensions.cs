@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Collections;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -108,7 +108,7 @@ namespace GroboContainer.Impl
                 il.Ldarg(0); // stack+: hashtable
                 il.Ldfld(bucketsFieldInfo); // stack: key, hashtable::buckets
                 il.Beq(cycleNextLabel);
-                // jump(cycleNext) if key == hashtable::buckets (какой-то хитрый хак hashtable-а)
+                // jump(cycleNext) if key == hashtable::buckets (РєР°РєРѕР№-С‚Рѕ С…РёС‚СЂС‹Р№ С…Р°Рє hashtable-Р°)
 
                 il.Ldloc(arrayIndex); // stack: arrayIndex
                 il.Ldarg(2); // stack+: arrayLength

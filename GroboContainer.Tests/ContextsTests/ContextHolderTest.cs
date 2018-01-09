@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Threading;
 
 using GroboContainer.Impl;
@@ -26,7 +26,7 @@ namespace GroboContainer.Tests.ContextsTests
                                    CheckGet(holder);
                                };
             IAsyncResult result = check.BeginInvoke(null, null);
-            Assert.That(result.AsyncWaitHandle.WaitOne(1000), "поток завис");
+            Assert.That(result.AsyncWaitHandle.WaitOne(1000), "РїРѕС‚РѕРє Р·Р°РІРёСЃ");
             holder.KillContext();
             CheckGet(holder);
         }

@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -35,13 +35,13 @@ namespace GroboContainer.Impl
                     foreach (Exception loaderException in e.LoaderExceptions)
                         sb.AppendLine(loaderException.Message);
                     throw new ContainerConfigurationException(
-                        string.Format("Ошибка при получении типов из сборки '{0}'\r\n(Path:'{1}')\n{2}",
+                        string.Format("РћС€РёР±РєР° РїСЂРё РїРѕР»СѓС‡РµРЅРёРё С‚РёРїРѕРІ РёР· СЃР±РѕСЂРєРё '{0}'\r\n(Path:'{1}')\n{2}",
                                       assembly.FullName, assembly.Location, sb), e);
                 }
                 catch (Exception e)
                 {
                     throw new ContainerConfigurationException(
-                        string.Format("Ошибка при получении типов из сборки '{0}'\r\n(Path:'{1}')",
+                        string.Format("РћС€РёР±РєР° РїСЂРё РїРѕР»СѓС‡РµРЅРёРё С‚РёРїРѕРІ РёР· СЃР±РѕСЂРєРё '{0}'\r\n(Path:'{1}')",
                                       assembly.FullName, assembly.Location), e);
                 }
                 foreach (Type type in typesInAssembly)

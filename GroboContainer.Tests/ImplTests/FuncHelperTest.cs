@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Linq;
 using System.Reflection;
 
@@ -65,7 +65,7 @@ namespace GroboContainer.Tests.ImplTests
             RunMethodWithException<InvalidOperationException>(() =>
                                                               helper.GetBuildCreateFuncMethodInfo(
                                                                   typeof (Func<int, long, Guid, string, int[], object>)),
-                                                              "Функции создания с 5 аргументами на поддерживаются");
+                                                              "Р¤СѓРЅРєС†РёРё СЃРѕР·РґР°РЅРёСЏ СЃ 5 Р°СЂРіСѓРјРµРЅС‚Р°РјРё РЅР° РїРѕРґРґРµСЂР¶РёРІР°СЋС‚СЃСЏ");
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace GroboContainer.Tests.ImplTests
             RunMethodWithException<InvalidOperationException>(() =>
                                                               helper.GetBuildGetFuncMethodInfo(
                                                                   typeof (Func<int, int[], object>)),
-                                                              "Функции получения с 2 аргументами на поддерживаются");
+                                                              "Р¤СѓРЅРєС†РёРё РїРѕР»СѓС‡РµРЅРёСЏ СЃ 2 Р°СЂРіСѓРјРµРЅС‚Р°РјРё РЅР° РїРѕРґРґРµСЂР¶РёРІР°СЋС‚СЃСЏ");
         }
 
         [Test]

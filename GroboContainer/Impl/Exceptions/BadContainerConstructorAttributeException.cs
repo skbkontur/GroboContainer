@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Reflection;
 
 namespace GroboContainer.Impl.Exceptions
@@ -7,14 +7,14 @@ namespace GroboContainer.Impl.Exceptions
     {
         public BadContainerConstructorAttributeException(ConstructorInfo constructor, Type type)
             : base(string.Format(
-                       "В аттрибуте ContainerConstructor конструктора {0} {1} тип параметра {2} должен присутствовать не более 1 раза",
+                       "Р’ Р°С‚С‚СЂРёР±СѓС‚Рµ ContainerConstructor РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂР° {0} {1} С‚РёРї РїР°СЂР°РјРµС‚СЂР° {2} РґРѕР»Р¶РµРЅ РїСЂРёСЃСѓС‚СЃС‚РІРѕРІР°С‚СЊ РЅРµ Р±РѕР»РµРµ 1 СЂР°Р·Р°",
                        constructor.ReflectedType, constructor, type))
         {
         }
 
         public BadContainerConstructorAttributeException(ConstructorInfo constructor)
             : base(string.Format(
-                       "Типы, описанные в аттрибуте ContainerConstructor конструктора {0} {1}, не соответствуют типам параметров конструктора",
+                       "РўРёРїС‹, РѕРїРёСЃР°РЅРЅС‹Рµ РІ Р°С‚С‚СЂРёР±СѓС‚Рµ ContainerConstructor РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂР° {0} {1}, РЅРµ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‚ С‚РёРїР°Рј РїР°СЂР°РјРµС‚СЂРѕРІ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂР°",
                        constructor.ReflectedType, constructor))
         {
         }

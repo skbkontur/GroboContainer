@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 
 using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
@@ -39,7 +39,7 @@ namespace GroboContainer.Tests.AbstractionTests
             Assert.AreSame(configuration, configurationCollection.Get(typeof (int)));
             RunMethodWithException<InvalidOperationException>(
                 () => configurationCollection.Add(typeof (int), configuration),
-                "Тип System.Int32 уже сконфигурирован");
+                "РўРёРї System.Int32 СѓР¶Рµ СЃРєРѕРЅС„РёРіСѓСЂРёСЂРѕРІР°РЅ");
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace GroboContainer.Tests.AbstractionTests
 
             var configuration1 = NewMock<IAbstractionConfiguration>();
             var configuration2 = NewMock<IAbstractionConfiguration>();
-            configurationCollection.Add(typeof (string), null); //hack, тест на != null
+            configurationCollection.Add(typeof (string), null); //hack, С‚РµСЃС‚ РЅР° != null
             configurationCollection.Add(typeof (int), configuration1);
             configurationCollection.Add(typeof (long), configuration2);
 

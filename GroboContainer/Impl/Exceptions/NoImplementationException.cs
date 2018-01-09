@@ -1,11 +1,11 @@
-using System;
+п»їusing System;
 
 namespace GroboContainer.Impl.Exceptions
 {
     public class NoImplementationException : Exception
     {
         public NoImplementationException(Type requested)
-            : base(string.Format("Тип {0} не имеет реализации", requested))
+            : base(string.Format("РўРёРї {0} РЅРµ РёРјРµРµС‚ СЂРµР°Р»РёР·Р°С†РёРё", requested))
         {
         }
     }

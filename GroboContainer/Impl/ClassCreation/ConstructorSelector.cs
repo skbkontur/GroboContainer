@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -114,7 +114,7 @@ namespace GroboContainer.Impl.ClassCreation
             foreach (Type type in parameterTypes)
                 if (!types.Add(type))
                     throw new ArgumentException(string.Format(
-                                                    "Тип параметра {0} должен присутствовать не более 1 раза", type));
+                                                    "РўРёРї РїР°СЂР°РјРµС‚СЂР° {0} РґРѕР»Р¶РµРЅ РїСЂРёСЃСѓС‚СЃС‚РІРѕРІР°С‚СЊ РЅРµ Р±РѕР»РµРµ 1 СЂР°Р·Р°", type));
             return types;
         }
 

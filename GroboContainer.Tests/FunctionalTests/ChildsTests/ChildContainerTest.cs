@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Diagnostics;
 
 using GroboContainer.Core;
@@ -115,7 +115,7 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
         {
             IContainer child = container.MakeChildContainer().MakeChildContainer();
             RunFail<NotSupportedException>(() => child.Get(typeof (int)),
-                                           "Контейнеры с глубиной больше 1 не поддерживаются");
+                                           "РљРѕРЅС‚РµР№РЅРµСЂС‹ СЃ РіР»СѓР±РёРЅРѕР№ Р±РѕР»СЊС€Рµ 1 РЅРµ РїРѕРґРґРµСЂР¶РёРІР°СЋС‚СЃСЏ");
         }
 
         [Test]

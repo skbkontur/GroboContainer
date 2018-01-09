@@ -1,10 +1,10 @@
-using System;
+п»їusing System;
 
 namespace GroboContainer.Impl.Exceptions
 {
     public class AmbiguousConstructorException : Exception
     {
-        public AmbiguousConstructorException(Type type) : base(string.Format("Невозможно создать тип {0}", type))
+        public AmbiguousConstructorException(Type type) : base(string.Format("РќРµРІРѕР·РјРѕР¶РЅРѕ СЃРѕР·РґР°С‚СЊ С‚РёРї {0}", type))
         {
         }
     }

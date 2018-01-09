@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using GroboContainer.Core;
 using GroboContainer.Impl.Implementations;
 
@@ -17,8 +17,8 @@ namespace GroboContainer.Impl.Abstractions
             {
                 Type type = instances[i].GetType();
                 if (!abstractionType.IsAssignableFrom(type))
-                    throw new ArgumentException("Заданная реализация на являются объектами типа " + abstractionType +
-                                                " (реальный тип " + type + ")");
+                    throw new ArgumentException("Р—Р°РґР°РЅРЅР°СЏ СЂРµР°Р»РёР·Р°С†РёСЏ РЅР° СЏРІР»СЏСЋС‚СЃСЏ РѕР±СЉРµРєС‚Р°РјРё С‚РёРїР° " + abstractionType +
+                                                " (СЂРµР°Р»СЊРЅС‹Р№ С‚РёРї " + type + ")");
                 implementationConfigurations[i] = new InstanceImplementationConfiguration(classWrapperCreator, instances[i]);
             }
         }

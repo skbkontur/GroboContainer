@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Collections.Concurrent;
 using System.Linq;
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
@@ -25,7 +25,7 @@ namespace GroboContainer.Impl.Abstractions
         public void Add(Type abstractionType, IAbstractionConfiguration abstractionConfiguration)
         {
             if (!cache.TryAddOrUpdate(abstractionType, abstractionConfiguration, c => c.GetImplementations().Length == 0))
-                throw new InvalidOperationException(string.Format("Тип {0} уже сконфигурирован", abstractionType));
+                throw new InvalidOperationException(string.Format("РўРёРї {0} СѓР¶Рµ СЃРєРѕРЅС„РёРіСѓСЂРёСЂРѕРІР°РЅ", abstractionType));
         }
 
         public IAbstractionConfiguration[] GetAll()

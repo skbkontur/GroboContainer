@@ -1,8 +1,10 @@
 ﻿using System;
+
 using GroboContainer.Impl.Exceptions;
+
 using NUnit.Framework;
 
-namespace Tests
+namespace GroboContainer.Tests
 {
     public abstract class TestBase : CoreTestBase
     {

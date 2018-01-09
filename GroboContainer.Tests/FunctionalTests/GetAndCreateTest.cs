@@ -1,9 +1,11 @@
 using System;
+
 using GroboContainer.Core;
 using GroboContainer.Impl;
+
 using NUnit.Framework;
 
-namespace Tests.FunctionalTests
+namespace GroboContainer.Tests.FunctionalTests
 {
     public class GetAndCreateTest : CoreTestBase
     {

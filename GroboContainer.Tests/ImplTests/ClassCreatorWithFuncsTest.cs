@@ -1,10 +1,12 @@
 using System;
+
 using GroboContainer.Impl;
 using GroboContainer.Impl.ClassCreation;
 using GroboContainer.Impl.Injection;
+
 using NUnit.Framework;
 
-namespace Tests.ImplTests
+namespace GroboContainer.Tests.ImplTests
 {
     public class ClassCreatorWithFuncsTest : CoreTestBase
     {

@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace Tests.TypesHelperTests.GenericConstraints
+namespace GroboContainer.Tests.TypesHelperTests.GenericConstraints
 {
     public class CreateProperConstrainedGenericTest : TypesHelperGenericTestBase
     {

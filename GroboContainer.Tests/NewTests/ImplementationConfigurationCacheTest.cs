@@ -1,9 +1,10 @@
 ﻿using GroboContainer.Impl.Abstractions.AutoConfiguration;
 using GroboContainer.Impl.Implementations;
 using GroboContainer.New;
+
 using NUnit.Framework;
 
-namespace Tests.NewTests
+namespace GroboContainer.Tests.NewTests
 {
     public class ImplementationConfigurationCacheTest : TestBase
     {

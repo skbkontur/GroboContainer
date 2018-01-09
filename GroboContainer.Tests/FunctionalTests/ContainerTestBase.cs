@@ -1,8 +1,9 @@
 using System.Diagnostics;
+
 using GroboContainer.Core;
 using GroboContainer.Impl;
 
-namespace Tests.FunctionalTests
+namespace GroboContainer.Tests.FunctionalTests
 {
     public abstract class ContainerTestBase : TestBase
     {

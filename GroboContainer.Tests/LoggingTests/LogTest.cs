@@ -1,8 +1,10 @@
 using System;
+
 using GroboContainer.Impl.Logging;
+
 using NUnit.Framework;
 
-namespace Tests.LoggingTests
+namespace GroboContainer.Tests.LoggingTests
 {
     public class LogTest : CoreTestBase
     {

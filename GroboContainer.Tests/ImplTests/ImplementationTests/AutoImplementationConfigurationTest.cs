@@ -1,4 +1,4 @@
-namespace Tests.ImplTests.ImplementationTests
+namespace GroboContainer.Tests.ImplTests.ImplementationTests
 {
     //public class AutoImplementationConfigurationTest : CoreTestBase
     //{

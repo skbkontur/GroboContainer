@@ -1,12 +1,15 @@
 using System;
 using System.Threading;
+
 using GroboContainer.Impl;
 using GroboContainer.Impl.Contexts;
 using GroboContainer.Impl.Injection;
+
 using NUnit.Framework;
+
 using Rhino.Mocks;
 
-namespace Tests.ContextsTests
+namespace GroboContainer.Tests.ContextsTests
 {
     public class ContextHolderTest : ContextTestBase
     {

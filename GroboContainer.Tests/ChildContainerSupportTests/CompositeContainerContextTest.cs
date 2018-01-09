@@ -1,12 +1,14 @@
 using System;
+
 using GroboContainer.Impl;
 using GroboContainer.Impl.ChildContainersSupport;
 using GroboContainer.Impl.ChildContainersSupport.Selectors;
 using GroboContainer.Impl.ClassCreation;
 using GroboContainer.Infection;
+
 using NUnit.Framework;
 
-namespace Tests.ChildContainerSupportTests
+namespace GroboContainer.Tests.ChildContainerSupportTests
 {
     public class CompositeContainerContextTest : TestBase
     {

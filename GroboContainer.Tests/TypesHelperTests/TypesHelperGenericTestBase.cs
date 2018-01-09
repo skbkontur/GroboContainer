@@ -1,8 +1,10 @@
 using System;
+
 using GroboContainer.Impl.Implementations;
+
 using NUnit.Framework;
 
-namespace Tests.TypesHelperTests
+namespace GroboContainer.Tests.TypesHelperTests
 {
     public abstract class TypesHelperGenericTestBase : CoreTestBase
     {

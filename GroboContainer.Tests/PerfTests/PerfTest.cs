@@ -3,11 +3,13 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
+
 using GroboContainer.Core;
 using GroboContainer.Impl;
+
 using NUnit.Framework;
 
-namespace Tests.PerfTests
+namespace GroboContainer.Tests.PerfTests
 {
     public class PerfTest : TestBase
     {

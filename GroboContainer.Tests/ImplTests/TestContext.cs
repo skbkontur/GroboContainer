@@ -1,4 +1,5 @@
 using System;
+
 using GroboContainer.Config;
 using GroboContainer.Core;
 using GroboContainer.Impl;
@@ -7,7 +8,7 @@ using GroboContainer.Impl.Abstractions.AutoConfiguration;
 using GroboContainer.Impl.ClassCreation;
 using GroboContainer.New;
 
-namespace Tests.ImplTests
+namespace GroboContainer.Tests.ImplTests
 {
 	public class TestContext : IContainerContext
 	{

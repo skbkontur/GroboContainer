@@ -1,9 +1,11 @@
 using System;
 using System.Reflection;
+
 using GroboContainer.Impl.ClassCreation;
+
 using NUnit.Framework;
 
-namespace Tests.ImplTests
+namespace GroboContainer.Tests.ImplTests
 {
     public abstract class ConstructorSelectorTestBase : CoreTestBase
     {

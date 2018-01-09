@@ -1,9 +1,10 @@
 using GroboContainer.Impl;
 using GroboContainer.Impl.Contexts;
 using GroboContainer.Impl.Injection;
+
 using NMock2;
 
-namespace Tests.InjectionTests
+namespace GroboContainer.Tests.InjectionTests
 {
     public static class ContextHolderExtensions
     {

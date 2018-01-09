@@ -1,8 +1,9 @@
 using GroboContainer.Core;
 using GroboContainer.Impl.Exceptions;
+
 using NUnit.Framework;
 
-namespace Tests.FunctionalTests
+namespace GroboContainer.Tests.FunctionalTests
 {
     public class ContainerLoggingTest : ContainerTestBase
     {

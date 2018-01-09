@@ -1,11 +1,13 @@
 using System;
+
 using GroboContainer.Core;
 using GroboContainer.Impl;
 using GroboContainer.Impl.Injection;
 using GroboContainer.Impl.Logging;
+
 using NMock2;
 
-namespace Tests.ImplTests
+namespace GroboContainer.Tests.ImplTests
 {
     public static class InjectionContextExtenstions
     {

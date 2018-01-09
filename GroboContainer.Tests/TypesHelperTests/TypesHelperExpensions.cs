@@ -1,8 +1,10 @@
 using System;
+
 using GroboContainer.Impl.Implementations;
+
 using NMock2;
 
-namespace Tests.TypesHelperTests
+namespace GroboContainer.Tests.TypesHelperTests
 {
     public static class TypesHelperExpensions
     {

@@ -2,11 +2,13 @@ using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
 using GroboContainer.Impl.Implementations;
 using GroboContainer.New;
-using NUnit.Framework;
-using Rhino.Mocks;
-using Tests.TypesHelperTests;
+using GroboContainer.Tests.TypesHelperTests;
 
-namespace Tests.AbstractionTests
+using NUnit.Framework;
+
+using Rhino.Mocks;
+
+namespace GroboContainer.Tests.AbstractionTests
 {
     public class AutoAbstractionConfigurationFactoryTest : CoreTestBase
     {

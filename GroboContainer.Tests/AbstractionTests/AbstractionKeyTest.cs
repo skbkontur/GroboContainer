@@ -1,7 +1,8 @@
 using GroboContainer.OldHlam;
+
 using NUnit.Framework;
 
-namespace Tests.AbstractionTests
+namespace GroboContainer.Tests.AbstractionTests
 {
     public class AbstractionKeyTest : CoreTestBase
     {

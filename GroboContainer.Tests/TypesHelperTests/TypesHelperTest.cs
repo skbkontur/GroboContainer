@@ -1,10 +1,12 @@
 using System;
 using System.Reflection;
+
 using GroboContainer.Impl.Implementations;
 using GroboContainer.Infection;
+
 using NUnit.Framework;
 
-namespace Tests.TypesHelperTests
+namespace GroboContainer.Tests.TypesHelperTests
 {
     public class TypesHelperTest : CoreTestBase
     {

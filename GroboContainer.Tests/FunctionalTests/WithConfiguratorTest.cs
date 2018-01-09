@@ -1,11 +1,13 @@
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
+
 using GroboContainer.Impl.Abstractions;
 using GroboContainer.Infection;
+
 using NUnit.Framework;
 
-namespace Tests.FunctionalTests
+namespace GroboContainer.Tests.FunctionalTests
 {
     public class WithConfiguratorTest : ContainerTestBase
     {

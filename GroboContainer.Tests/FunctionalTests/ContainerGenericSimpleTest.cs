@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace Tests.FunctionalTests
+namespace GroboContainer.Tests.FunctionalTests
 {
     public class ContainerGenericSimpleTest : ContainerTestBase
     {

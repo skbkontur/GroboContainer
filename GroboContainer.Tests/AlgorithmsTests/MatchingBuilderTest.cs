@@ -1,8 +1,9 @@
 ﻿using GroboContainer.Algorithms.Builders;
 using GroboContainer.Algorithms.DataStructures;
+
 using NUnit.Framework;
 
-namespace Tests.AlgorithmsTests
+namespace GroboContainer.Tests.AlgorithmsTests
 {
     public class MatchingBuilderTest : TestBase
     {

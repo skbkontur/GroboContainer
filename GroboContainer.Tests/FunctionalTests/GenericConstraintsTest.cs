@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace Tests.FunctionalTests
+namespace GroboContainer.Tests.FunctionalTests
 {
     // Mostly this functionality is tested in TypesHelperTests.
     // Here will be just a couple of tests, that check that all works on the top level.

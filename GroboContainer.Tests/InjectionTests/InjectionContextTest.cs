@@ -1,15 +1,18 @@
 using System;
 using System.Threading;
+
 using GroboContainer.Core;
 using GroboContainer.Impl;
 using GroboContainer.Impl.Contexts;
 using GroboContainer.Impl.Injection;
 using GroboContainer.Impl.Logging;
+using GroboContainer.Tests.ImplTests;
+
 using NUnit.Framework;
-using Tests.ImplTests;
+
 using Rhino.Mocks;
 
-namespace Tests.InjectionTests
+namespace GroboContainer.Tests.InjectionTests
 {
     public class InjectionContextTest : CoreTestBase
     {

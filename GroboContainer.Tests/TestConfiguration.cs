@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+
 using GroboContainer.Core;
 
-namespace Tests
+namespace GroboContainer.Tests
 {
     public class TestConfiguration : IContainerConfiguration
     {

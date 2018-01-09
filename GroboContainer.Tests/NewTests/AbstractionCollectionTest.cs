@@ -1,8 +1,10 @@
 using GroboContainer.New;
+
 using NUnit.Framework;
+
 using Rhino.Mocks;
 
-namespace Tests.NewTests
+namespace GroboContainer.Tests.NewTests
 {
     public class AbstractionCollectionTest : TestBase
     {

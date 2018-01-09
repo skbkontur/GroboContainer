@@ -1,7 +1,8 @@
 using GroboContainer.Core;
+
 using NMock2;
 
-namespace Tests.ImplTests
+namespace GroboContainer.Tests.ImplTests
 {
     public static class ContainerForFuncBuilderExtensions
     {

@@ -1,15 +1,17 @@
 using System;
+
 using GroboContainer.Core;
 using GroboContainer.Impl;
 using GroboContainer.Impl.Contexts;
 using GroboContainer.Impl.Exceptions;
 using GroboContainer.Impl.Injection;
 using GroboContainer.Impl.Logging;
-using NUnit.Framework;
-using Tests.ImplTests;
-using Tests.InjectionTests;
+using GroboContainer.Tests.ImplTests;
+using GroboContainer.Tests.InjectionTests;
 
-namespace Tests.CoreTests
+using NUnit.Framework;
+
+namespace GroboContainer.Tests.CoreTests
 {
     public class ContainerTest : CoreTestBase
     {

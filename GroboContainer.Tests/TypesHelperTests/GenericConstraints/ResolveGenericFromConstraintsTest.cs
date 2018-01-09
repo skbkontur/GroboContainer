@@ -1,7 +1,8 @@
 ﻿using System;
+
 using NUnit.Framework;
 
-namespace Tests.TypesHelperTests.GenericConstraints
+namespace GroboContainer.Tests.TypesHelperTests.GenericConstraints
 {
     public class ResolveGenericFromConstraintsTest : TypesHelperGenericTestBase
     {

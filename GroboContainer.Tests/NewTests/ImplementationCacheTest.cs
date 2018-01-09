@@ -1,7 +1,8 @@
 ﻿using GroboContainer.New;
+
 using NUnit.Framework;
 
-namespace Tests.NewTests
+namespace GroboContainer.Tests.NewTests
 {
     public class ImplementationCacheTest : TestBase
     {

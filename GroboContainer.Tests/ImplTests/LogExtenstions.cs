@@ -1,8 +1,10 @@
 using System;
+
 using GroboContainer.Impl.Logging;
+
 using NMock2;
 
-namespace Tests.ImplTests
+namespace GroboContainer.Tests.ImplTests
 {
     public static class LogExtenstions
     {

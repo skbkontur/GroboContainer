@@ -1,8 +1,10 @@
 using System;
-using NUnit.Framework;
-using Tests.ImplTests;
 
-namespace Tests.FunctionalTests
+using GroboContainer.Tests.ImplTests;
+
+using NUnit.Framework;
+
+namespace GroboContainer.Tests.FunctionalTests
 {
     public class ContainerExceptionsTest : ContainerTestBase
     {

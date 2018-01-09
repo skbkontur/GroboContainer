@@ -1,10 +1,13 @@
 ﻿using System;
+
 using GroboContainer.Impl.ClassCreation;
 using GroboContainer.New;
+
 using NUnit.Framework;
+
 using Rhino.Mocks;
 
-namespace Tests.ImplTests.ImplementationTests
+namespace GroboContainer.Tests.ImplTests.ImplementationTests
 {
     public class ImplementationTest : TestBase
     {

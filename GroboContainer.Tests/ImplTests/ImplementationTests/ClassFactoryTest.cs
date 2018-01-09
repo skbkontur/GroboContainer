@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+
 using GroboContainer.Impl;
 using GroboContainer.Impl.ClassCreation;
 using GroboContainer.Impl.Injection;
+
 using NUnit.Framework;
+
 using Rhino.Mocks;
 
-namespace Tests.ImplTests.ImplementationTests
+namespace GroboContainer.Tests.ImplTests.ImplementationTests
 {
     public class ClassFactoryTest : TestBase
     {

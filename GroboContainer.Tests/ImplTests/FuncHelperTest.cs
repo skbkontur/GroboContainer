@@ -1,10 +1,12 @@
 using System;
 using System.Linq;
 using System.Reflection;
+
 using GroboContainer.Impl.ClassCreation;
+
 using NUnit.Framework;
 
-namespace Tests.ImplTests
+namespace GroboContainer.Tests.ImplTests
 {
     public class FuncHelperTest : CoreTestBase
     {

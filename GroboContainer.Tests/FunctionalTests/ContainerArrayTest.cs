@@ -1,8 +1,9 @@
 using System;
 using System.Linq;
+
 using NUnit.Framework;
 
-namespace Tests.FunctionalTests
+namespace GroboContainer.Tests.FunctionalTests
 {
     public class ContainerArrayTest : ContainerTestBase
     {

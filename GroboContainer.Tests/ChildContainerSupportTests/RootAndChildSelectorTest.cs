@@ -1,9 +1,11 @@
 using System;
+
 using GroboContainer.Impl.ChildContainersSupport.Selectors;
 using GroboContainer.Infection;
+
 using NUnit.Framework;
 
-namespace Tests.ChildContainerSupportTests
+namespace GroboContainer.Tests.ChildContainerSupportTests
 {
     public class RootAndChildSelectorTest : TestBase
     {

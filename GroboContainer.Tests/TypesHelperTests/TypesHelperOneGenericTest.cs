@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace Tests.TypesHelperTests
+namespace GroboContainer.Tests.TypesHelperTests
 {
     public class TypesHelperOneGenericTest : TypesHelperGenericTestBase
     {

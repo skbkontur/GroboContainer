@@ -1,7 +1,8 @@
 using GroboContainer.Impl.Contexts;
+
 using NUnit.Framework;
 
-namespace Tests.ContextsTests
+namespace GroboContainer.Tests.ContextsTests
 {
     public class NoContextHolderTest : ContextTestBase
     {

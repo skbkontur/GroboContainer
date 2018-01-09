@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading;
+
 using NMock2;
+
 using NUnit.Framework;
 
-namespace Tests
+namespace GroboContainer.Tests
 {
     public abstract class CoreTestBase
     {

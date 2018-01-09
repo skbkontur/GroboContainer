@@ -1,9 +1,11 @@
 using System;
+
 using GroboContainer.Impl.ClassCreation;
 using GroboContainer.Impl.Exceptions;
+
 using NUnit.Framework;
 
-namespace Tests.ImplTests
+namespace GroboContainer.Tests.ImplTests
 {
     public class ConstructorSelectorGetFactoryConstructorTest : ConstructorSelectorTestBase
     {

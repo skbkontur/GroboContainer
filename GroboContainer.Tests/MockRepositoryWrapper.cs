@@ -1,6 +1,6 @@
 ﻿using Rhino.Mocks;
 
-namespace Tests
+namespace GroboContainer.Tests
 {
     public class MockRepositoryWrapper
     {

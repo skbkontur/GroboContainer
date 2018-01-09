@@ -1,4 +1,4 @@
-namespace Tests.FunctionalTests
+namespace GroboContainer.Tests.FunctionalTests
 {
     //public class ThreadTest : ContainerTestBase
     //{

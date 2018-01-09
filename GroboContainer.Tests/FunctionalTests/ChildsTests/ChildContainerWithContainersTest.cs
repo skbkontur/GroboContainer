@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
+
 using GroboContainer.Core;
 using GroboContainer.Impl;
 using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.ChildContainersSupport.Selectors;
 using GroboContainer.Infection;
+
 using NUnit.Framework;
 
-namespace Tests.FunctionalTests.ChildsTests
+namespace GroboContainer.Tests.FunctionalTests.ChildsTests
 {
     public class ChildContainerWithContainersTest : TestBase
     {

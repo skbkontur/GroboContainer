@@ -1,4 +1,5 @@
 using System;
+
 using GroboContainer.Config;
 using GroboContainer.Core;
 using GroboContainer.Impl;
@@ -9,10 +10,12 @@ using GroboContainer.Impl.Exceptions;
 using GroboContainer.Impl.Implementations;
 using GroboContainer.Impl.Injection;
 using GroboContainer.New;
+
 using NUnit.Framework;
+
 using Rhino.Mocks;
 
-namespace Tests.ImplTests
+namespace GroboContainer.Tests.ImplTests
 {
     public class InternalContainerTest : CoreTestBase
     {

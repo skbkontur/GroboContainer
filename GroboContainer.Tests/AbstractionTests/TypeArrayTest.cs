@@ -1,8 +1,10 @@
 using System;
+
 using GroboContainer.Impl.Abstractions;
+
 using NUnit.Framework;
 
-namespace Tests.AbstractionTests
+namespace GroboContainer.Tests.AbstractionTests
 {
     public class TypeArrayTest : CoreTestBase
     {

@@ -2,7 +2,7 @@
 
 using GroboContainer.Core;
 
-namespace Tests
+namespace GroboContainer.Tests
 {
     public class TestClassWrapperCreator: IClassWrapperCreator
     {

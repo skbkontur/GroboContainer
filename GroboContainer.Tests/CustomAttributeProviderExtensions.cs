@@ -1,7 +1,8 @@
 using System.Reflection;
+
 using NMock2;
 
-namespace Tests
+namespace GroboContainer.Tests
 {
     public static class CustomAttributeProviderExtensions
     {

@@ -1,11 +1,14 @@
 using System;
+
 using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
 using GroboContainer.Impl.Implementations;
+
 using NUnit.Framework;
+
 using Rhino.Mocks;
 
-namespace Tests.AbstractionTests
+namespace GroboContainer.Tests.AbstractionTests
 {
     public class AbstractionConfigurationCollectionTest : CoreTestBase
     {

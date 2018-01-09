@@ -1,10 +1,12 @@
 using System;
+
 using GroboContainer.Core;
 using GroboContainer.Impl.Implementations;
 using GroboContainer.Impl.Injection;
+
 using NUnit.Framework;
 
-namespace Tests.ImplTests.ImplementationTests
+namespace GroboContainer.Tests.ImplTests.ImplementationTests
 {
     public class ContainerImplementationConfigurationTest : CoreTestBase
     {

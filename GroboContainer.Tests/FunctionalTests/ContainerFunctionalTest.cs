@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using GroboContainer.Impl.Exceptions;
 using GroboContainer.Infection;
+
 using NUnit.Framework;
 
-namespace Tests.FunctionalTests
+namespace GroboContainer.Tests.FunctionalTests
 {
     public class ContainerFunctionalTest : ContainerTestBase
     {

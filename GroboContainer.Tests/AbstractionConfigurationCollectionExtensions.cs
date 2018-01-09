@@ -1,8 +1,10 @@
 using System;
+
 using GroboContainer.Impl.Abstractions;
+
 using NMock2;
 
-namespace Tests
+namespace GroboContainer.Tests
 {
     public static class AbstractionConfigurationCollectionExtensions
     {

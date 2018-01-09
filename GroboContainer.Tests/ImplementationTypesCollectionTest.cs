@@ -1,10 +1,12 @@
 using System;
+
 using GroboContainer.Impl.Implementations;
 using GroboContainer.New;
-using NUnit.Framework;
-using Tests.TypesHelperTests;
+using GroboContainer.Tests.TypesHelperTests;
 
-namespace Tests
+using NUnit.Framework;
+
+namespace GroboContainer.Tests
 {
     public class ImplementationTypesCollectionTest : CoreTestBase
     {

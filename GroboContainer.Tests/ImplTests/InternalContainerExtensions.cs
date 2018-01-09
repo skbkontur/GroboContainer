@@ -1,9 +1,11 @@
 using System;
+
 using GroboContainer.Impl;
 using GroboContainer.Impl.Injection;
+
 using NMock2;
 
-namespace Tests.ImplTests
+namespace GroboContainer.Tests.ImplTests
 {
     public static class InternalContainerExtensions
     {

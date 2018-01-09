@@ -1,12 +1,15 @@
 using System;
+
 using GroboContainer.Core;
 using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.ChildContainersSupport;
 using GroboContainer.Impl.ChildContainersSupport.Selectors;
+
 using NUnit.Framework;
+
 using Rhino.Mocks;
 
-namespace Tests.ChildContainerSupportTests
+namespace GroboContainer.Tests.ChildContainerSupportTests
 {
     public class CompositeCollectionTest : TestBase
     {

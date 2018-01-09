@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 
 using GroboContainer.Core;
@@ -12,8 +12,6 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
 {
     public class ChildContainerBugsTest : TestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
@@ -27,8 +25,6 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
             Debug.WriteLine(container.LastConstructionLog);
             base.TearDown();
         }
-
-        #endregion
 
         private IContainerSelector selector;
         private IContainer container;
@@ -46,12 +42,12 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
         
         }
 
-        [Test, Ignore("Не понятно, че щас с Child-контэйнерами")]
+        [Test]
+        [Ignore("The status of Child-container feature is not clear")]
         public void TestRootCannotUseChildIfGetFromChildContainer()
         {
-            IContainer childContainer = container.MakeChildContainer();
-            RunMethodWithException<InvalidOperationException>(()=>
-                                                              childContainer.Get<Root>());
+            var childContainer = container.MakeChildContainer();
+            RunMethodWithException<InvalidOperationException>(()=> childContainer.Get<Root>());
         }
     }
 }

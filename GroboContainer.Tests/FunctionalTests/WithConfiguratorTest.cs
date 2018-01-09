@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -169,7 +169,8 @@ namespace GroboContainer.Tests.FunctionalTests
             CollectionAssert.AreEqual(new[] {actual}, container.GetAll<IX2>());
         }
 
-        [Test, Ignore("Не понятно, нужно ли поддержать такую функциональность")]
+        [Test]
+        [Ignore("Not sure whether we want this feature")]
         public void TestConfigureAfterCreate()
         {
             var x1 = container.Create<IX1>();
@@ -185,7 +186,8 @@ namespace GroboContainer.Tests.FunctionalTests
             Assert.AreNotSame(x1Instance1, x1Instance2);
         }
 
-        [Test, Ignore("Не понятно, нужно ли поддержать такую функциональность")]
+        [Test]
+        [Ignore("Not sure whether we want this feature")]
         public void TestCreateAfterConfigureInstances()
         {
             var x1 = new X1();

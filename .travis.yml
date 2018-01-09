@@ -1,0 +1,10 @@
+dist: trusty
+sudo: false
+language: csharp
+dotnet: 2.0.0
+mono: none
+script:
+  - dotnet restore ./GroboContainer.sln --verbosity m
+  - dotnet build --configuration Release --framework netstandard2.0 ./GroboContainer/GroboContainer.csproj
+#  - dotnet build --configuration Release --framework netcoreapp2.0 ./GroboContainer.Tests/GroboContainer.Tests.csproj
+#  - dotnet test --no-build --configuration Release --framework netcoreapp2.0 --filter TestCategory!=LongRunning ./GroboContainer.Tests/GroboContainer.Tests.csproj

@@ -20,6 +20,7 @@ namespace Tests.PerfTests
         }
 
         [Test]
+        [Category("LongRunning")]
         public void Test()
         {
             const int containerCount = 1000;

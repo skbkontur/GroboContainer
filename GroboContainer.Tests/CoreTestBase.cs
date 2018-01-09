@@ -41,7 +41,7 @@ namespace Tests
             }
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void TestFixtureTearDown()
         {
             ClearFields();

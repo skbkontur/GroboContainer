@@ -22,7 +22,7 @@ namespace GroboContainer.Core
         private static readonly Type getLazyFuncMethodReturnType = getLazyFuncMethod.ReturnType.GetGenericTypeDefinition();
         private static readonly IDictionary<Type, MethodInfo> getCreationFuncMethods = typeof(Container).GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(x => x.Name == "GetCreationFunc" && x.IsGenericMethod).ToDictionary(x => x.ReturnType.GetGenericTypeDefinition());
 
-        internal Container(IInternalContainer internalContainer, IContextHolder holder, ILog currentLog)
+        public Container(IInternalContainer internalContainer, IContextHolder holder, ILog currentLog)
         {
             this.internalContainer = internalContainer;
             this.holder = holder;

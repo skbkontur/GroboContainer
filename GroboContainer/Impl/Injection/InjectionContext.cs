@@ -16,7 +16,7 @@ namespace GroboContainer.Impl.Injection
         private volatile Container container;
         private volatile IContextHolder contextHolder;
 
-        internal InjectionContext(IInternalContainer internalContainer, ILog log,
+        public InjectionContext(IInternalContainer internalContainer, ILog log,
                                   Func<IInjectionContext, IContextHolder> createHolder)
         {
             InternalContainer = internalContainer;

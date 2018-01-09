@@ -63,10 +63,10 @@ namespace GroboContainer.Tests.FunctionalTests
         {
             const string log =
                 @"Container: 'root'
-Get<Tests.FunctionalTests.ContainerLoggingTest+ICrash1>()
- Constructing<Tests.FunctionalTests.ContainerLoggingTest+Crash1>()
-  Get<Tests.FunctionalTests.ContainerLoggingTest+ICrash2>()
-   Constructing<Tests.FunctionalTests.ContainerLoggingTest+Crash2>()
+Get<GroboContainer.Tests.FunctionalTests.ContainerLoggingTest+ICrash1>()
+ Constructing<GroboContainer.Tests.FunctionalTests.ContainerLoggingTest+Crash1>()
+  Get<GroboContainer.Tests.FunctionalTests.ContainerLoggingTest+ICrash2>()
+   Constructing<GroboContainer.Tests.FunctionalTests.ContainerLoggingTest+Crash2>()
     Get<System.Int32>()
 ";
             RunMethodWithException<ContainerException>(() =>
@@ -84,10 +84,10 @@ Get<Tests.FunctionalTests.ContainerLoggingTest+ICrash1>()
             container.GetAll<I1>();
             Assert.AreEqual(
                 @"Container: 'root'
-GetAll<Tests.FunctionalTests.ContainerLoggingTest+I1>()
- Constructing<Tests.FunctionalTests.ContainerLoggingTest+C1>()
- Constructed<Tests.FunctionalTests.ContainerLoggingTest+C1>()
-EndGetAll<Tests.FunctionalTests.ContainerLoggingTest+I1>()
+GetAll<GroboContainer.Tests.FunctionalTests.ContainerLoggingTest+I1>()
+ Constructing<GroboContainer.Tests.FunctionalTests.ContainerLoggingTest+C1>()
+ Constructed<GroboContainer.Tests.FunctionalTests.ContainerLoggingTest+C1>()
+EndGetAll<GroboContainer.Tests.FunctionalTests.ContainerLoggingTest+I1>()
 ",
                 container.LastConstructionLog);
         }
@@ -98,8 +98,8 @@ EndGetAll<Tests.FunctionalTests.ContainerLoggingTest+I1>()
             container.Get<I2>();
             Assert.AreEqual(
                 @"Container: 'root'
-Get<Tests.FunctionalTests.ContainerLoggingTest+I2>()
- Constructing<Tests.FunctionalTests.ContainerLoggingTest+C2>()
+Get<GroboContainer.Tests.FunctionalTests.ContainerLoggingTest+I2>()
+ Constructing<GroboContainer.Tests.FunctionalTests.ContainerLoggingTest+C2>()
   Get<GroboContainer.Core.IContainer>()
    Reused<GroboContainer.Core.IContainer>()
   EndGet<GroboContainer.Core.IContainer>()

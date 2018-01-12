@@ -2,7 +2,7 @@
 * text=auto
 
 # The above will handle all files NOT found below
-*.cs          text diff=csharp eol=crlf
+*.cs          text diff=csharp
 *.csproj      text
 *.sln         text
 *.DotSettings text

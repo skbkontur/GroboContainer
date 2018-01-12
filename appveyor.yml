@@ -1,8 +1,8 @@
 image: Visual Studio 2017
 
 init:
-  - git config --global core.eol
-  - git config --global core.autocrlf
+  - cmd: git config --global core.autocrlf
+  - cmd: git config --global core.eol
 
 before_build:
   - cmd: dotnet --info

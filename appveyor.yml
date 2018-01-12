@@ -1,8 +1,5 @@
 image: Visual Studio 2017
 
-init:
-  - cmd: git config --global core.eol native
-
 before_build:
   - cmd: dotnet --info
   - cmd: dotnet restore ./GroboContainer.sln --verbosity m

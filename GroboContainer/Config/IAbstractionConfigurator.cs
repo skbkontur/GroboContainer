@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace GroboContainer.Config
 {
@@ -7,5 +7,6 @@ namespace GroboContainer.Config
         void UseInstances(params object[] instances);
         void Fail();
         void UseType(Type type);
+        void UseTypes(Type[] types);
     }
 }

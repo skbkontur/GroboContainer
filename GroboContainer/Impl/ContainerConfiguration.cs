@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+
 using GroboContainer.Core;
 
 namespace GroboContainer.Impl
 {
     public class ContainerConfiguration : IContainerConfiguration
     {
-        private readonly Type[] types;
-
         public ContainerConfiguration(params Assembly[] assembliesToScan)
-            : this((IEnumerable<Assembly>) assembliesToScan)
+            : this((IEnumerable<Assembly>)assembliesToScan)
         {
         }
 
@@ -50,7 +49,6 @@ namespace GroboContainer.Impl
             types = typesSet.ToArray();
         }
 
-
         public IEnumerable<Type> GetTypesToScan()
         {
             return types;
@@ -58,5 +56,6 @@ namespace GroboContainer.Impl
 
         public string ContainerName { get; private set; }
         public ContainerMode Mode { get; private set; }
+        private readonly Type[] types;
     }
 }

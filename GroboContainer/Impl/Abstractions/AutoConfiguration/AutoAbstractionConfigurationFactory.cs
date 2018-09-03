@@ -1,4 +1,5 @@
 using System;
+
 using GroboContainer.Impl.Implementations;
 using GroboContainer.New;
 
@@ -6,10 +7,6 @@ namespace GroboContainer.Impl.Abstractions.AutoConfiguration
 {
     public class AutoAbstractionConfigurationFactory : IAutoAbstractionConfigurationFactory
     {
-        private readonly IAbstractionsCollection abstractionsCollection;
-        private readonly IImplementationConfigurationCache implConfigCache;
-        private readonly ITypesHelper typesHelper;
-
         public AutoAbstractionConfigurationFactory(ITypesHelper typesHelper,
                                                    IAbstractionsCollection abstractionsCollection,
                                                    IImplementationConfigurationCache implConfigCache)
@@ -29,5 +26,9 @@ namespace GroboContainer.Impl.Abstractions.AutoConfiguration
         }
 
         #endregion
+
+        private readonly IAbstractionsCollection abstractionsCollection;
+        private readonly IImplementationConfigurationCache implConfigCache;
+        private readonly ITypesHelper typesHelper;
     }
 }

@@ -4,8 +4,6 @@ namespace GroboContainer.Tests
 {
     public class MockRepositoryWrapper
     {
-        private readonly MockRepository mockRepository;
-
         public MockRepositoryWrapper()
         {
             mockRepository = new MockRepository();
@@ -24,5 +22,7 @@ namespace GroboContainer.Tests
             mockRepository.BackToRecordAll(BackToRecordOptions.None);
             mockRepository.ReplayAll();
         }
+
+        private readonly MockRepository mockRepository;
     }
 }

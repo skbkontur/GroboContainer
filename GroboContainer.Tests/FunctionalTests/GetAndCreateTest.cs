@@ -16,12 +16,45 @@ namespace GroboContainer.Tests.FunctionalTests
             container = new Container(configuration);
         }
 
-        private ContainerConfiguration configuration;
-        private Container container;
-
         private interface IClassReuseNever
         {
         }
+
+        [Test]
+        public void TestGetReuseesInstance()
+        {
+            var instance1 = container.Get<ClassReuseAllways>();
+            var instance2 = container.Get<ClassReuseAllways>();
+            Assert.AreSame(instance1, instance2);
+        }
+
+        [Test]
+        public void TestReuseDependenciesReuseAllways()
+        {
+            var instance1 = container.Get<ClassWithArgumentsReuseAllways>();
+            var instance2 = container.Get<ClassWithArgumentsReuseAllways>();
+            Assert.AreSame(instance1.Dependency, instance2.Dependency);
+        }
+
+        [Test]
+        public void TestReuseDependenciesReuseNever()
+        {
+            var instance1 = (ClassWithArgumentsReuseNever)container.Create(typeof(ClassWithArgumentsReuseNever));
+            var instance2 = (ClassWithArgumentsReuseNever)container.Create(typeof(ClassWithArgumentsReuseNever));
+            Assert.AreNotSame(instance1.Dependency, instance2.Dependency);
+        }
+
+        [Test]
+        public void TestReuseNever()
+        {
+            var instance1 = container.Create<IClassReuseNever>();
+            var instance2 = container.Create<IClassReuseNever>();
+            Assert.That(instance1, Is.InstanceOf<ClassReuseNever>());
+            Assert.AreNotSame(instance1, instance2);
+        }
+
+        private ContainerConfiguration configuration;
+        private Container container;
 
         private class ClassReuseNever : IClassReuseNever
         {
@@ -49,39 +82,6 @@ namespace GroboContainer.Tests.FunctionalTests
 
         public class ClassReuseAllways
         {
-        }
-
-        [Test]
-        public void TestGetReuseesInstance()
-        {
-            var instance1 = container.Get<ClassReuseAllways>();
-            var instance2 = container.Get<ClassReuseAllways>();
-            Assert.AreSame(instance1, instance2);
-        }
-
-        [Test]
-        public void TestReuseDependenciesReuseAllways()
-        {
-            var instance1 = container.Get<ClassWithArgumentsReuseAllways>();
-            var instance2 = container.Get<ClassWithArgumentsReuseAllways>();
-            Assert.AreSame(instance1.Dependency, instance2.Dependency);
-        }
-
-        [Test]
-        public void TestReuseDependenciesReuseNever()
-        {
-            var instance1 = (ClassWithArgumentsReuseNever) container.Create(typeof (ClassWithArgumentsReuseNever));
-            var instance2 = (ClassWithArgumentsReuseNever) container.Create(typeof (ClassWithArgumentsReuseNever));
-            Assert.AreNotSame(instance1.Dependency, instance2.Dependency);
-        }
-
-        [Test]
-        public void TestReuseNever()
-        {
-            var instance1 = container.Create<IClassReuseNever>();
-            var instance2 = container.Create<IClassReuseNever>();
-            Assert.That(instance1, Is.InstanceOf<ClassReuseNever>());
-            Assert.AreNotSame(instance1, instance2);
         }
     }
 }

@@ -9,12 +9,12 @@ namespace GroboContainer.OldHlam
         {
             if (ReferenceEquals(null, contractsArray))
                 return null;
-            var copyArray = (string[]) contractsArray.Clone();
+            var copyArray = (string[])contractsArray.Clone();
             Array.Sort(copyArray);
 
             var stringBuilder = new StringBuilder();
             for (int i = 0; i < contractsArray.Length; i++)
-                stringBuilder.Append(copyArray[i]).Append((char) 0);
+                stringBuilder.Append(copyArray[i]).Append((char)0);
             return stringBuilder.ToString();
         }
     }

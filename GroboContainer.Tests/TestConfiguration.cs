@@ -7,8 +7,6 @@ namespace GroboContainer.Tests
 {
     public class TestConfiguration : IContainerConfiguration
     {
-        private readonly IEnumerable<Type> types;
-
         public TestConfiguration(IEnumerable<Type> types)
         {
             this.types = types;
@@ -23,14 +21,10 @@ namespace GroboContainer.Tests
 
         #endregion
 
-        public string ContainerName
-        {
-            get { return "Test"; }
-        }
+        public string ContainerName { get { return "Test"; } }
 
-        public ContainerMode Mode
-        {
-            get { return ContainerMode.Default; }
-        }
+        public ContainerMode Mode { get { return ContainerMode.Default; } }
+
+        private readonly IEnumerable<Type> types;
     }
 }

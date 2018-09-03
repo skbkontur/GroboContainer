@@ -1,14 +1,9 @@
 using System;
-using GroboContainer.Impl.Abstractions;
 
 namespace GroboContainer.OldHlam
 {
     public class AbstractionKey : IEquatable<AbstractionKey>
     {
-        private readonly string contracts;
-        private readonly int hash;
-        private readonly Type type;
-
         public AbstractionKey(Type type, string[] requireContracts)
         {
             this.type = type;
@@ -31,8 +26,8 @@ namespace GroboContainer.OldHlam
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof (AbstractionKey)) return false;
-            return Equals((AbstractionKey) obj);
+            if (obj.GetType() != typeof(AbstractionKey)) return false;
+            return Equals((AbstractionKey)obj);
         }
 
         public override int GetHashCode()
@@ -44,8 +39,12 @@ namespace GroboContainer.OldHlam
         {
             unchecked
             {
-                return ((type != null ? type.GetHashCode() : 0)*397) ^ (contracts != null ? contracts.GetHashCode() : 0);
+                return ((type != null ? type.GetHashCode() : 0) * 397) ^ (contracts != null ? contracts.GetHashCode() : 0);
             }
         }
+
+        private readonly string contracts;
+        private readonly int hash;
+        private readonly Type type;
     }
 }

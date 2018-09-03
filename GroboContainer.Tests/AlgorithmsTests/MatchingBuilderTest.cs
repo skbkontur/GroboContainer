@@ -7,8 +7,6 @@ namespace GroboContainer.Tests.AlgorithmsTests
 {
     public class MatchingBuilderTest : TestBase
     {
-        private MatchingBuilder builder;
-
         public override void SetUp()
         {
             base.SetUp();
@@ -97,10 +95,12 @@ namespace GroboContainer.Tests.AlgorithmsTests
             graph.AddEdge(4, 4);
             Matching matching;
             Assert.IsTrue(builder.TryBuild(graph, out matching));
-            
+
             Assert.IsFalse(builder.HasAnotherMatching(graph, matching));
             graph.AddEdge(1, 4);
             Assert.IsTrue(builder.HasAnotherMatching(graph, matching));
         }
+
+        private MatchingBuilder builder;
     }
 }

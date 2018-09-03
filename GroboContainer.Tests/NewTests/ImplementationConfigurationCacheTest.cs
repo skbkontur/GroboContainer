@@ -14,24 +14,24 @@ namespace GroboContainer.Tests.NewTests
             implementationCache = new ImplementationConfigurationCache();
         }
 
-        private IImplementationConfigurationCache implementationCache;
-
         [Test]
         public void TestCacheWorks()
         {
-            var implementation = new Implementation(typeof (int));
+            var implementation = new Implementation(typeof(int));
             IImplementationConfiguration cfg1 = implementationCache.GetOrCreate(implementation);
             Assert.That(cfg1, Is.InstanceOf<AutoImplementationConfiguration>());
-            Assert.AreEqual(typeof (int), cfg1.ObjectType);
+            Assert.AreEqual(typeof(int), cfg1.ObjectType);
 
             Assert.AreSame(cfg1, implementationCache.GetOrCreate(implementation));
 
-            var implementation2 = new Implementation(typeof (long));
+            var implementation2 = new Implementation(typeof(long));
             IImplementationConfiguration cfg2 = implementationCache.GetOrCreate(implementation2);
             Assert.AreNotEqual(cfg1, cfg2);
 
             Assert.AreSame(cfg1, implementationCache.GetOrCreate(implementation));
             Assert.AreSame(cfg2, implementationCache.GetOrCreate(implementation2));
         }
+
+        private IImplementationConfigurationCache implementationCache;
     }
 }

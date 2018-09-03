@@ -24,22 +24,19 @@ namespace GroboContainer.Tests.ChildContainerSupportTests
 
         #endregion
 
-        private IContainerSelector selector;
-        private IAbstractionConfiguration abstractionConfiguration;
-
         [Test]
         public void TestAddOnlyToLeafCollection()
         {
             var rootToChildCollections = new[]
-                                             {
-                                                 GetMock<IAbstractionConfigurationCollection>(),
-                                                 GetMock<IAbstractionConfigurationCollection>()
-                                             };
+                {
+                    GetMock<IAbstractionConfigurationCollection>(),
+                    GetMock<IAbstractionConfigurationCollection>()
+                };
             var compositeCollection = new CompositeCollection(rootToChildCollections, selector);
 
-            selector.Expect(s => s.Select(typeof (int), 1)).Return(0);
+            selector.Expect(s => s.Select(typeof(int), 1)).Return(0);
             RunMethodWithException<InvalidOperationException>(() =>
-                                                              compositeCollection.Add(typeof (int),
+                                                              compositeCollection.Add(typeof(int),
                                                                                       abstractionConfiguration));
         }
 
@@ -47,17 +44,17 @@ namespace GroboContainer.Tests.ChildContainerSupportTests
         public void TestBadSelector()
         {
             var rootToChildCollections = new[]
-                                             {
-                                                 GetMock<IAbstractionConfigurationCollection>(),
-                                                 GetMock<IAbstractionConfigurationCollection>()
-                                             };
+                {
+                    GetMock<IAbstractionConfigurationCollection>(),
+                    GetMock<IAbstractionConfigurationCollection>()
+                };
             var compositeCollection = new CompositeCollection(rootToChildCollections, selector);
 
-            selector.Expect(s => s.Select(typeof (int), 1)).Return(2);
-            RunMethodWithException<BadSelectorException>(() => compositeCollection.Get(typeof (int)));
+            selector.Expect(s => s.Select(typeof(int), 1)).Return(2);
+            RunMethodWithException<BadSelectorException>(() => compositeCollection.Get(typeof(int)));
 
-            selector.Expect(s => s.Select(typeof (int), 1)).Return(-1);
-            RunMethodWithException<BadSelectorException>(() => compositeCollection.Get(typeof (int)));
+            selector.Expect(s => s.Select(typeof(int), 1)).Return(-1);
+            RunMethodWithException<BadSelectorException>(() => compositeCollection.Get(typeof(int)));
         }
 
         [Test]
@@ -65,7 +62,6 @@ namespace GroboContainer.Tests.ChildContainerSupportTests
         {
             var rootToChildCollections = new[] {GetMock<IAbstractionConfigurationCollection>(),};
             var compositeCollection = new CompositeCollection(rootToChildCollections, selector);
-
 
             var abstractionConfigurationCollection = GetMock<IAbstractionConfigurationCollection>();
             CompositeCollection childCollection =
@@ -90,14 +86,13 @@ namespace GroboContainer.Tests.ChildContainerSupportTests
             var rootToChildCollections = new[] {GetMock<IAbstractionConfigurationCollection>(),};
             var compositeCollection = new CompositeCollection(rootToChildCollections, selector);
 
-            selector.Expect(s => s.Select(typeof (int), 0)).Return(0);
-            rootToChildCollections[0].Expect(c => c.Add(typeof (int), abstractionConfiguration));
-            compositeCollection.Add(typeof (int), abstractionConfiguration);
+            selector.Expect(s => s.Select(typeof(int), 0)).Return(0);
+            rootToChildCollections[0].Expect(c => c.Add(typeof(int), abstractionConfiguration));
+            compositeCollection.Add(typeof(int), abstractionConfiguration);
 
-            selector.Expect(s => s.Select(typeof (int), 0)).Return(0);
-            rootToChildCollections[0].Expect(c => c.Get(typeof (int))).Return(abstractionConfiguration);
-            Assert.AreSame(abstractionConfiguration, compositeCollection.Get(typeof (int)));
-
+            selector.Expect(s => s.Select(typeof(int), 0)).Return(0);
+            rootToChildCollections[0].Expect(c => c.Get(typeof(int))).Return(abstractionConfiguration);
+            Assert.AreSame(abstractionConfiguration, compositeCollection.Get(typeof(int)));
 
             var configs = new[] {GetMock<IAbstractionConfiguration>()};
             rootToChildCollections[0].Expect(c => c.GetAll()).Return(configs);
@@ -108,24 +103,23 @@ namespace GroboContainer.Tests.ChildContainerSupportTests
         public void TestTwoCollections()
         {
             var rootToChildCollections = new[]
-                                             {
-                                                 GetMock<IAbstractionConfigurationCollection>(),
-                                                 GetMock<IAbstractionConfigurationCollection>()
-                                             };
+                {
+                    GetMock<IAbstractionConfigurationCollection>(),
+                    GetMock<IAbstractionConfigurationCollection>()
+                };
             var compositeCollection = new CompositeCollection(rootToChildCollections, selector);
 
-            selector.Expect(s => s.Select(typeof (int), 1)).Return(1);
-            rootToChildCollections[1].Expect(c => c.Add(typeof (int), abstractionConfiguration));
-            compositeCollection.Add(typeof (int), abstractionConfiguration);
+            selector.Expect(s => s.Select(typeof(int), 1)).Return(1);
+            rootToChildCollections[1].Expect(c => c.Add(typeof(int), abstractionConfiguration));
+            compositeCollection.Add(typeof(int), abstractionConfiguration);
 
-            selector.Expect(s => s.Select(typeof (int), 1)).Return(0);
-            rootToChildCollections[0].Expect(c => c.Get(typeof (int))).Return(abstractionConfiguration);
-            Assert.AreSame(abstractionConfiguration, compositeCollection.Get(typeof (int)));
+            selector.Expect(s => s.Select(typeof(int), 1)).Return(0);
+            rootToChildCollections[0].Expect(c => c.Get(typeof(int))).Return(abstractionConfiguration);
+            Assert.AreSame(abstractionConfiguration, compositeCollection.Get(typeof(int)));
 
-            selector.Expect(s => s.Select(typeof (int), 1)).Return(1);
-            rootToChildCollections[1].Expect(c => c.Get(typeof (int))).Return(abstractionConfiguration);
-            Assert.AreSame(abstractionConfiguration, compositeCollection.Get(typeof (int)));
-
+            selector.Expect(s => s.Select(typeof(int), 1)).Return(1);
+            rootToChildCollections[1].Expect(c => c.Get(typeof(int))).Return(abstractionConfiguration);
+            Assert.AreSame(abstractionConfiguration, compositeCollection.Get(typeof(int)));
 
             var configs = new[] {GetMock<IAbstractionConfiguration>()};
             rootToChildCollections[1].Expect(c => c.GetAll()).Return(configs);
@@ -136,18 +130,21 @@ namespace GroboContainer.Tests.ChildContainerSupportTests
         public void TestWorkWithIContainer()
         {
             var rootToChildCollections = new[]
-                                             {
-                                                 GetMock<IAbstractionConfigurationCollection>(),
-                                                 GetMock<IAbstractionConfigurationCollection>()
-                                             };
+                {
+                    GetMock<IAbstractionConfigurationCollection>(),
+                    GetMock<IAbstractionConfigurationCollection>()
+                };
             var compositeCollection = new CompositeCollection(rootToChildCollections, selector);
 
-            rootToChildCollections[1].Expect(c => c.Add(typeof (IContainer),
+            rootToChildCollections[1].Expect(c => c.Add(typeof(IContainer),
                                                         abstractionConfiguration));
-            compositeCollection.Add(typeof (IContainer), abstractionConfiguration);
+            compositeCollection.Add(typeof(IContainer), abstractionConfiguration);
 
-            rootToChildCollections[1].Expect(c => c.Get(typeof (IContainer))).Return(abstractionConfiguration);
-            Assert.AreSame(abstractionConfiguration, compositeCollection.Get(typeof (IContainer)));
+            rootToChildCollections[1].Expect(c => c.Get(typeof(IContainer))).Return(abstractionConfiguration);
+            Assert.AreSame(abstractionConfiguration, compositeCollection.Get(typeof(IContainer)));
         }
+
+        private IContainerSelector selector;
+        private IAbstractionConfiguration abstractionConfiguration;
     }
 }

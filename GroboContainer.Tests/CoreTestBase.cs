@@ -9,9 +9,6 @@ namespace GroboContainer.Tests
 {
     public abstract class CoreTestBase
     {
-        protected static Mockery mockery;
-        private static MockRepositoryWrapper mockRepository;
-
         [SetUp]
         public virtual void SetUp()
         {
@@ -56,7 +53,7 @@ namespace GroboContainer.Tests
 
         protected static void RunMethodWithException<TE>(Action method) where TE : Exception
         {
-            RunMethodWithException(method, (Action<TE>) null);
+            RunMethodWithException(method, (Action<TE>)null);
         }
 
         protected static void RunMethodWithException<TE>(Action method, string expectedMessageSubstring) where TE : Exception
@@ -67,8 +64,8 @@ namespace GroboContainer.Tests
 
         protected static void RunMethodWithException<TE>(Action method, Action<TE> exceptionCheckDelegate) where TE : Exception
         {
-            if (typeof (TE) == typeof (Exception) || typeof (TE) == typeof (AssertionException))
-                Assert.Fail("использование типа {0} запрещено", (object) typeof (TE));
+            if (typeof(TE) == typeof(Exception) || typeof(TE) == typeof(AssertionException))
+                Assert.Fail("использование типа {0} запрещено", (object)typeof(TE));
             try
             {
                 method();
@@ -80,7 +77,10 @@ namespace GroboContainer.Tests
                 exceptionCheckDelegate?.Invoke(ex);
                 return;
             }
-            Assert.Fail("Method didn't thrown expected exception " + typeof (TE));
+            Assert.Fail("Method didn't thrown expected exception " + typeof(TE));
         }
+
+        protected static Mockery mockery;
+        private static MockRepositoryWrapper mockRepository;
     }
 }

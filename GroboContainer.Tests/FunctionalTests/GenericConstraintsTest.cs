@@ -11,20 +11,7 @@ namespace GroboContainer.Tests.FunctionalTests
         {
         }
 
-        private class X
-        {
-        }
-
         private interface J<T>
-        {
-        }
-
-        private class Y : J<X>
-        {
-        }
-
-        private class C<T1, T2> : I<T1>
-            where T2 : J<T1>
         {
         }
 
@@ -46,6 +33,25 @@ namespace GroboContainer.Tests.FunctionalTests
         {
         }
 
+        [Test]
+        public void TestResolveGenericFromConstraintsTwoLevels()
+        {
+            Assert.That(container.Get<I1<X>>(), Is.InstanceOf(typeof(R2<X, R<AA>>)));
+        }
+
+        private class X
+        {
+        }
+
+        private class Y : J<X>
+        {
+        }
+
+        private class C<T1, T2> : I<T1>
+            where T2 : J<T1>
+        {
+        }
+
         private class AA : IA
         {
         }
@@ -53,18 +59,11 @@ namespace GroboContainer.Tests.FunctionalTests
         private class R<T> : I2<X>
             where T : IA
         {
-
         }
 
         private class R2<T1, T2> : I1<T1>
             where T2 : I2<T1>
         {
-        }
-
-        [Test]
-        public void TestResolveGenericFromConstraintsTwoLevels()
-        {
-            Assert.That(container.Get<I1<X>>(), Is.InstanceOf(typeof(R2<X, R<AA>>)));
         }
     }
 }

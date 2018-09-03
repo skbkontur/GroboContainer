@@ -73,7 +73,7 @@ namespace GroboContainer.Impl
             var valFieldInfo = bucketType.GetField("val", BindingFlags.Instance | BindingFlags.Public);
             var setValueMethodInfo = typeof(Array).GetMethod("SetValue", new[] {typeof(object), typeof(int)});
 
-            using(var il = new GroboIL(dynamicMethod))
+            using (var il = new GroboIL(dynamicMethod))
             {
                 var buckets = il.DeclareLocal(bucketArrayType, "buckets");
                 var length = il.DeclareLocal(typeof(int), "length");

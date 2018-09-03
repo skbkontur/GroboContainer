@@ -2,12 +2,10 @@ namespace GroboContainer.Algorithms.DataStructures
 {
     public class Matching
     {
-        private readonly int[] matching;
-
         public Matching(int size)
         {
             matching = new int[size];
-            for (int i = 0; i < size; ++i )
+            for (int i = 0; i < size; ++i)
             {
                 matching[i] = -1;
             }
@@ -32,5 +30,7 @@ namespace GroboContainer.Algorithms.DataStructures
         {
             matching[i] = -1;
         }
+
+        private readonly int[] matching;
     }
 }

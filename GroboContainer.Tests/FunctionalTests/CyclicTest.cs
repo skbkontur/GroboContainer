@@ -9,6 +9,58 @@ namespace GroboContainer.Tests.FunctionalTests
 {
     public class CyclicTest : ContainerTestBase
     {
+        private interface I1
+        {
+        }
+
+        private interface I2
+        {
+        }
+
+        private interface I3
+        {
+        }
+
+        private interface I4
+        {
+        }
+
+        [Test]
+        public void Test()
+        {
+            RunFail<CyclicDependencyException>(() =>
+                                               container.Get<MyClass1>());
+        }
+
+        [Test]
+        public void TestGetImplementationTypes()
+        {
+            Type[] types = container.GetImplementationTypes(typeof(MyClass1));
+            CollectionAssert.AreEquivalent(new[] {typeof(MyClass1)}, types);
+        }
+
+        [Test]
+        public void TestLongCycle()
+        {
+            RunFail<CyclicDependencyException>(() => container.Get<I4>());
+        }
+
+        [Test]
+        public void TestWithFunc()
+        {
+            RunMethodWithException<ContainerException>(
+                () => container.Get<MyClass3>(),
+                exception =>
+                Assert.That(exception.InnerException, Is.InstanceOf<CyclicDependencyException>()));
+        }
+
+        [Test]
+        public void TestWithFunc2()
+        {
+            var cycle = container.Get<MyClass3NoCycle>();
+            Assert.AreSame(cycle, cycle.func());
+        }
+
         private class MyClass1
         {
             public MyClass1(MyClass2 myClass2)
@@ -33,28 +85,12 @@ namespace GroboContainer.Tests.FunctionalTests
 
         private class MyClass3NoCycle
         {
-            public readonly Func<MyClass3NoCycle> func;
-
             public MyClass3NoCycle(Func<MyClass3NoCycle> getFunc)
             {
                 func = getFunc;
             }
-        }
 
-        private interface I1
-        {
-        }
-
-        private interface I2
-        {
-        }
-
-        private interface I3
-        {
-        }
-
-        private interface I4
-        {
+            public readonly Func<MyClass3NoCycle> func;
         }
 
         private class C1 : I1
@@ -83,44 +119,6 @@ namespace GroboContainer.Tests.FunctionalTests
             public C4(I1 i1)
             {
             }
-        }
-
-
-        [Test]
-        public void Test()
-        {
-            RunFail<CyclicDependencyException>(() =>
-                                               container.Get<MyClass1>());
-        }
-
-        [Test]
-        public void TestGetImplementationTypes()
-        {
-            Type[] types = container.GetImplementationTypes(typeof (MyClass1));
-            CollectionAssert.AreEquivalent(new[] {typeof (MyClass1)}, types);
-        }
-
-
-        [Test]
-        public void TestLongCycle()
-        {
-            RunFail<CyclicDependencyException>(() => container.Get<I4>());
-        }
-
-        [Test]
-        public void TestWithFunc()
-        {
-            RunMethodWithException<ContainerException>(
-                () => container.Get<MyClass3>(),
-                exception =>
-                Assert.That(exception.InnerException, Is.InstanceOf<CyclicDependencyException>()));
-        }
-
-        [Test]
-        public void TestWithFunc2()
-        {
-            var cycle = container.Get<MyClass3NoCycle>();
-            Assert.AreSame(cycle, cycle.func());
         }
     }
 }

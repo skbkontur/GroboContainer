@@ -33,20 +33,15 @@ namespace GroboContainer.Tests.InjectionTests
             return holder;
         }
 
-        private IInternalContainer internalContainer;
-        private ILog log;
-        private InjectionContext injectionContext;
-        private IContextHolder holder;
-
         [Test]
         public void TestCycle()
         {
-            Type type = typeof (int);
+            Type type = typeof(int);
             log.ExpectBeginConstruct(type);
             injectionContext.BeginConstruct(type);
 
-            log.ExpectBeginConstruct(typeof (long));
-            injectionContext.BeginConstruct(typeof (long));
+            log.ExpectBeginConstruct(typeof(long));
+            injectionContext.BeginConstruct(typeof(long));
             log.ExpectGetLog("zzz");
             log.ExpectBeginConstruct(type);
             RunMethodWithException<CyclicDependencyException>(() =>
@@ -68,7 +63,7 @@ namespace GroboContainer.Tests.InjectionTests
         [Test]
         public void TestKillNoHolder()
         {
-            Type type = typeof (int);
+            Type type = typeof(int);
             log.ExpectBeginConstruct(type);
             injectionContext.BeginConstruct(type);
             log.ExpectEndConstruct(type);
@@ -78,7 +73,7 @@ namespace GroboContainer.Tests.InjectionTests
         [Test]
         public void TestKillWithContainer()
         {
-            Type type = typeof (int);
+            Type type = typeof(int);
             log.ExpectBeginConstruct(type);
             injectionContext.BeginConstruct(type);
             injectionContext.Container.ToString(); //container created
@@ -90,7 +85,7 @@ namespace GroboContainer.Tests.InjectionTests
         [Test]
         public void TestLogging()
         {
-            Type type = typeof (int);
+            Type type = typeof(int);
             log.ExpectBeginConstruct(type);
             injectionContext.BeginConstruct(type);
 
@@ -106,7 +101,7 @@ namespace GroboContainer.Tests.InjectionTests
             log.ExpectCrash();
             injectionContext.Crash();
 
-            Type type1 = typeof (long);
+            Type type1 = typeof(long);
             log.ExpectBeginGet(type1);
             injectionContext.BeginGet(type1);
 
@@ -139,5 +134,10 @@ namespace GroboContainer.Tests.InjectionTests
             Assert.AreSame(internalContainer, injectionContext.InternalContainer);
             Assert.AreSame(log, injectionContext.GetLog());
         }
+
+        private IInternalContainer internalContainer;
+        private ILog log;
+        private InjectionContext injectionContext;
+        private IContextHolder holder;
     }
 }

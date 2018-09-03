@@ -10,15 +10,10 @@ namespace GroboContainer.Impl.ChildContainersSupport
 {
     public class CompositeContainerContext : IContainerContext
     {
-        private readonly IAbstractionsCollection abstractionsCollection;
-        private readonly CompositeCollection compositeCollection;
-        private readonly IContainerConfiguration configuration;
-        private readonly ITypesHelper typesHelper;
-
         public CompositeContainerContext(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator,
                                          IContainerSelector containerSelector)
         {
-            this.configuration = configuration;
+            this.Configuration = configuration;
             ClassWrapperCreator = classWrapperCreator;
             typesHelper = new TypesHelper();
 
@@ -30,64 +25,62 @@ namespace GroboContainer.Impl.ChildContainersSupport
 
             var implementationTypesCollection = new ImplementationTypesCollection(configuration, typesHelper);
             ImplementationCache = new ImplementationCache();
-			abstractionsCollection = new AbstractionsCollection(implementationTypesCollection, ImplementationCache);
-			ImplementationConfigurationCache = new ImplementationConfigurationCache();
+            abstractionsCollection = new AbstractionsCollection(implementationTypesCollection, ImplementationCache);
+            ImplementationConfigurationCache = new ImplementationConfigurationCache();
             var factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollection,
-																  ImplementationConfigurationCache);
+                                                                  ImplementationConfigurationCache);
             compositeCollection = new CompositeCollection(new[] {new AbstractionConfigurationCollection(factory)},
                                                           containerSelector);
-            compositeCollection.Add(typeof (IContainer),
+            compositeCollection.Add(typeof(IContainer),
                                     new StupidAbstractionConfiguration(
                                         new ContainerImplementationConfiguration()));
         }
 
         private CompositeContainerContext(CompositeContainerContext source)
         {
-            configuration = source.configuration;
+            Configuration = source.Configuration;
             typesHelper = source.typesHelper;
             FuncBuilder = source.FuncBuilder;
             CreationContext = source.CreationContext;
 
             //NOTE чтобы дочерние контейнеры не тормозили, используем ту же AbstractionsCollection
             abstractionsCollection = source.abstractionsCollection;
-			ImplementationCache = source.ImplementationCache;
+            ImplementationCache = source.ImplementationCache;
 
-			ImplementationConfigurationCache = new ImplementationConfigurationCache();
+            ImplementationConfigurationCache = new ImplementationConfigurationCache();
             var factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollection,
-																  ImplementationConfigurationCache);
+                                                                  ImplementationConfigurationCache);
             //NOTE для каждого экземпляра контейнера должна быть своя AbstractionConfigurationCollection
             var abstractionConfigurationCollection = new AbstractionConfigurationCollection(factory);
             compositeCollection =
                 source.compositeCollection.MakeChildCollection(abstractionConfigurationCollection);
-            compositeCollection.Add(typeof (IContainer),
+            compositeCollection.Add(typeof(IContainer),
                                     new StupidAbstractionConfiguration(
                                         new ContainerImplementationConfiguration()));
         }
 
+        private readonly IAbstractionsCollection abstractionsCollection;
+        private readonly CompositeCollection compositeCollection;
+        private readonly ITypesHelper typesHelper;
+
         #region IContainerContext Members
 
-	    public IImplementationCache ImplementationCache { get; private set; }
-	    public IImplementationConfigurationCache ImplementationConfigurationCache { get; private set; }
-	    public IClassWrapperCreator ClassWrapperCreator { get; private set; }
+        public IImplementationCache ImplementationCache { get; private set; }
+        public IImplementationConfigurationCache ImplementationConfigurationCache { get; private set; }
+        public IClassWrapperCreator ClassWrapperCreator { get; private set; }
 
         public IFuncBuilder FuncBuilder { get; private set; }
 
         public ICreationContext CreationContext { get; private set; }
 
-        public IAbstractionConfigurationCollection AbstractionConfigurationCollection
-        {
-            get { return compositeCollection; }
-        }
+        public IAbstractionConfigurationCollection AbstractionConfigurationCollection { get { return compositeCollection; } }
 
         public IContainerContext MakeChildContext()
         {
             return new CompositeContainerContext(this);
         }
 
-        public IContainerConfiguration Configuration
-        {
-            get { return configuration; }
-        }
+        public IContainerConfiguration Configuration { get; }
 
         #endregion
     }

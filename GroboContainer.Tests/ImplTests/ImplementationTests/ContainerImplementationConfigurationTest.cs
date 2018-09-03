@@ -20,8 +20,6 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
 
         #endregion
 
-        private ContainerImplementationConfiguration configuration;
-
         [Test]
         public void TestDisposeDoNothing()
         {
@@ -41,8 +39,10 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
             var context = NewMock<IInjectionContext>();
             var container = NewMock<IContainer>();
             context.ExpectGetContainer(container);
-            context.ExpectReused(typeof (IContainer));
+            context.ExpectReused(typeof(IContainer));
             Assert.AreSame(container, configuration.GetOrCreateInstance(context, null));
         }
+
+        private ContainerImplementationConfiguration configuration;
     }
 }

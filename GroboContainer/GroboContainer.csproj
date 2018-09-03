@@ -17,5 +17,5 @@
   <ItemGroup>
     <PackageReference Include="GrEmit" Version="2.2.3" />
   </ItemGroup>
-  
+
 </Project>

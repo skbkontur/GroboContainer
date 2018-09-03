@@ -18,20 +18,6 @@ namespace GroboContainer.Tests.FunctionalTests
         {
         }
 
-        private class GenericClassOneArg<T> : IGenericInheritor2<int, T>
-        {
-        }
-
-        private class SimpleClass<T>
-        {
-            public readonly IGenericInheritor2<int, T> interf;
-
-            public SimpleClass(IGenericInheritor2<int, T> interf)
-            {
-                this.interf = interf;
-            }
-        }
-
         [Test]
         public void TestGet()
         {
@@ -45,6 +31,20 @@ namespace GroboContainer.Tests.FunctionalTests
             var @class = container.Get<SimpleClass<long>>();
             Assert.That(@class, Is.InstanceOf<SimpleClass<long>>());
             Assert.That(@class.interf, Is.InstanceOf<GenericClassOneArg<long>>());
+        }
+
+        private class GenericClassOneArg<T> : IGenericInheritor2<int, T>
+        {
+        }
+
+        private class SimpleClass<T>
+        {
+            public SimpleClass(IGenericInheritor2<int, T> interf)
+            {
+                this.interf = interf;
+            }
+
+            public readonly IGenericInheritor2<int, T> interf;
         }
     }
 }

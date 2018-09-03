@@ -14,22 +14,6 @@ namespace GroboContainer.Tests.FunctionalTests
         {
         }
 
-        public class C2 : I2
-        {
-        }
-
-        private class C1 : I1
-        {
-            public readonly int a;
-            public readonly long b;
-
-            public C1(int a, long b, I2 i)
-            {
-                this.a = a;
-                this.b = b;
-            }
-        }
-
         public struct C3
         {
             public int a;
@@ -38,10 +22,10 @@ namespace GroboContainer.Tests.FunctionalTests
         [Test]
         public void TestCreate()
         {
-            object obj = container.Create(typeof (I1), new[] {typeof (long), typeof (int)}, new object[] {1L, 2});
+            object obj = container.Create(typeof(I1), new[] {typeof(long), typeof(int)}, new object[] {1L, 2});
             Assert.That(obj, Is.InstanceOf<C1>());
-            Assert.AreEqual(1, ((C1) obj).b);
-            Assert.AreEqual(2, ((C1) obj).a);
+            Assert.AreEqual(1, ((C1)obj).b);
+            Assert.AreEqual(2, ((C1)obj).a);
         }
 
         [Test]
@@ -49,16 +33,32 @@ namespace GroboContainer.Tests.FunctionalTests
         {
             object obj = container.Create<long, int, I1>(1, 2);
             Assert.That(obj, Is.InstanceOf<C1>());
-            Assert.AreEqual(1, ((C1) obj).b);
-            Assert.AreEqual(2, ((C1) obj).a);
+            Assert.AreEqual(1, ((C1)obj).b);
+            Assert.AreEqual(2, ((C1)obj).a);
         }
 
         [Test]
         public void TestCreateWithBadType()
         {
-            RunFail<InvalidCastException>(() => container.Create(typeof (I1),
-                                                                 new[] {typeof (long), typeof (int)},
+            RunFail<InvalidCastException>(() => container.Create(typeof(I1),
+                                                                 new[] {typeof(long), typeof(int)},
                                                                  new object[] {1, 2}));
+        }
+
+        public class C2 : I2
+        {
+        }
+
+        private class C1 : I1
+        {
+            public C1(int a, long b, I2 i)
+            {
+                this.a = a;
+                this.b = b;
+            }
+
+            public readonly int a;
+            public readonly long b;
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+
 using GroboContainer.Core;
 using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
@@ -10,13 +11,9 @@ namespace GroboContainer.Impl
 {
     public class ContainerContext : IContainerContext
     {
-        private readonly IAbstractionsCollection abstractionsCollection;
-        private readonly IContainerConfiguration configuration;
-        private readonly ITypesHelper typesHelper;
-
         public ContainerContext(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator)
         {
-            this.configuration = configuration;
+            this.Configuration = configuration;
             ClassWrapperCreator = classWrapperCreator;
             typesHelper = new TypesHelper();
 
@@ -28,19 +25,21 @@ namespace GroboContainer.Impl
 
             var implementationTypesCollection = new ImplementationTypesCollection(configuration, typesHelper);
             ImplementationCache = new ImplementationCache();
-			abstractionsCollection = new AbstractionsCollection(implementationTypesCollection, ImplementationCache); //g
-			ImplementationConfigurationCache = new ImplementationConfigurationCache(); //l
+            abstractionsCollection = new AbstractionsCollection(implementationTypesCollection, ImplementationCache); //g
+            ImplementationConfigurationCache = new ImplementationConfigurationCache(); //l
             var factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollection,
-																  ImplementationConfigurationCache);
+                                                                  ImplementationConfigurationCache);
             AbstractionConfigurationCollection = new AbstractionConfigurationCollection(factory);
-            AbstractionConfigurationCollection.Add(typeof (IContainer),
+            AbstractionConfigurationCollection.Add(typeof(IContainer),
                                                    new StupidAbstractionConfiguration(
                                                        new ContainerImplementationConfiguration()));
         }
 
         public IClassWrapperCreator ClassWrapperCreator { get; private set; }
-		public IImplementationConfigurationCache ImplementationConfigurationCache { get; private set; }
-		public IImplementationCache ImplementationCache { get; private set; }
+        public IImplementationConfigurationCache ImplementationConfigurationCache { get; private set; }
+        public IImplementationCache ImplementationCache { get; private set; }
+        private readonly IAbstractionsCollection abstractionsCollection;
+        private readonly ITypesHelper typesHelper;
 
         #region IContainerContext Members
 
@@ -54,10 +53,7 @@ namespace GroboContainer.Impl
             throw new NotSupportedException("Childs");
         }
 
-        public IContainerConfiguration Configuration
-        {
-            get { return configuration; }
-        }
+        public IContainerConfiguration Configuration { get; }
 
         #endregion
     }

@@ -15,32 +15,11 @@ namespace GroboContainer.Tests.FunctionalTests
         {
         }
 
-        private class C2 : I1
-        {
-        }
-
-        private class C1 : I1
-        {
-        }
-
-        private class C3 : I1
-        {
-        }
-
         private interface IX1
         {
         }
 
         private interface IX2
-        {
-        }
-
-        private class X1 : IX1, IX2
-        {
-        }
-
-        [IgnoredImplementation]
-        private class X1Impl2 : IX1, IX2
         {
         }
 
@@ -59,12 +38,12 @@ namespace GroboContainer.Tests.FunctionalTests
                 throw new ArgumentException(string.Format("{0} is not an interface", interfaceType.FullName), "interfaceType");
 
             const string serviceNamePrefix = "DynamicTest";
-            var assemblyName = new AssemblyName { Name = serviceNamePrefix + "Assembly" };
+            var assemblyName = new AssemblyName {Name = serviceNamePrefix + "Assembly"};
             var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
             var module = assemblyBuilder.DefineDynamicModule(serviceNamePrefix + "Module");
 
             const TypeAttributes typeAttributes = TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.Class;
-            var typeBuilder = module.DefineType(serviceNamePrefix + "Proxy", typeAttributes, typeof(object), new[] { interfaceType });
+            var typeBuilder = module.DefineType(serviceNamePrefix + "Proxy", typeAttributes, typeof(object), new[] {interfaceType});
 
             const MethodAttributes constructorAttributes = MethodAttributes.Public | MethodAttributes.HideBySig |
                                                            MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
@@ -83,20 +62,20 @@ namespace GroboContainer.Tests.FunctionalTests
         public void TestBadConfig()
         {
             RunMethodWithException<ArgumentException>(() =>
-                                                      container.Configurator.ForAbstraction(typeof (I1)).UseInstances(
+                                                      container.Configurator.ForAbstraction(typeof(I1)).UseInstances(
                                                           "z"));
             RunMethodWithException<ArgumentException>(() =>
-                                                      container.Configurator.ForAbstraction(typeof (I1)).UseInstances(
+                                                      container.Configurator.ForAbstraction(typeof(I1)).UseInstances(
                                                           null));
             RunMethodWithException<ArgumentException>(() =>
-                                                      container.Configurator.ForAbstraction(typeof (I1)).UseInstances(
+                                                      container.Configurator.ForAbstraction(typeof(I1)).UseInstances(
                                                           new object[0]));
         }
 
         [Test]
         public void TestFail()
         {
-            container.Configurator.ForAbstraction(typeof (I1)).Fail();
+            container.Configurator.ForAbstraction(typeof(I1)).Fail();
             RunFail<ForbiddenAbstractionException>(() =>
                                                    container.Get<I1>());
             RunFail<ForbiddenAbstractionException>(() =>
@@ -112,7 +91,7 @@ namespace GroboContainer.Tests.FunctionalTests
             RunFail<ForbiddenAbstractionException>(() =>
                                                    container.Create<I1>());
             RunMethodWithException<ForbiddenAbstractionException>(() =>
-                                                                  container.GetImplementationTypes(typeof (I1)));
+                                                                  container.GetImplementationTypes(typeof(I1)));
         }
 
         [Test]
@@ -132,7 +111,7 @@ namespace GroboContainer.Tests.FunctionalTests
             Assert.AreEqual(1, actual.Length);
             Assert.IsInstanceOf(typeof(C1), actual[0]);
             Assert.IsInstanceOf(typeof(C1), container.Create<I1>());
-            CollectionAssert.AreEquivalent(new[] { typeof(C1)},
+            CollectionAssert.AreEquivalent(new[] {typeof(C1)},
                                            container.GetImplementationTypes(typeof(I1)));
             Assert.AreSame(container.Get<I1>(), container.Get<I1>());
         }
@@ -144,8 +123,8 @@ namespace GroboContainer.Tests.FunctionalTests
             var c1 = new C1();
             container.Configurator.ForAbstraction<I1>().UseInstances(c1, c2);
             CollectionAssert.AreEquivalent(new I1[] {c2, c1}, container.GetAll<I1>());
-            CollectionAssert.AreEquivalent(new[] {typeof (C2), typeof (C1)},
-                                           container.GetImplementationTypes(typeof (I1)));
+            CollectionAssert.AreEquivalent(new[] {typeof(C2), typeof(C1)},
+                                           container.GetImplementationTypes(typeof(I1)));
         }
 
         [Test]
@@ -220,7 +199,28 @@ namespace GroboContainer.Tests.FunctionalTests
             Assert.That(container.Get<INotImplemented>(), Is.InstanceOf<INotImplemented>());
 
             var proxyType2 = CreateProxyType(typeof(INotImplemented));
-            Assert.Throws<InvalidOperationException>(() => container.Configurator.ForAbstraction(typeof (INotImplemented)).UseType(proxyType2));
+            Assert.Throws<InvalidOperationException>(() => container.Configurator.ForAbstraction(typeof(INotImplemented)).UseType(proxyType2));
+        }
+
+        private class C2 : I1
+        {
+        }
+
+        private class C1 : I1
+        {
+        }
+
+        private class C3 : I1
+        {
+        }
+
+        private class X1 : IX1, IX2
+        {
+        }
+
+        [IgnoredImplementation]
+        private class X1Impl2 : IX1, IX2
+        {
         }
     }
 }

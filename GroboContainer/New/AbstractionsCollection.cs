@@ -5,14 +5,6 @@ namespace GroboContainer.New
 {
     public class AbstractionsCollection : IAbstractionsCollection
     {
-        private readonly ConcurrentDictionary<Type, IAbstraction> abstractions =
-            new ConcurrentDictionary<Type, IAbstraction>();
-
-        private readonly IImplementationCache implementationCache;
-        private readonly IImplementationTypesCollection implementationTypesCollection;
-
-        private readonly Func<Type, IAbstraction> valueFactory;
-
         public AbstractionsCollection(IImplementationTypesCollection implementationTypesCollection,
                                       IImplementationCache implementationCache)
         {
@@ -36,5 +28,13 @@ namespace GroboContainer.New
             return new Abstraction(implementationTypesCollection.GetImplementationTypes(abstractionType),
                                    implementationCache);
         }
+
+        private readonly ConcurrentDictionary<Type, IAbstraction> abstractions =
+            new ConcurrentDictionary<Type, IAbstraction>();
+
+        private readonly IImplementationCache implementationCache;
+        private readonly IImplementationTypesCollection implementationTypesCollection;
+
+        private readonly Func<Type, IAbstraction> valueFactory;
     }
 }

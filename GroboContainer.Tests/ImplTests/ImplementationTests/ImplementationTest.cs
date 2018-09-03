@@ -17,15 +17,11 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
         {
             base.SetUp();
             creationContext = GetMock<ICreationContext>();
-            implementationType = typeof (int);
+            implementationType = typeof(int);
             implementation = new Implementation(implementationType);
         }
 
         #endregion
-
-        private ICreationContext creationContext;
-        private Type implementationType;
-        private Implementation implementation;
 
         [Test]
         public void TestGetFactoryNoArgs()
@@ -41,12 +37,12 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
         public void TestGetFactoryWithTypes()
         {
             var classFactory1 = GetMock<IClassFactory>();
-            var types1 = new[] {typeof (int)};
+            var types1 = new[] {typeof(int)};
             creationContext.Expect(context => context.BuildFactory(implementationType, types1)).Return(classFactory1);
             Assert.AreSame(classFactory1, implementation.GetFactory(types1, creationContext));
             Assert.AreSame(classFactory1, implementation.GetFactory(types1, creationContext));
 
-            var types2 = new[] {typeof (long), typeof (string)};
+            var types2 = new[] {typeof(long), typeof(string)};
             var classFactory2 = GetMock<IClassFactory>();
             creationContext.Expect(context => context.BuildFactory(implementationType, types2)).Return(classFactory2);
             Assert.AreSame(classFactory2, implementation.GetFactory(types2, creationContext));
@@ -58,7 +54,11 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
         [Test]
         public void TestType()
         {
-            Assert.AreEqual(typeof (int), implementation.ObjectType);
+            Assert.AreEqual(typeof(int), implementation.ObjectType);
         }
+
+        private ICreationContext creationContext;
+        private Type implementationType;
+        private Implementation implementation;
     }
 }

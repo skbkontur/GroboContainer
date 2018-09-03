@@ -16,7 +16,7 @@ namespace GroboContainer.Tests.FunctionalTests
             IEnumerable<Type> types = configuration.GetTypesToScan();
             CollectionAssert.AllItemsAreUnique(types);
             CollectionAssert.Contains(types, GetType());
-            CollectionAssert.DoesNotContain(new[] {typeof (int)}, types);
+            CollectionAssert.DoesNotContain(new[] {typeof(int)}, types);
         }
     }
 }

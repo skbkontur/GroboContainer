@@ -6,11 +6,6 @@ namespace GroboContainer.Impl.Logging
 {
     public class Log : ILog
     {
-        private readonly string containerName;
-        private static readonly int[] depthChange;
-        private readonly List<LogItem> items = new List<LogItem>();
-        private int crashIndex = int.MaxValue;
-
         static Log()
         {
             depthChange = LogSettings.depthChange;
@@ -20,6 +15,11 @@ namespace GroboContainer.Impl.Logging
         {
             this.containerName = containerName;
         }
+
+        private readonly string containerName;
+        private static readonly int[] depthChange;
+        private readonly List<LogItem> items = new List<LogItem>();
+        private int crashIndex = int.MaxValue;
 
         #region ILog Members
 
@@ -83,7 +83,7 @@ namespace GroboContainer.Impl.Logging
             foreach (LogItem item in items)
             {
                 if (crashIndex <= index) break;
-                int delta = depthChange[(int) item.ItemType];
+                int delta = depthChange[(int)item.ItemType];
                 if (delta < 0)
                     depth += delta;
                 builder.Append(new string(' ', depth));

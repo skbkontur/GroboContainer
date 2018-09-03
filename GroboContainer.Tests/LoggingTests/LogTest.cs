@@ -18,22 +18,20 @@ namespace GroboContainer.Tests.LoggingTests
 
         #endregion
 
-        private ILog log;
-
         [Test]
         public void TestCrash()
         {
-            log.BeginGet(typeof (long));
+            log.BeginGet(typeof(long));
             {
-                log.BeginConstruct(typeof (int));
+                log.BeginConstruct(typeof(int));
                 {
-                    log.BeginConstruct(typeof (string));
+                    log.BeginConstruct(typeof(string));
                     log.Crash();
                 }
-                log.EndConstruct(typeof (int));
+                log.EndConstruct(typeof(int));
                 log.Crash();
             }
-            log.EndGet(typeof (long));
+            log.EndGet(typeof(long));
             Assert.AreEqual(
                 @"Container: 'root'
 Get<System.Int64>()
@@ -47,21 +45,21 @@ Get<System.Int64>()
         [Test]
         public void TestSimple()
         {
-            log.BeginGetAll(typeof (object));
+            log.BeginGetAll(typeof(object));
             {
-                log.BeginGet(typeof (Guid));
-                log.EndGet(typeof (Guid));
-                log.BeginGet(typeof (long));
+                log.BeginGet(typeof(Guid));
+                log.EndGet(typeof(Guid));
+                log.BeginGet(typeof(long));
                 {
-                    log.BeginConstruct(typeof (int));
+                    log.BeginConstruct(typeof(int));
                     {
-                        log.Reused(typeof (string));
+                        log.Reused(typeof(string));
                     }
-                    log.EndConstruct(typeof (int));
+                    log.EndConstruct(typeof(int));
                 }
-                log.EndGet(typeof (long));
+                log.EndGet(typeof(long));
             }
-            log.EndGetAll(typeof (long));
+            log.EndGetAll(typeof(long));
             //Debug.WriteLine(log.GetLog());
             Assert.AreEqual(
                 @"Container: 'root'
@@ -77,5 +75,7 @@ EndGetAll<System.Int64>()
 ",
                 log.GetLog());
         }
+
+        private ILog log;
     }
 }

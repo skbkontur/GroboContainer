@@ -1,4 +1,5 @@
 using System;
+
 using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.ClassCreation;
 using GroboContainer.Impl.Injection;
@@ -8,19 +9,16 @@ namespace GroboContainer.Impl.Implementations
 {
     public class ForbiddenImplementationConfiguration : IImplementationConfiguration
     {
-        private readonly Type abstractionType;
-
         public ForbiddenImplementationConfiguration(Type abstractionType)
         {
             this.abstractionType = abstractionType;
         }
 
+        private readonly Type abstractionType;
+
         #region IImplementationConfiguration Members
 
-        public Type ObjectType
-        {
-            get { throw new ForbiddenAbstractionException(abstractionType); }
-        }
+        public Type ObjectType { get { throw new ForbiddenAbstractionException(abstractionType); } }
 
         public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext)
         {

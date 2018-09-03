@@ -5,9 +5,6 @@ namespace GroboContainer.Impl.Logging
 {
     public class LogItem
     {
-        private readonly Type type;
-
-
         public LogItem(ItemType itemType, Type type)
         {
             ItemType = itemType;
@@ -26,5 +23,7 @@ namespace GroboContainer.Impl.Logging
             builder.AppendFormat("{0}<{1}>(", ItemType, type);
             builder.Append(")\r\n");
         }
+
+        private readonly Type type;
     }
 }

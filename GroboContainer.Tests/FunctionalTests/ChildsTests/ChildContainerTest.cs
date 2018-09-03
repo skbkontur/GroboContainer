@@ -12,109 +12,11 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
 {
     public class ChildContainerTest : TestBase
     {
-        #region Setup/Teardown
-
-        public override void SetUp()
-        {
-            base.SetUp();
-            var configuration = new ContainerConfiguration(new[] {GetType().Assembly});
-            selector = new RootAndChildSelector();
-            container = Container.CreateWithChilds(configuration, null, selector);
-        }
-
-        public override void TearDown()
-        {
-            Debug.WriteLine(container.LastConstructionLog);
-            base.TearDown();
-        }
-
-        #endregion
-
-        private IContainerSelector selector;
-        private IContainer container;
-
-        [RootType]
-        private class Root
-        {
-        }
-
-        [ChildType]
-        private class Child
-        {
-            public readonly Root r;
-
-            public Child(Root r)
-            {
-                this.r = r;
-            }
-        }
-
-        [RootType]
-        private class BadRoot
-        {
-            public BadRoot(Child c)
-            {
-            }
-        }
-
-        [RootType]
-        private class BadRootUsesFunc
-        {
-            public readonly Func<Child> getC;
-
-            public BadRootUsesFunc(Func<Child> getC)
-            {
-                this.getC = getC;
-            }
-        }
-
-        [ChildType]
-        private class BigChild
-        {
-            public readonly Func<Child> getChild;
-            public readonly Func<Root> getRoot;
-
-            public BigChild(Func<Root> getRoot, Func<Child> getChild)
-            {
-                this.getRoot = getRoot;
-                this.getChild = getChild;
-            }
-        }
-
-        [RootType]
-        private class FactoryRoot
-        {
-        }
-
-        [ChildType]
-        private class FactoryChild
-        {
-            public readonly int a;
-
-            public FactoryChild(int a)
-            {
-                this.a = a;
-            }
-        }
-
-        [ChildType]
-        private class ChildWithFuncs
-        {
-            public readonly Func<int, FactoryChild> createC;
-            public readonly Func<FactoryRoot> createRoot;
-
-            public ChildWithFuncs(Func<FactoryRoot> createRoot, Func<int, FactoryChild> createC)
-            {
-                this.createRoot = createRoot;
-                this.createC = createC;
-            }
-        }
-
         [Test]
         public void TestChildContainerDepthCanBeOnly1()
         {
             IContainer child = container.MakeChildContainer().MakeChildContainer();
-            RunFail<NotSupportedException>(() => child.Get(typeof (int)),
+            RunFail<NotSupportedException>(() => child.Get(typeof(int)),
                                            "Контейнеры с глубиной больше 1 не поддерживаются");
         }
 
@@ -148,15 +50,14 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
         [Test]
         public void TestGetImplementationTypes()
         {
-            CollectionAssert.AreEquivalent(new[] {typeof (Root)}, container.GetImplementationTypes(typeof (Root)));
+            CollectionAssert.AreEquivalent(new[] {typeof(Root)}, container.GetImplementationTypes(typeof(Root)));
             RunMethodWithException<InvalidOperationException>(() =>
-                                                              container.GetImplementationTypes(typeof (Child)));
-
+                                                              container.GetImplementationTypes(typeof(Child)));
 
             IContainer childContainer = container.MakeChildContainer();
 
-            CollectionAssert.AreEquivalent(new[] {typeof (Child)}, childContainer.GetImplementationTypes(typeof (Child)));
-            CollectionAssert.AreEquivalent(new[] { typeof(Root) }, childContainer.GetImplementationTypes(typeof(Root)));
+            CollectionAssert.AreEquivalent(new[] {typeof(Child)}, childContainer.GetImplementationTypes(typeof(Child)));
+            CollectionAssert.AreEquivalent(new[] {typeof(Root)}, childContainer.GetImplementationTypes(typeof(Root)));
         }
 
         [Test]
@@ -184,7 +85,6 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
             Assert.AreSame(root, childA.r);
             Assert.AreSame(childA, childContainerA.Get<Child>());
 
-
             IContainer childContainerB = container.MakeChildContainer();
             var childB = childContainerB.Get<Child>();
             Assert.AreSame(root, childB.r);
@@ -192,5 +92,103 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
 
             Assert.AreNotSame(childA, childB);
         }
+
+        private IContainerSelector selector;
+        private IContainer container;
+
+        [RootType]
+        private class Root
+        {
+        }
+
+        [ChildType]
+        private class Child
+        {
+            public Child(Root r)
+            {
+                this.r = r;
+            }
+
+            public readonly Root r;
+        }
+
+        [RootType]
+        private class BadRoot
+        {
+            public BadRoot(Child c)
+            {
+            }
+        }
+
+        [RootType]
+        private class BadRootUsesFunc
+        {
+            public BadRootUsesFunc(Func<Child> getC)
+            {
+                this.getC = getC;
+            }
+
+            public readonly Func<Child> getC;
+        }
+
+        [ChildType]
+        private class BigChild
+        {
+            public BigChild(Func<Root> getRoot, Func<Child> getChild)
+            {
+                this.getRoot = getRoot;
+                this.getChild = getChild;
+            }
+
+            public readonly Func<Child> getChild;
+            public readonly Func<Root> getRoot;
+        }
+
+        [RootType]
+        private class FactoryRoot
+        {
+        }
+
+        [ChildType]
+        private class FactoryChild
+        {
+            public FactoryChild(int a)
+            {
+                this.a = a;
+            }
+
+            public readonly int a;
+        }
+
+        [ChildType]
+        private class ChildWithFuncs
+        {
+            public ChildWithFuncs(Func<FactoryRoot> createRoot, Func<int, FactoryChild> createC)
+            {
+                this.createRoot = createRoot;
+                this.createC = createC;
+            }
+
+            public readonly Func<int, FactoryChild> createC;
+            public readonly Func<FactoryRoot> createRoot;
+        }
+
+        #region Setup/Teardown
+
+        public override void SetUp()
+        {
+            base.SetUp();
+            var configuration = new ContainerConfiguration(new[] {GetType().Assembly});
+            selector = new RootAndChildSelector();
+            container = Container.CreateWithChilds(configuration, null, selector);
+        }
+
+        public override void TearDown()
+        {
+            Debug.WriteLine(container.LastConstructionLog);
+            base.TearDown();
+        }
+
+        #endregion
     }
 }

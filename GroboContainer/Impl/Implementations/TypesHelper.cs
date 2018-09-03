@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
 using GroboContainer.Infection;
 
 namespace GroboContainer.Impl.Implementations
@@ -24,7 +25,7 @@ namespace GroboContainer.Impl.Implementations
         }
 
         public Type TryGetImplementation(Type abstractionType, Type candidate,
-            Func<Type, IEnumerable<Type>> getImplementations)
+                                         Func<Type, IEnumerable<Type>> getImplementations)
         {
             if (candidate.IsAbstract || candidate.IsInterface)
                 return null;
@@ -38,8 +39,8 @@ namespace GroboContainer.Impl.Implementations
             var candidateArguments = candidate.GetGenericArguments();
             var argumentsCount = candidateArguments.Length;
             var candidateInterfaces = abstractionType.IsInterface
-                ? candidate.GetInterfaces()
-                : (abstractionType.IsAbstract ? candidate.ParentsOrSelf() : Enumerable.Repeat(candidate, 1));
+                                          ? candidate.GetInterfaces()
+                                          : (abstractionType.IsAbstract ? candidate.ParentsOrSelf() : Enumerable.Repeat(candidate, 1));
 
             foreach (var candidateInterface in candidateInterfaces)
             {
@@ -67,7 +68,7 @@ namespace GroboContainer.Impl.Implementations
         }
 
         private bool MatchFromGenericConstraints(Type[] arguments, Type[] candidateArguments,
-            Func<Type, IEnumerable<Type>> getImplementations)
+                                                 Func<Type, IEnumerable<Type>> getImplementations)
         {
             bool resolvedSomething = false;
             for (int i = 0; i < arguments.Length; ++i)

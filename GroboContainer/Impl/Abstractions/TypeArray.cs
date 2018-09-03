@@ -4,9 +4,6 @@ namespace GroboContainer.Impl.Abstractions
 {
     public class TypeArray : IEquatable<TypeArray>
     {
-        private readonly int hash;
-        private readonly Type[] types;
-
         public TypeArray(Type[] types)
         {
             this.types = types;
@@ -36,8 +33,8 @@ namespace GroboContainer.Impl.Abstractions
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof (TypeArray)) return false;
-            return Equals((TypeArray) obj);
+            if (obj.GetType() != typeof(TypeArray)) return false;
+            return Equals((TypeArray)obj);
         }
 
         public override int GetHashCode()
@@ -51,9 +48,12 @@ namespace GroboContainer.Impl.Abstractions
             {
                 int result = 0;
                 foreach (Type type in types)
-                    result = (result*397) ^ type.GetHashCode();
+                    result = (result * 397) ^ type.GetHashCode();
                 return result;
             }
         }
+
+        private readonly int hash;
+        private readonly Type[] types;
     }
 }

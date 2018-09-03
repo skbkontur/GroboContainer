@@ -22,6 +22,26 @@ namespace GroboContainer.Tests.ImplTests
 
         #endregion
 
+        [Test]
+        public void TestSimple()
+        {
+            Func<IInternalContainer, IInjectionContext, object[], object> @delegate =
+                classCreator.BuildConstructionDelegate(
+                    new ContainerConstructorInfo
+                        {
+                            ConstructorInfo = typeof(C1).GetConstructor(new[] {typeof(Func<int, I2>)})
+                        }, null);
+            var c2 = new C2(11, new C3());
+            Func<int, I2> func = arg =>
+                {
+                    Assert.AreEqual(10, arg);
+                    return c2;
+                };
+            container.ExpectBuildCreateFunc(context, func);
+            var c1 = (C1)@delegate(container, context, new object[0]);
+            Assert.AreSame(c2, c1.i2);
+        }
+
         private ClassCreator classCreator;
         private IInternalContainer container;
         private IInjectionContext context;
@@ -52,33 +72,14 @@ namespace GroboContainer.Tests.ImplTests
 
         private class C1 : I1
         {
-            public readonly I2 i2;
-
             public C1(Func<int, I2> createI2)
             {
                 i2 = createI2(10);
             }
+
+            public readonly I2 i2;
         }
 
         // ReSharper restore UnusedMember.Local
-        [Test]
-        public void TestSimple()
-        {
-            Func<IInternalContainer, IInjectionContext, object[], object> @delegate =
-                classCreator.BuildConstructionDelegate(
-                    new ContainerConstructorInfo
-                        {
-                            ConstructorInfo = typeof (C1).GetConstructor(new[] {typeof (Func<int, I2>)})
-                        }, null);
-            var c2 = new C2(11, new C3());
-            Func<int, I2> func = arg =>
-                                     {
-                                         Assert.AreEqual(10, arg);
-                                         return c2;
-                                     };
-            container.ExpectBuildCreateFunc(context, func);
-            var c1 = (C1) @delegate(container, context, new object[0]);
-            Assert.AreSame(c2, c1.i2);
-        }
     }
 }

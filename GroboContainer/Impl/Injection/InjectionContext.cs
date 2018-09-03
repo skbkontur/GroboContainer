@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+
 using GroboContainer.Core;
 using GroboContainer.Impl.Contexts;
 using GroboContainer.Impl.Logging;
@@ -9,15 +10,8 @@ namespace GroboContainer.Impl.Injection
 {
     public class InjectionContext : IInjectionContext
     {
-        private readonly HashSet<Type> constructed = new HashSet<Type>();
-        private readonly Func<IInjectionContext, IContextHolder> createHolder;
-        private readonly object lockObject = new object();
-        private readonly ILog log;
-        private volatile Container container;
-        private volatile IContextHolder contextHolder;
-
         public InjectionContext(IInternalContainer internalContainer, ILog log,
-                                  Func<IInjectionContext, IContextHolder> createHolder)
+                                Func<IInjectionContext, IContextHolder> createHolder)
         {
             InternalContainer = internalContainer;
             this.log = log;
@@ -32,6 +26,46 @@ namespace GroboContainer.Impl.Injection
         }
 
         public int ThreadId { get; }
+
+        private Container GetContainer()
+        {
+            //TODO MT bug
+            if (container == null)
+            {
+                contextHolder = createHolder(this);
+                container = new Container(InternalContainer, contextHolder, log);
+            }
+            return container;
+        }
+
+        private IContextHolder CreateHolder(IInjectionContext context)
+        {
+            return new ContextHolder(context, ThreadId);
+        }
+
+        private void Begin(Type type)
+        {
+            lock (lockObject)
+                if (!constructed.Add(type))
+                    throw new CyclicDependencyException(log.GetLog());
+        }
+
+        private void End(Type type)
+        {
+            lock (lockObject)
+            {
+                constructed.Remove(type);
+                if (constructed.Count == 0 && contextHolder != null)
+                    contextHolder.KillContext();
+            }
+        }
+
+        private readonly HashSet<Type> constructed = new HashSet<Type>();
+        private readonly Func<IInjectionContext, IContextHolder> createHolder;
+        private readonly object lockObject = new object();
+        private readonly ILog log;
+        private volatile Container container;
+        private volatile IContextHolder contextHolder;
 
         #region IInjectionContext Members
 
@@ -99,38 +133,5 @@ namespace GroboContainer.Impl.Injection
         public IInternalContainer InternalContainer { get; }
 
         #endregion
-
-        private Container GetContainer()
-        {
-            //TODO MT bug
-            if (container == null)
-            {
-                contextHolder = createHolder(this);
-                container = new Container(InternalContainer, contextHolder, log);
-            }
-            return container;
-        }
-
-        private IContextHolder CreateHolder(IInjectionContext context)
-        {
-            return new ContextHolder(context, ThreadId);
-        }
-
-        private void Begin(Type type)
-        {
-            lock (lockObject)
-                if (!constructed.Add(type))
-                    throw new CyclicDependencyException(log.GetLog());
-        }
-
-        private void End(Type type)
-        {
-            lock (lockObject)
-            {
-                constructed.Remove(type);
-                if (constructed.Count == 0 && contextHolder != null)
-                    contextHolder.KillContext();
-            }
-        }
     }
 }

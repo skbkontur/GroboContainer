@@ -20,8 +20,6 @@ namespace GroboContainer.Tests
 
         #endregion
 
-        private ITypesHelper helper;
-
         private interface I1<T>
         {
         }
@@ -29,9 +27,9 @@ namespace GroboContainer.Tests
         [Test]
         public void TestGet()
         {
-            var types = new[] {typeof (int), typeof (long)};
-            Type abstractionType = typeof (long);
-            Type typeImpl = typeof (long);
+            var types = new[] {typeof(int), typeof(long)};
+            Type abstractionType = typeof(long);
+            Type typeImpl = typeof(long);
             var collection = new ImplementationTypesCollection(new TestConfiguration(types), helper);
 
             helper.ExpectIsIgnoredImplementation(types[0], false);
@@ -47,9 +45,9 @@ namespace GroboContainer.Tests
         [Test]
         public void TestGetGeneric()
         {
-            var types = new[] {typeof (int)};
-            Type abstractionType = typeof (I1<int>);
-            Type typeImpl = typeof (Guid);
+            var types = new[] {typeof(int)};
+            Type abstractionType = typeof(I1<int>);
+            Type typeImpl = typeof(Guid);
             var collection = new ImplementationTypesCollection(new TestConfiguration(types), helper);
 
             helper.ExpectIsIgnoredImplementation(types[0], false);
@@ -66,8 +64,8 @@ namespace GroboContainer.Tests
         [Test]
         public void TestGetGenericInCofig()
         {
-            var types = new[] {typeof (I1<>)};
-            Type abstractionType = typeof (I1<int>);
+            var types = new[] {typeof(I1<>)};
+            Type abstractionType = typeof(I1<int>);
             Type typeImpl = abstractionType;
             var collection = new ImplementationTypesCollection(new TestConfiguration(types), helper);
 
@@ -81,8 +79,8 @@ namespace GroboContainer.Tests
         [Test]
         public void TestNoResult()
         {
-            var types = new[] {typeof (int)};
-            Type abstractionType = typeof (long);
+            var types = new[] {typeof(int)};
+            Type abstractionType = typeof(long);
             var collection = new ImplementationTypesCollection(new TestConfiguration(types), helper);
             helper.ExpectIsIgnoredImplementation(types[0], false);
             helper.ExpectTryGetImplementation(abstractionType, types[0], null);
@@ -90,5 +88,7 @@ namespace GroboContainer.Tests
             helper.ExpectIsIgnoredImplementation(abstractionType, true);
             CollectionAssert.IsEmpty(collection.GetImplementationTypes(abstractionType));
         }
+
+        private ITypesHelper helper;
     }
 }

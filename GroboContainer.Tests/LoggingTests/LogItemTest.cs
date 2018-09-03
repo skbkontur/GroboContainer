@@ -18,7 +18,7 @@ namespace GroboContainer.Tests.LoggingTests
         [Test]
         public void TestStupid()
         {
-            var item = new LogItem(ItemType.Get, typeof (int));
+            var item = new LogItem(ItemType.Get, typeof(int));
             Assert.AreEqual("Get<System.Int32>()\r\n", ToStr(item));
         }
     }

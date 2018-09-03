@@ -20,6 +20,58 @@ namespace GroboContainer.Tests.FunctionalTests
 
         #endregion
 
+        private interface I1
+        {
+        }
+
+        private interface I2
+        {
+        }
+
+        [Test]
+        public void TestBig()
+        {
+            container.Get<C3>();
+            container.Get<C2>();
+            container.Dispose();
+            CollectionAssert.AreEquivalent(new[] {"C1", "C2"}, log);
+            log = new HashSet<string>();
+            container.Get<C4>();
+            container.Dispose();
+            CollectionAssert.AreEquivalent(new[] {"C1", "C2", "C4"}, log);
+        }
+
+        [Test]
+        public void TestInstanceCreated()
+        {
+            container.Get<C1>();
+            container.Dispose();
+            CollectionAssert.AreEquivalent(new[] {"C1"}, log);
+            log = new HashSet<string>();
+            container.Dispose();
+            CollectionAssert.AreEquivalent(new[] {"C1"}, log);
+        }
+
+        [Test]
+        public void TestInstanceNotCreated()
+        {
+            container.Dispose();
+            CollectionAssert.IsEmpty(log);
+        }
+
+        [Test]
+        public void TestStupidBehaviourWithConfigurator()
+        {
+            var c1 = new Z1(); //disposed twice
+            container.Configurator.ForAbstraction<C2>().Fail();
+            container.Configurator.ForAbstraction<Z1>().UseInstances(c1);
+            container.Configurator.ForAbstraction<I1>().UseInstances(c1);
+            var foo = container.Get<I2>();
+            container.Dispose();
+            CollectionAssert.AreEquivalent(new[] {c1.GetHashCode().ToString(), foo.GetHashCode().ToString()}, log);
+            Assert.AreEqual(3, z1Count);
+        }
+
         private static int z1Count;
 
         private static HashSet<string> log;
@@ -87,58 +139,6 @@ namespace GroboContainer.Tests.FunctionalTests
             {
                 Assert.Fail();
             }
-        }
-
-        private interface I1
-        {
-        }
-
-        private interface I2
-        {
-        }
-
-        [Test]
-        public void TestBig()
-        {
-            container.Get<C3>();
-            container.Get<C2>();
-            container.Dispose();
-            CollectionAssert.AreEquivalent(new[] {"C1", "C2"}, log);
-            log = new HashSet<string>();
-            container.Get<C4>();
-            container.Dispose();
-            CollectionAssert.AreEquivalent(new[] {"C1", "C2", "C4"}, log);
-        }
-
-        [Test]
-        public void TestInstanceCreated()
-        {
-            container.Get<C1>();
-            container.Dispose();
-            CollectionAssert.AreEquivalent(new[] {"C1"}, log);
-            log = new HashSet<string>();
-            container.Dispose();
-            CollectionAssert.AreEquivalent(new[] {"C1"}, log);
-        }
-
-        [Test]
-        public void TestInstanceNotCreated()
-        {
-            container.Dispose();
-            CollectionAssert.IsEmpty(log);
-        }
-
-        [Test]
-        public void TestStupidBehaviourWithConfigurator()
-        {
-            var c1 = new Z1(); //disposed twice
-            container.Configurator.ForAbstraction<C2>().Fail();
-            container.Configurator.ForAbstraction<Z1>().UseInstances(c1);
-            container.Configurator.ForAbstraction<I1>().UseInstances(c1);
-            var foo = container.Get<I2>();
-            container.Dispose();
-            CollectionAssert.AreEquivalent(new[] {c1.GetHashCode().ToString(), foo.GetHashCode().ToString()}, log);
-            Assert.AreEqual(3, z1Count);
         }
     }
 }

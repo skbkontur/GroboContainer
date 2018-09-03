@@ -20,24 +20,10 @@ namespace GroboContainer.Impl.ClassCreation
             getAllMethod = GetMethod("GetAll", internalContainerType, typeof(IInjectionContext));
         }
 
-        #region IClassCreator Members
-
-        public Func<IInternalContainer, IInjectionContext, object[], object> BuildConstructionDelegate(ContainerConstructorInfo constructorInfo, Type wrapperType)
-        {
-            return EmitConstruct(constructorInfo.ConstructorInfo, constructorInfo.ParametersInfo, wrapperType);
-        }
-
-        public IClassFactory BuildFactory(ContainerConstructorInfo constructorInfo, Type wrapperType)
-        {
-            return new ClassFactory(EmitConstruct(constructorInfo.ConstructorInfo, constructorInfo.ParametersInfo, wrapperType), constructorInfo.ConstructorInfo.ReflectedType);
-        }
-
-        #endregion
-
         private static MethodInfo GetMethod(string methodname, Type type, params Type[] types)
         {
             var method = type.GetMethod(methodname, types);
-            if(method == null)
+            if (method == null)
                 throw new MissingMethodException(type.ToString(), methodname);
             return method;
         }
@@ -50,17 +36,17 @@ namespace GroboContainer.Impl.ClassCreation
                                                    typeof(IInternalContainer), typeof(IInjectionContext),
                                                    typeof(object[])
                                                }, typeof(ClassCreator), true);
-            using(var il = new GroboIL(method))
+            using (var il = new GroboIL(method))
             {
                 var constructorParameters = constructorInfo.GetParameters();
-                for(var i = 0; i < constructorParameters.Length; i++)
+                for (var i = 0; i < constructorParameters.Length; i++)
                     ProcessParameter(constructorParameters[i], il, parametersInfo != null ? parametersInfo[i] : -1);
                 il.Newobj(constructorInfo);
 
-                if(wrapperType != null)
+                if (wrapperType != null)
                 {
                     var wrapperConstructor = wrapperType.GetConstructor(new[] {typeof(object)});
-                    if(wrapperConstructor == null)
+                    if (wrapperConstructor == null)
                         throw new NoConstructorException(wrapperType);
                     il.Newobj(wrapperConstructor);
                 }
@@ -76,14 +62,14 @@ namespace GroboContainer.Impl.ClassCreation
         private void ProcessParameter(ParameterInfo parameterInfo, GroboIL il, int parameterMarker)
         {
             var parameterType = parameterInfo.ParameterType;
-            if(parameterMarker != -1)
+            if (parameterMarker != -1)
             {
                 il.Ldarg(2); //parameters
                 il.Ldc_I4(parameterMarker);
                 il.Ldelem(typeof(object));
-                if(parameterType.IsValueType)
+                if (parameterType.IsValueType)
                 {
-                    if(!IsNullable(parameterType))
+                    if (!IsNullable(parameterType))
                         EmitCrashIfValueIsNull(il);
                     il.Unbox_Any(parameterType);
                 }
@@ -94,9 +80,9 @@ namespace GroboContainer.Impl.ClassCreation
             {
                 il.Ldarg(0); //container -> this for methods
                 il.Ldarg(1); //arg0: context
-                if(parameterType.IsArray)
+                if (parameterType.IsArray)
                     ProcessArray(il, parameterType.GetElementType());
-                else if(parameterType.IsGenericType && parameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                else if (parameterType.IsGenericType && parameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                     ProcessArray(il, parameterType.GetGenericArguments()[0]);
                 else
                     ProcessNonArray(parameterInfo, il, parameterType);
@@ -135,9 +121,9 @@ namespace GroboContainer.Impl.ClassCreation
 
         private void ProcessNonArray(ParameterInfo parameterInfo, GroboIL il, Type parameterType)
         {
-            if(funcHelper.IsLazy(parameterType))
+            if (funcHelper.IsLazy(parameterType))
                 ProcessLazyParameter(il, parameterType);
-            else if(funcHelper.IsFunc(parameterType))
+            else if (funcHelper.IsFunc(parameterType))
                 ProcessFuncParameter(parameterInfo, il, parameterType);
             else
                 il.Call(getMethod.MakeGenericMethod(parameterType));
@@ -155,9 +141,9 @@ namespace GroboContainer.Impl.ClassCreation
 
         private void ProcessFuncParameter(ParameterInfo parameterInfo, GroboIL il, Type parameterType)
         {
-            if(parameterInfo.Name.StartsWith("get", StringComparison.InvariantCultureIgnoreCase))
+            if (parameterInfo.Name.StartsWith("get", StringComparison.InvariantCultureIgnoreCase))
                 il.Call(funcHelper.GetBuildGetFuncMethodInfo(parameterType));
-            else if(parameterInfo.Name.StartsWith("create", StringComparison.InvariantCultureIgnoreCase))
+            else if (parameterInfo.Name.StartsWith("create", StringComparison.InvariantCultureIgnoreCase))
                 il.Call(funcHelper.GetBuildCreateFuncMethodInfo(parameterInfo.ParameterType));
             else
             {
@@ -172,5 +158,19 @@ namespace GroboContainer.Impl.ClassCreation
         private readonly IFuncHelper funcHelper;
         private readonly MethodInfo getAllMethod;
         private readonly MethodInfo getMethod;
+
+        #region IClassCreator Members
+
+        public Func<IInternalContainer, IInjectionContext, object[], object> BuildConstructionDelegate(ContainerConstructorInfo constructorInfo, Type wrapperType)
+        {
+            return EmitConstruct(constructorInfo.ConstructorInfo, constructorInfo.ParametersInfo, wrapperType);
+        }
+
+        public IClassFactory BuildFactory(ContainerConstructorInfo constructorInfo, Type wrapperType)
+        {
+            return new ClassFactory(EmitConstruct(constructorInfo.ConstructorInfo, constructorInfo.ParametersInfo, wrapperType), constructorInfo.ConstructorInfo.ReflectedType);
+        }
+
+        #endregion
     }
 }

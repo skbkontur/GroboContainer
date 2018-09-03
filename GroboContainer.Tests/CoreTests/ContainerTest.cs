@@ -26,13 +26,6 @@ namespace GroboContainer.Tests.CoreTests
             container = new Container(internalContainer, holder, log);
         }
 
-        private IContainerConfiguration configuration;
-        private Container container;
-        private IInternalContainer internalContainer;
-        private IContextHolder holder;
-        private IInjectionContext context;
-        private ILog log;
-
         [Test]
         public void TestCrashGet()
         {
@@ -56,10 +49,10 @@ namespace GroboContainer.Tests.CoreTests
             holder.ExpectGetContext(internalContainer, context);
             context.ExpectGetLog(log);
             var mockException = new MockException();
-            internalContainer.ExpectGetAndFail(typeof (int), context, mockException);
+            internalContainer.ExpectGetAndFail(typeof(int), context, mockException);
             context.ExpectGetLog(log);
             log.ExpectGetLog("zzz");
-            RunMethodWithException<ContainerException>(() => container.Get(typeof (int)),
+            RunMethodWithException<ContainerException>(() => container.Get(typeof(int)),
                                                        exception =>
                                                            {
                                                                Assert.AreEqual("zzz", exception.Message);
@@ -144,5 +137,12 @@ namespace GroboContainer.Tests.CoreTests
             log.ExpectGetLog("zzz");
             Assert.AreEqual("zzz", container.LastConstructionLog);
         }
+
+        private IContainerConfiguration configuration;
+        private Container container;
+        private IInternalContainer internalContainer;
+        private IContextHolder holder;
+        private IInjectionContext context;
+        private ILog log;
     }
 }

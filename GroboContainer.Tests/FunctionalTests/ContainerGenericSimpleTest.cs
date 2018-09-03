@@ -12,22 +12,6 @@ namespace GroboContainer.Tests.FunctionalTests
         {
         }
 
-        private class ImplementationClass : IGenericInterface<int>
-        {
-        }
-
-        private class ImplementationGenericClass<T> : IGenericInterface2<T>
-        {
-        }
-
-        private class GBase<T>
-        {
-        }
-
-        private class GImpl<T> : GBase<T>
-        {
-        }
-
         [Test]
         public void TestGenericClass()
         {
@@ -47,6 +31,22 @@ namespace GroboContainer.Tests.FunctionalTests
         {
             var genericInterface = container.Get<IGenericInterface<int>>();
             Assert.That(genericInterface, Is.InstanceOf<ImplementationClass>());
+        }
+
+        private class ImplementationClass : IGenericInterface<int>
+        {
+        }
+
+        private class ImplementationGenericClass<T> : IGenericInterface2<T>
+        {
+        }
+
+        private class GBase<T>
+        {
+        }
+
+        private class GImpl<T> : GBase<T>
+        {
         }
     }
 }

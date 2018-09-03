@@ -22,10 +22,6 @@ namespace GroboContainer.Tests.ImplTests
 
         #endregion
 
-        private IFuncBuilder funcBuilder;
-        private IInjectionContext context;
-        private IContainerForFuncBuilder container;
-
         [Test]
         public void TestGet()
         {
@@ -52,5 +48,9 @@ namespace GroboContainer.Tests.ImplTests
             container.ExpectCreateForFunc("q", 1);
             Assert.AreEqual(1, func("q"));
         }
+
+        private IFuncBuilder funcBuilder;
+        private IInjectionContext context;
+        private IContainerForFuncBuilder container;
     }
 }

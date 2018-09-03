@@ -6,15 +6,10 @@ namespace GroboContainer.Tests
 {
     public class FieldsCleaner
     {
-        private readonly ILGenerator il;
-        private readonly LocalBuilder local;
-        private readonly DynamicMethod method;
-        private readonly Type type;
-
         public FieldsCleaner(Type type)
         {
             this.type = type;
-            method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(void), new[] { typeof(object) }, true);
+            method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(void), new[] {typeof(object)}, true);
             il = method.GetILGenerator();
             local = il.DeclareLocal(type);
             il.Emit(OpCodes.Ldarg_0);
@@ -62,5 +57,10 @@ namespace GroboContainer.Tests
                 }
             }
         }
+
+        private readonly ILGenerator il;
+        private readonly LocalBuilder local;
+        private readonly DynamicMethod method;
+        private readonly Type type;
     }
 }

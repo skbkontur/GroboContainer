@@ -17,10 +17,6 @@ namespace GroboContainer.Tests.PerfTests
         {
         }
 
-        public class Impl1 : IIntf1
-        {
-        }
-
         [Test]
         [Category("LongRunning")]
         public void Test()
@@ -37,20 +33,20 @@ namespace GroboContainer.Tests.PerfTests
             for (int i = 0; i < threads.Length; i++)
             {
                 threads[i] = new Thread(() =>
-                {
-                    var stopwatch = new Stopwatch();
-                    start.WaitOne();
-                    while (true)
                     {
-                        var containerIndex = Interlocked.CompareExchange(ref index, 0, 0);
-                        if (containerIndex >= containers.Length)
-                            break;
-                        stopwatch.Restart();
-                        containers[containerIndex].Get<IIntf1>();
-                        stopwatch.Stop();
-                        times.Add(stopwatch.ElapsedTicks);
-                    }
-                });
+                        var stopwatch = new Stopwatch();
+                        start.WaitOne();
+                        while (true)
+                        {
+                            var containerIndex = Interlocked.CompareExchange(ref index, 0, 0);
+                            if (containerIndex >= containers.Length)
+                                break;
+                            stopwatch.Restart();
+                            containers[containerIndex].Get<IIntf1>();
+                            stopwatch.Stop();
+                            times.Add(stopwatch.ElapsedTicks);
+                        }
+                    });
                 threads[i].Start();
             }
             start.Set();
@@ -65,6 +61,10 @@ namespace GroboContainer.Tests.PerfTests
             foreach (var time in times)
                 histogram.Register(time);
             Console.Out.WriteLine(histogram.ToString());
+        }
+
+        public class Impl1 : IIntf1
+        {
         }
     }
 }

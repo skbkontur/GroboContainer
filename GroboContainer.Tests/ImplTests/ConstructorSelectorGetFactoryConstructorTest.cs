@@ -17,6 +17,102 @@ namespace GroboContainer.Tests.ImplTests
         {
         }
 
+        [Test]
+        public void TestAmbigous()
+        {
+            RunMethodWithException<AmbiguousConstructorException>(
+                () =>
+                constructorSelector.GetConstructor(typeof(C1), new[] {typeof(I1)}));
+        }
+
+        [Test]
+        public void TestParentAndChild()
+        {
+            ContainerConstructorInfo constructor = constructorSelector.GetConstructor(typeof(C2),
+                                                                                      new[] {typeof(Guid), typeof(Guid?)});
+            CheckConstructor<C2>(new[] {typeof(Guid?), typeof(Guid)}, constructor, new[] {1, 0});
+        }
+
+        [Test]
+        public void TestAssignableFrom()
+        {
+            ContainerConstructorInfo constructor = constructorSelector.GetConstructor(typeof(C1),
+                                                                                      new[] {typeof(Impl)});
+            CheckConstructor<C1>(new[] {typeof(I1), typeof(Base), typeof(I2)}, constructor, new[] {-1, 0, -1});
+        }
+
+        [Test]
+        public void TestConstructorWithEqualTypesIgnored()
+        {
+            RunMethodWithException<NoConstructorException>(
+                () =>
+                constructorSelector.GetConstructor(typeof(C2), new[] {typeof(Guid)}));
+        }
+
+        [Test]
+        public void TestConstructorWithOutTypesIgnored()
+        {
+            RunMethodWithException<NoConstructorException>(
+                () =>
+                constructorSelector.GetConstructor(typeof(C2), new[] {typeof(long)}));
+        }
+
+        [Test]
+        public void TestConstructorWithrefTypesIgnored()
+        {
+            RunMethodWithException<NoConstructorException>(
+                () =>
+                constructorSelector.GetConstructor(typeof(C2), new[] {typeof(byte)}));
+        }
+
+        [Test]
+        public void TestEqualParameterTypes()
+        {
+            RunMethodWithException<ArgumentException>(
+                () =>
+                constructorSelector.GetConstructor(typeof(C2), new[] {typeof(int), typeof(int)}));
+        }
+
+        [Test]
+        public void TestManyTypes()
+        {
+            ContainerConstructorInfo constructor = constructorSelector.GetConstructor(typeof(C2),
+                                                                                      new[]
+                                                                                          {
+                                                                                              typeof(string),
+                                                                                              typeof(int)
+                                                                                          });
+            CheckConstructor<C2>(new[] {typeof(int), typeof(I2), typeof(string)}, constructor, new[] {1, -1, 0});
+        }
+
+        [Test]
+        public void TestMegaBug()
+        {
+            RunMethodWithException<NoConstructorException>(
+                () =>
+                constructorSelector.GetConstructor(typeof(C2), new[] {typeof(ImplImpl), typeof(sbyte)}));
+        }
+
+        [Test]
+        public void TestNo()
+        {
+            RunMethodWithException<NoConstructorException>(() =>
+                                                           constructorSelector.GetConstructor(typeof(C1),
+                                                                                              new[]
+                                                                                                  {
+                                                                                                      typeof(
+                                                                                                  short)
+                                                                                                  }));
+        }
+
+        [Test]
+        public void TestSimple()
+        {
+            ContainerConstructorInfo constructor = constructorSelector.GetConstructor(typeof(C1),
+                                                                                      new[] {typeof(int)});
+            CheckConstructor<C1>(new[] {typeof(int), typeof(I1)}, constructor, new[] {0, -1});
+        }
+
         private class Base
         {
         }
@@ -66,102 +162,6 @@ namespace GroboContainer.Tests.ImplTests
             public C2(Base b, Impl i, Enum e, I1 i1)
             {
             }
-        }
-
-        [Test]
-        public void TestAmbigous()
-        {
-            RunMethodWithException<AmbiguousConstructorException>(
-                () =>
-                constructorSelector.GetConstructor(typeof (C1), new[] {typeof (I1)}));
-        }
-
-        [Test]
-        public void TestParentAndChild()
-        {
-            ContainerConstructorInfo constructor = constructorSelector.GetConstructor(typeof(C2),
-                                                                                      new[] { typeof(Guid), typeof(Guid?) });
-            CheckConstructor<C2>(new[] { typeof(Guid?), typeof(Guid) }, constructor, new[] { 1, 0 });
-        }
-
-        [Test]
-        public void TestAssignableFrom()
-        {
-            ContainerConstructorInfo constructor = constructorSelector.GetConstructor(typeof (C1),
-                                                                                      new[] {typeof (Impl)});
-            CheckConstructor<C1>(new[] {typeof (I1), typeof (Base), typeof (I2)}, constructor, new[] {-1, 0, -1});
-        }
-
-        [Test]
-        public void TestConstructorWithEqualTypesIgnored()
-        {
-            RunMethodWithException<NoConstructorException>(
-                () =>
-                constructorSelector.GetConstructor(typeof (C2), new[] {typeof (Guid)}));
-        }
-
-        [Test]
-        public void TestConstructorWithOutTypesIgnored()
-        {
-            RunMethodWithException<NoConstructorException>(
-                () =>
-                constructorSelector.GetConstructor(typeof (C2), new[] {typeof (long)}));
-        }
-
-        [Test]
-        public void TestConstructorWithrefTypesIgnored()
-        {
-            RunMethodWithException<NoConstructorException>(
-                () =>
-                constructorSelector.GetConstructor(typeof (C2), new[] {typeof (byte)}));
-        }
-
-        [Test]
-        public void TestEqualParameterTypes()
-        {
-            RunMethodWithException<ArgumentException>(
-                () =>
-                constructorSelector.GetConstructor(typeof (C2), new[] {typeof (int), typeof (int)}));
-        }
-
-        [Test]
-        public void TestManyTypes()
-        {
-            ContainerConstructorInfo constructor = constructorSelector.GetConstructor(typeof (C2),
-                                                                                      new[]
-                                                                                          {
-                                                                                              typeof (string),
-                                                                                              typeof (int)
-                                                                                          });
-            CheckConstructor<C2>(new[] {typeof (int), typeof (I2), typeof (string)}, constructor, new[] {1, -1, 0});
-        }
-
-        [Test]
-        public void TestMegaBug()
-        {
-            RunMethodWithException<NoConstructorException>(
-                () =>
-                constructorSelector.GetConstructor(typeof (C2), new[] {typeof (ImplImpl), typeof (sbyte)}));
-        }
-
-        [Test]
-        public void TestNo()
-        {
-            RunMethodWithException<NoConstructorException>(() =>
-                                                           constructorSelector.GetConstructor(typeof (C1),
-                                                                                              new[]
-                                                                                                  {
-                                                                                                      typeof (
-                                                                                                          short)
-                                                                                                  }));
-        }
-
-        [Test]
-        public void TestSimple()
-        {
-            ContainerConstructorInfo constructor = constructorSelector.GetConstructor(typeof (C1),
-                                                                                      new[] {typeof (int)});
-            CheckConstructor<C1>(new[] {typeof (int), typeof (I1)}, constructor, new[] {0, -1});
         }
     }
 }

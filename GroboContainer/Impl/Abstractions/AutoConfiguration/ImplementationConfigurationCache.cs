@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+
 using GroboContainer.Impl.Implementations;
 using GroboContainer.New;
 
@@ -7,11 +8,6 @@ namespace GroboContainer.Impl.Abstractions.AutoConfiguration
 {
     public class ImplementationConfigurationCache : IImplementationConfigurationCache
     {
-        private readonly ConcurrentDictionary<IImplementation, IImplementationConfiguration> map =
-            new ConcurrentDictionary<IImplementation, IImplementationConfiguration>();
-
-        private readonly Func<IImplementation, IImplementationConfiguration> valueFactory;
-
         public ImplementationConfigurationCache()
         {
             valueFactory = CreateImplementation;
@@ -30,5 +26,10 @@ namespace GroboContainer.Impl.Abstractions.AutoConfiguration
         {
             return new AutoImplementationConfiguration(implementation);
         }
+
+        private readonly ConcurrentDictionary<IImplementation, IImplementationConfiguration> map =
+            new ConcurrentDictionary<IImplementation, IImplementationConfiguration>();
+
+        private readonly Func<IImplementation, IImplementationConfiguration> valueFactory;
     }
 }

@@ -6,19 +6,10 @@ namespace GroboContainer.Tests.PerfTests
 {
     public class ExponentialHistogram
     {
-        private readonly object locker = new object();
-        private readonly long[] limits;
-        private readonly long[] buckets;
-        private readonly int scale;
-        private long totalCount;
-        private double totalValue;
-        private long min;
-        private long max;
-
         public ExponentialHistogram(int scale)
         {
             this.scale = scale;
-            limits = new long[] { 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4094, 8192, 16384, 32768, 65536, 131072 }.Select(x => x * scale).ToArray();
+            limits = new long[] {0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4094, 8192, 16384, 32768, 65536, 131072}.Select(x => x * scale).ToArray();
             buckets = new long[limits.Length];
             totalCount = 0;
             totalValue = 0.0;
@@ -130,7 +121,16 @@ namespace GroboContainer.Tests.PerfTests
                 sb.AppendFormat("{0}:{1}, ", limits[i] / scale, buckets[i]);
             var histogram = sb.ToString(0, sb.Length - 2);
             return string.Format("TotalValue: {0}; TotalCount: {1}; Avg: {2}; 95%%: {3}; 99%%: {4}; 99.9%%: {5}; Min: {6}; Max: {7}; Histogram: {{{8}}}",
-                TotalValue.ToString("F0"), TotalCount, average.ToString("F0"), percentile95Latency, percentile99Latency, percentile999Latency, Min, Max, histogram);
+                                 TotalValue.ToString("F0"), TotalCount, average.ToString("F0"), percentile95Latency, percentile99Latency, percentile999Latency, Min, Max, histogram);
         }
+
+        private readonly object locker = new object();
+        private readonly long[] limits;
+        private readonly long[] buckets;
+        private readonly int scale;
+        private long totalCount;
+        private double totalValue;
+        private long min;
+        private long max;
     }
 }

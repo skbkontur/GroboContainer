@@ -21,10 +21,10 @@ namespace GroboContainer.Tests.ContextsTests
             ic.Expect(c => c.CreateNewLog()).Return(null);
             IContextHolder holder = new ContextHolder(new InjectionContext(ic), threadId);
             Action check = () =>
-                               {
-                                   Assert.AreNotEqual(threadId, Thread.CurrentThread.ManagedThreadId);
-                                   CheckGet(holder);
-                               };
+                {
+                    Assert.AreNotEqual(threadId, Thread.CurrentThread.ManagedThreadId);
+                    CheckGet(holder);
+                };
             IAsyncResult result = check.BeginInvoke(null, null);
             Assert.That(result.AsyncWaitHandle.WaitOne(1000), "поток завис");
             holder.KillContext();

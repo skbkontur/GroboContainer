@@ -10,11 +10,92 @@ namespace GroboContainer.Tests.TypesHelperTests.GenericConstraints
         {
         }
 
-        private class X
+        private interface K<T1, T2>
         {
         }
 
-        private interface K<T1, T2>
+        private interface J<T>
+        {
+        }
+
+        private interface M<T>
+        {
+        }
+
+        private interface IC
+        {
+        }
+
+        [Test]
+        public void TestDoNotResolveCyclicGenerics()
+        {
+            CheckFalse<IC>(typeof(CyclicGenerics<,>));
+        }
+
+        [Test]
+        public void TestDoNotResolveGenericFromSelf()
+        {
+            CheckFalse<IC>(typeof(GenericFromSelf<>));
+        }
+
+        [Test]
+        public void TestResolveGenericConstraintOnGenericArgument()
+        {
+            CheckTrue<I<IC>, C2<IC, C1>>(typeof(C2<,>), t =>
+                {
+                    if (t == typeof(IC))
+                        return new[] {typeof(C1)};
+                    return new Type[0];
+                });
+        }
+
+        [Test]
+        public void TestResolveGenericConstraintOnGenericFromClassAndGenericArgument()
+        {
+            CheckTrue<I<X>, D<X, Z>>(typeof(D<,>), t =>
+                {
+                    if (t == typeof(K<X, X>))
+                        return new[] {typeof(Z)};
+                    return new Type[0];
+                });
+        }
+
+        [Test]
+        public void TestResolveGenericConstraintOnGenericType()
+        {
+            CheckTrue<I<X>, C<X, Y>>(typeof(C<,>), t =>
+                {
+                    if (t == typeof(J<X>))
+                        return new[] {typeof(Y)};
+                    return new Type[0];
+                });
+        }
+
+        [Test]
+        public void TestResolveGenericConstraintStepByStep()
+        {
+            CheckTrue<I<X>, N<X, H, Y>>(typeof(N<,,>), t =>
+                {
+                    if (t == typeof(J<X>))
+                        return new[] {typeof(Y)};
+                    if (t == typeof(K<X, Y>))
+                        return new[] {typeof(H)};
+                    return new Type[0];
+                });
+        }
+
+        [Test]
+        public void TestResolveNestedGenericConstraint()
+        {
+            CheckTrue<I<X>, B<X, A>>(typeof(B<,>), t =>
+                {
+                    if (t == typeof(M<J<X>>))
+                        return new[] {typeof(A)};
+                    return new Type[0];
+                });
+        }
+
+        private class X
         {
         }
 
@@ -27,10 +108,6 @@ namespace GroboContainer.Tests.TypesHelperTests.GenericConstraints
         {
         }
 
-        private interface J<T>
-        {
-        }
-
         private class Y : J<X>
         {
         }
@@ -40,20 +117,12 @@ namespace GroboContainer.Tests.TypesHelperTests.GenericConstraints
         {
         }
 
-        private interface M<T>
-        {
-        }
-
         private class A : M<J<X>>
         {
         }
 
         private class B<T1, T2> : I<T1>
             where T2 : M<J<T1>>
-        {
-        }
-
-        private interface IC
         {
         }
 
@@ -101,75 +170,6 @@ namespace GroboContainer.Tests.TypesHelperTests.GenericConstraints
 
         private class X2 : G1<X1>
         {
-        }
-
-        [Test]
-        public void TestDoNotResolveCyclicGenerics()
-        {
-            CheckFalse<IC>(typeof(CyclicGenerics<,>));
-        }
-
-        [Test]
-        public void TestDoNotResolveGenericFromSelf()
-        {
-            CheckFalse<IC>(typeof(GenericFromSelf<>));
-        }
-
-        [Test]
-        public void TestResolveGenericConstraintOnGenericArgument()
-        {
-            CheckTrue<I<IC>, C2<IC, C1>>(typeof(C2<,>), t =>
-            {
-                if (t == typeof(IC))
-                    return new[] {typeof(C1)};
-                return new Type[0];
-            });
-        }
-
-        [Test]
-        public void TestResolveGenericConstraintOnGenericFromClassAndGenericArgument()
-        {
-            CheckTrue<I<X>, D<X, Z>>(typeof(D<,>), t =>
-            {
-                if (t == typeof(K<X, X>))
-                    return new[] {typeof(Z)};
-                return new Type[0];
-            });
-        }
-
-        [Test]
-        public void TestResolveGenericConstraintOnGenericType()
-        {
-            CheckTrue<I<X>, C<X, Y>>(typeof(C<,>), t =>
-            {
-                if (t == typeof(J<X>))
-                    return new[] {typeof(Y)};
-                return new Type[0];
-            });
-        }
-
-        [Test]
-        public void TestResolveGenericConstraintStepByStep()
-        {
-            CheckTrue<I<X>, N<X, H, Y>>(typeof(N<,,>), t =>
-            {
-                if (t == typeof(J<X>))
-                    return new[] {typeof(Y)};
-                if (t == typeof(K<X, Y>))
-                    return new[] {typeof(H)};
-                return new Type[0];
-            });
-        }
-
-        [Test]
-        public void TestResolveNestedGenericConstraint()
-        {
-            CheckTrue<I<X>, B<X, A>>(typeof(B<,>), t =>
-            {
-                if (t == typeof(M<J<X>>))
-                    return new[] {typeof(A)};
-                return new Type[0];
-            });
         }
     }
 }

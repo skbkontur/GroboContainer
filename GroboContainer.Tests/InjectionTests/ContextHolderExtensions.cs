@@ -11,17 +11,17 @@ namespace GroboContainer.Tests.InjectionTests
         public static void ExpectKillContext(this IContextHolder mock)
         {
             Expect.Once.On(mock)
-                .Method("KillContext")
-                .WithNoArguments();
+                  .Method("KillContext")
+                  .WithNoArguments();
         }
 
         public static void ExpectGetContext(this IContextHolder mock, IInternalContainer worker,
                                             IInjectionContext result)
         {
             Expect.Once.On(mock)
-                .Method("GetContext")
-                .With(worker)
-                .Will(Return.Value(result));
+                  .Method("GetContext")
+                  .With(worker)
+                  .Will(Return.Value(result));
         }
     }
 }

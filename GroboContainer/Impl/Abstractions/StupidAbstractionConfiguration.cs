@@ -4,8 +4,6 @@ namespace GroboContainer.Impl.Abstractions
 {
     public class StupidAbstractionConfiguration : IAbstractionConfiguration
     {
-        private readonly IImplementationConfiguration[] implementationConfigurations;
-
         public StupidAbstractionConfiguration(params IImplementationConfiguration[] implementationConfigurations)
         {
             this.implementationConfigurations = implementationConfigurations;
@@ -19,5 +17,7 @@ namespace GroboContainer.Impl.Abstractions
         }
 
         #endregion
+
+        private readonly IImplementationConfiguration[] implementationConfigurations;
     }
 }

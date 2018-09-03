@@ -5,11 +5,6 @@ namespace GroboContainer.New
 {
     public class ImplementationCache : IImplementationCache
     {
-        private readonly ConcurrentDictionary<Type, IImplementation> map =
-            new ConcurrentDictionary<Type, IImplementation>();
-
-        private readonly Func<Type, IImplementation> valueFactory;
-
         public ImplementationCache()
         {
             valueFactory = CreateImplementation;
@@ -28,5 +23,10 @@ namespace GroboContainer.New
         {
             return new Implementation(type);
         }
+
+        private readonly ConcurrentDictionary<Type, IImplementation> map =
+            new ConcurrentDictionary<Type, IImplementation>();
+
+        private readonly Func<Type, IImplementation> valueFactory;
     }
 }

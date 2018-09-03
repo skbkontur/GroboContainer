@@ -1,20 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
     <PackageId>GroboContainer</PackageId>
-    <Version>1.1.0</Version>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <VersionPrefix>1.1.0</VersionPrefix>
+    <Version>$(VersionPrefix)</Version>
+    <AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
     <Authors>Dmitry Gorlov, Igor Chevdar</Authors>
-    <Company>SKB Kontur</Company>
-    <Copyright>SKB Kontur 2010-2018</Copyright>
-    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
     <Description>Simple DI-container</Description>
     <PackageTags>.NET DI Container</PackageTags>
-    <PackageProjectUrl>https://github.com/skbkontur/GroboContainer</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/skbkontur/GroboContainer</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/skbkontur/GroboContainer</RepositoryUrl>
+    <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="GrEmit" Version="2.2.1" />
+    <PackageReference Include="GrEmit" Version="2.2.3" />
   </ItemGroup>
+  
 </Project>

@@ -10,41 +10,6 @@ namespace GroboContainer.Tests.FunctionalTests
 {
     public class CyclicTestWithContainer : ContainerTestBase
     {
-        private class MyClass1
-        {
-            public MyClass1(MyClass2 myClass2)
-            {
-            }
-        }
-
-        private class MyClass2
-        {
-            public MyClass2(Func<IContainer> getContainer)
-            {
-                getContainer().Get<MyClass1>();
-            }
-        }
-
-        private class MyClass3
-        {
-            public readonly IContainer container;
-
-            public MyClass3(IContainer container)
-            {
-                this.container = container;
-            }
-        }
-
-        private class MyClass3NoCycle
-        {
-            public readonly Func<MyClass3NoCycle> func;
-
-            public MyClass3NoCycle(Func<MyClass3NoCycle> getFunc)
-            {
-                func = getFunc;
-            }
-        }
-
         private interface I1
         {
         }
@@ -60,36 +25,6 @@ namespace GroboContainer.Tests.FunctionalTests
         private interface I4
         {
         }
-
-        private class C1 : I1
-        {
-            public C1(I2 i2)
-            {
-            }
-        }
-
-        private class C2 : I2
-        {
-            public C2(IContainer container)
-            {
-                container.Get<I3>();
-            }
-        }
-
-        private class C3 : I3
-        {
-            public C3(I1 i1)
-            {
-            }
-        }
-
-        private class C4 : I4
-        {
-            public C4(I1 i1)
-            {
-            }
-        }
-
 
         [Test]
         public void Test()
@@ -121,6 +56,70 @@ namespace GroboContainer.Tests.FunctionalTests
         {
             var cycle = container.Get<MyClass3NoCycle>();
             Assert.AreSame(cycle, cycle.func());
+        }
+
+        private class MyClass1
+        {
+            public MyClass1(MyClass2 myClass2)
+            {
+            }
+        }
+
+        private class MyClass2
+        {
+            public MyClass2(Func<IContainer> getContainer)
+            {
+                getContainer().Get<MyClass1>();
+            }
+        }
+
+        private class MyClass3
+        {
+            public MyClass3(IContainer container)
+            {
+                this.container = container;
+            }
+
+            public readonly IContainer container;
+        }
+
+        private class MyClass3NoCycle
+        {
+            public MyClass3NoCycle(Func<MyClass3NoCycle> getFunc)
+            {
+                func = getFunc;
+            }
+
+            public readonly Func<MyClass3NoCycle> func;
+        }
+
+        private class C1 : I1
+        {
+            public C1(I2 i2)
+            {
+            }
+        }
+
+        private class C2 : I2
+        {
+            public C2(IContainer container)
+            {
+                container.Get<I3>();
+            }
+        }
+
+        private class C3 : I3
+        {
+            public C3(I1 i1)
+            {
+            }
+        }
+
+        private class C4 : I4
+        {
+            public C4(I1 i1)
+            {
+            }
         }
     }
 }

@@ -26,6 +26,14 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
             base.TearDown();
         }
 
+        [Test]
+        [Ignore("The status of Child-container feature is not clear")]
+        public void TestRootCannotUseChildIfGetFromChildContainer()
+        {
+            var childContainer = container.MakeChildContainer();
+            RunMethodWithException<InvalidOperationException>(() => childContainer.Get<Root>());
+        }
+
         private IContainerSelector selector;
         private IContainer container;
 
@@ -39,15 +47,6 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
         [ChildType]
         private class Child
         {
-        
-        }
-
-        [Test]
-        [Ignore("The status of Child-container feature is not clear")]
-        public void TestRootCannotUseChildIfGetFromChildContainer()
-        {
-            var childContainer = container.MakeChildContainer();
-            RunMethodWithException<InvalidOperationException>(()=> childContainer.Get<Root>());
         }
     }
 }

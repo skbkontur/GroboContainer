@@ -4,8 +4,6 @@ namespace GroboContainer.New
 {
     public class Abstraction : IAbstraction
     {
-        private readonly IImplementation[] implementations;
-
         public Abstraction(Type[] implementationTypes, IImplementationCache implementationCache)
         {
             implementations = new IImplementation[implementationTypes.Length];
@@ -21,5 +19,7 @@ namespace GroboContainer.New
         }
 
         #endregion
+
+        private readonly IImplementation[] implementations;
     }
 }

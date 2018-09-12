@@ -14,22 +14,20 @@ namespace GroboContainer.Tests.LoggingTests
             log = new ShortLog("root");
         }
 
-        private ILog log;
-
         [Test]
         public void TestCrash()
         {
-            log.BeginGet(typeof (long));
+            log.BeginGet(typeof(long));
             {
-                log.BeginConstruct(typeof (int));
+                log.BeginConstruct(typeof(int));
                 {
-                    log.BeginConstruct(typeof (string));
+                    log.BeginConstruct(typeof(string));
                     log.Crash();
                 }
-                log.EndConstruct(typeof (int));
+                log.EndConstruct(typeof(int));
                 log.Crash();
             }
-            log.EndGet(typeof (long));
+            log.EndGet(typeof(long));
             Assert.AreEqual(
                 @"Container: 'root'
 Get<System.Int64>()
@@ -42,19 +40,19 @@ Get<System.Int64>()
         [Test]
         public void TestCrash2()
         {
-            log.BeginGet(typeof (long));
+            log.BeginGet(typeof(long));
             {
-                log.BeginConstruct(typeof (int));
+                log.BeginConstruct(typeof(int));
                 {
                 }
-                log.EndConstruct(typeof (int));
-                log.BeginConstruct(typeof (string));
+                log.EndConstruct(typeof(int));
+                log.BeginConstruct(typeof(string));
                 {
                     log.Crash();
-                    log.EndConstruct(typeof (string));
+                    log.EndConstruct(typeof(string));
                 }
             }
-            log.EndGet(typeof (long));
+            log.EndGet(typeof(long));
             Assert.AreEqual(
                 @"Container: 'root'
 Get<System.Int64>()
@@ -67,17 +65,17 @@ Get<System.Int64>()
         [Test]
         public void TestSimple()
         {
-            log.BeginGetAll(typeof (object));
+            log.BeginGetAll(typeof(object));
             {
-                log.BeginGet(typeof (Guid));
-                log.EndGet(typeof (Guid));
-                log.BeginGet(typeof (long));
+                log.BeginGet(typeof(Guid));
+                log.EndGet(typeof(Guid));
+                log.BeginGet(typeof(long));
                 {
-                    log.BeginConstruct(typeof (int));
+                    log.BeginConstruct(typeof(int));
                     {
-                        log.Reused(typeof (string));
+                        log.Reused(typeof(string));
                     }
-                    log.EndConstruct(typeof (int));
+                    log.EndConstruct(typeof(int));
                 }
             }
             //Debug.WriteLine(log.GetLog());
@@ -92,21 +90,21 @@ GetAll<System.Object>()
         [Test]
         public void TestSimple2()
         {
-            log.BeginGetAll(typeof (object));
+            log.BeginGetAll(typeof(object));
             {
-                log.BeginGet(typeof (Guid));
-                log.EndGet(typeof (Guid));
-                log.BeginGet(typeof (long));
+                log.BeginGet(typeof(Guid));
+                log.EndGet(typeof(Guid));
+                log.BeginGet(typeof(long));
                 {
-                    log.BeginConstruct(typeof (int));
+                    log.BeginConstruct(typeof(int));
                     {
-                        log.Reused(typeof (string));
+                        log.Reused(typeof(string));
                     }
-                    log.EndConstruct(typeof (int));
+                    log.EndConstruct(typeof(int));
                 }
-                log.BeginCreate(typeof (string));
+                log.BeginCreate(typeof(string));
                 {
-                    log.BeginConstruct(typeof (short));
+                    log.BeginConstruct(typeof(short));
                 }
             }
             //Debug.WriteLine(log.GetLog());
@@ -119,5 +117,7 @@ GetAll<System.Object>()
 ",
                 log.GetLog());
         }
+
+        private ILog log;
     }
 }

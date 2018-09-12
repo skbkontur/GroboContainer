@@ -4,7 +4,7 @@ using GroboContainer.Core;
 
 namespace GroboContainer.Tests
 {
-    public class TestClassWrapperCreator: IClassWrapperCreator
+    public class TestClassWrapperCreator : IClassWrapperCreator
     {
         public Type Wrap(Type implementationType)
         {

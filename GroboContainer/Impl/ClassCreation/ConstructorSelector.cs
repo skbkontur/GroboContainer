@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
 using GroboContainer.Algorithms.Builders;
 using GroboContainer.Algorithms.DataStructures;
 using GroboContainer.Impl.Exceptions;
@@ -22,8 +23,6 @@ namespace GroboContainer.Impl.ClassCreation
 
         #endregion
 
-        private static readonly IMatchingBuilder matchingBuilder = new MatchingBuilder();
-
         private static ContainerConstructorInfo GetNonAttributedConstructor(Type source, Type[] parameterTypes,
                                                                             IEnumerable<ConstructorInfo> constructors)
         {
@@ -36,10 +35,10 @@ namespace GroboContainer.Impl.ClassCreation
                     if (result != null)
                         throw new AmbiguousConstructorException(source);
                     result = new ContainerConstructorInfo
-                                 {
-                                     ConstructorInfo = constructor,
-                                     ParametersInfo = parametersInfo
-                                 };
+                        {
+                            ConstructorInfo = constructor,
+                            ParametersInfo = parametersInfo
+                        };
                 }
             }
             if (result == null)
@@ -53,7 +52,7 @@ namespace GroboContainer.Impl.ClassCreation
             ContainerConstructorInfo result = null;
             HashSet<Type> parameterTypesSet = GetParameterTypesSet(parameterTypes);
             IEnumerable<ConstructorInfo> attributedConstructors =
-                constructors.Where(info => info.IsDefined(typeof (ContainerConstructorAttribute), false));
+                constructors.Where(info => info.IsDefined(typeof(ContainerConstructorAttribute), false));
             bool hasContainerConstructors = false;
             foreach (ConstructorInfo constructor in attributedConstructors)
             {
@@ -67,17 +66,16 @@ namespace GroboContainer.Impl.ClassCreation
                     if (result != null)
                         throw new AmbiguousConstructorException(source);
                     result = new ContainerConstructorInfo
-                                 {
-                                     ConstructorInfo = constructor,
-                                     ParametersInfo = parametersInfo
-                                 };
+                        {
+                            ConstructorInfo = constructor,
+                            ParametersInfo = parametersInfo
+                        };
                 }
             }
             if (hasContainerConstructors && result == null)
                 throw new NoConstructorException(source);
             return result;
         }
-
 
         private static int[] CanUseParameters(MethodBase info, Type[] parameterTypes)
         {
@@ -103,7 +101,7 @@ namespace GroboContainer.Impl.ClassCreation
             for (int i = 0; i < parameters.Length; i++)
             {
                 if (matching.HasPair(i))
-                permutation[i] = matching.GetPair(i);
+                    permutation[i] = matching.GetPair(i);
             }
             return permutation;
         }
@@ -114,7 +112,7 @@ namespace GroboContainer.Impl.ClassCreation
             foreach (Type type in parameterTypes)
                 if (!types.Add(type))
                     throw new ArgumentException(string.Format(
-                                                    "Тип параметра {0} должен присутствовать не более 1 раза", type));
+                        "Тип параметра {0} должен присутствовать не более 1 раза", type));
             return types;
         }
 
@@ -123,11 +121,13 @@ namespace GroboContainer.Impl.ClassCreation
             var types = new HashSet<Type>();
             var attribute =
                 (ContainerConstructorAttribute)
-                constructor.GetCustomAttributes(typeof (ContainerConstructorAttribute), false)[0];
+                constructor.GetCustomAttributes(typeof(ContainerConstructorAttribute), false)[0];
             foreach (Type type in attribute.GetParameterTypes())
                 if (!types.Add(type))
                     throw new BadContainerConstructorAttributeException(constructor, type);
             return types;
         }
+
+        private static readonly IMatchingBuilder matchingBuilder = new MatchingBuilder();
     }
 }

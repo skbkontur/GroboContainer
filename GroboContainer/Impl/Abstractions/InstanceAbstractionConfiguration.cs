@@ -1,4 +1,5 @@
 ﻿using System;
+
 using GroboContainer.Core;
 using GroboContainer.Impl.Implementations;
 
@@ -6,8 +7,6 @@ namespace GroboContainer.Impl.Abstractions
 {
     public class InstanceAbstractionConfiguration : IAbstractionConfiguration
     {
-        private readonly IImplementationConfiguration[] implementationConfigurations;
-
         public InstanceAbstractionConfiguration(IClassWrapperCreator classWrapperCreator, Type abstractionType, object[] instances)
         {
             if (instances == null || instances.Length == 0)
@@ -31,5 +30,7 @@ namespace GroboContainer.Impl.Abstractions
         }
 
         #endregion
+
+        private readonly IImplementationConfiguration[] implementationConfigurations;
     }
 }

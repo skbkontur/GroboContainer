@@ -4,7 +4,8 @@ namespace GroboContainer.Impl.Exceptions
 {
     public class ContainerException : Exception
     {
-        public ContainerException(string message, Exception innerException) : base(message, innerException)
+        public ContainerException(string message, Exception innerException)
+            : base(message, innerException)
         {
         }
     }

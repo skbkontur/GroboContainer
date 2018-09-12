@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
-using GroboContainer.Core;
+
 using GroboContainer.Impl.Implementations;
 
 namespace GroboContainer.New
 {
     public class ImplementationTypesCollection : IImplementationTypesCollection
     {
-        private readonly ITypeSource typeSource;
-        private readonly ITypesHelper typesHelper;
-
         public ImplementationTypesCollection(ITypeSource typeSource, ITypesHelper typesHelper)
         {
             this.typeSource = typeSource;
@@ -48,5 +45,8 @@ namespace GroboContainer.New
                 implementationTypes.Add(implementation);
             return implementation == abstractionType;
         }
+
+        private readonly ITypeSource typeSource;
+        private readonly ITypesHelper typesHelper;
     }
 }

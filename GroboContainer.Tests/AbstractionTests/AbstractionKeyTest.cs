@@ -21,16 +21,16 @@ namespace GroboContainer.Tests.AbstractionTests
         [Test]
         public void TestBuild()
         {
-            var abstractionKey = new AbstractionKey(typeof (int), new[] {"q", "xx"});
-            var abstractionKey1 = new AbstractionKey(typeof (int), new[] {"qx", "x"});
+            var abstractionKey = new AbstractionKey(typeof(int), new[] {"q", "xx"});
+            var abstractionKey1 = new AbstractionKey(typeof(int), new[] {"qx", "x"});
             CheckFalse(abstractionKey, abstractionKey1);
         }
 
         [Test]
         public void TestCase()
         {
-            var abstractionKey = new AbstractionKey(typeof (int), new[] {"A"});
-            var abstractionKey1 = new AbstractionKey(typeof (int), new[] {"a"});
+            var abstractionKey = new AbstractionKey(typeof(int), new[] {"A"});
+            var abstractionKey1 = new AbstractionKey(typeof(int), new[] {"a"});
             CheckFalse(abstractionKey, abstractionKey1);
         }
 
@@ -38,12 +38,11 @@ namespace GroboContainer.Tests.AbstractionTests
         public void TestContractsOrder()
         {
             var contracts = new[] {"qxx", "zqq"};
-            var abstractionKey = new AbstractionKey(typeof (int), contracts);
+            var abstractionKey = new AbstractionKey(typeof(int), contracts);
             CollectionAssert.AreEqual(new[] {"qxx", "zqq"}, contracts);
 
-
             var strings = new[] {"zqq", "qxx"};
-            var abstractionKey1 = new AbstractionKey(typeof (int), strings);
+            var abstractionKey1 = new AbstractionKey(typeof(int), strings);
             CollectionAssert.AreEqual(new[] {"zqq", "qxx"}, strings);
 
             CheckTrue(abstractionKey, abstractionKey1);
@@ -52,9 +51,9 @@ namespace GroboContainer.Tests.AbstractionTests
         [Test]
         public void TestNullContracts()
         {
-            var abstractionKey = new AbstractionKey(typeof (int), null);
-            var abstractionKey1 = new AbstractionKey(typeof (int), null);
-            var abstractionKey2 = new AbstractionKey(typeof (int), new string[0]);
+            var abstractionKey = new AbstractionKey(typeof(int), null);
+            var abstractionKey1 = new AbstractionKey(typeof(int), null);
+            var abstractionKey2 = new AbstractionKey(typeof(int), new string[0]);
 
             CheckTrue(abstractionKey, abstractionKey1);
             CheckTrue(abstractionKey1, abstractionKey);
@@ -64,31 +63,31 @@ namespace GroboContainer.Tests.AbstractionTests
         [Test]
         public void TestNulls()
         {
-            Assert.IsFalse(new AbstractionKey(typeof (int), new string[0]).Equals(null));
+            Assert.IsFalse(new AbstractionKey(typeof(int), new string[0]).Equals(null));
         }
 
         [Test]
         public void TestObjectEqlals()
         {
-            Assert.IsFalse(new AbstractionKey(typeof (int), new string[0]).Equals((object) null));
-            var key = new AbstractionKey(typeof (int), new string[0]);
-            Assert.IsTrue(key.Equals((object) key));
-            Assert.IsTrue(key.Equals((object) (new AbstractionKey(typeof (int), new string[0]))));
-            Assert.IsFalse(new AbstractionKey(typeof (int), new string[0]).Equals(new object()));
+            Assert.IsFalse(new AbstractionKey(typeof(int), new string[0]).Equals((object)null));
+            var key = new AbstractionKey(typeof(int), new string[0]);
+            Assert.IsTrue(key.Equals((object)key));
+            Assert.IsTrue(key.Equals((object)(new AbstractionKey(typeof(int), new string[0]))));
+            Assert.IsFalse(new AbstractionKey(typeof(int), new string[0]).Equals(new object()));
         }
 
         [Test]
         public void TestSame()
         {
-            var abstractionKey = new AbstractionKey(typeof (int), new string[0]);
+            var abstractionKey = new AbstractionKey(typeof(int), new string[0]);
             CheckTrue(abstractionKey, abstractionKey);
         }
 
         [Test]
         public void TestType()
         {
-            var abstractionKey = new AbstractionKey(typeof (int), new string[0]);
-            var abstractionKey1 = new AbstractionKey(typeof (int?), new string[0]);
+            var abstractionKey = new AbstractionKey(typeof(int), new string[0]);
+            var abstractionKey1 = new AbstractionKey(typeof(int?), new string[0]);
             CheckFalse(abstractionKey, abstractionKey1);
         }
     }

@@ -1,12 +1,11 @@
 using System.Threading;
+
 using GroboContainer.Impl.Injection;
 
 namespace GroboContainer.Impl.Contexts
 {
     public class ContextHolder : IContextHolder
     {
-        private volatile IInjectionContext currentContext;
-
         public ContextHolder(IInjectionContext currentContext, int ownerThreadId)
         {
             this.currentContext = currentContext;
@@ -14,6 +13,7 @@ namespace GroboContainer.Impl.Contexts
         }
 
         public int OwnerThreadId { get; }
+        private volatile IInjectionContext currentContext;
 
         #region IContextHolder Members
 

@@ -10,55 +10,9 @@ namespace GroboContainer.Tests.FunctionalTests
 {
     public class GetContainerTest : CoreTestBase
     {
-        #region Setup/Teardown
-
-        public override void SetUp()
-        {
-            base.SetUp();
-            configuration = new ContainerConfiguration(new[] {GetType().Assembly});
-            container = new Container(configuration);
-        }
-
-
-        public override void TearDown()
-        {
-            Debug.WriteLine(container.LastConstructionLog);
-            base.TearDown();
-        }
-
-        #endregion
-
         private interface I1
         {
         }
-
-        private class C1 : I1
-        {
-        }
-
-        private class C2
-        {
-            public readonly IContainer container;
-
-            public C2(IContainer container)
-            {
-                this.container = container;
-            }
-        }
-
-        private class C3
-        {
-            public readonly Func<IContainer> getContainer;
-
-            public C3(Func<IContainer> getContainer)
-            {
-                this.getContainer = getContainer;
-            }
-        }
-
-        private IContainerConfiguration configuration;
-        private IContainer container;
-
 
         [Test]
         public void TestContinerInConstructor()
@@ -79,8 +33,8 @@ namespace GroboContainer.Tests.FunctionalTests
         [Test]
         public void TestGetImplementationTypes()
         {
-            Type[] types = container.GetImplementationTypes(typeof (IContainer));
-            CollectionAssert.AreEquivalent(new[] {typeof (Container)}, types);
+            Type[] types = container.GetImplementationTypes(typeof(IContainer));
+            CollectionAssert.AreEquivalent(new[] {typeof(Container)}, types);
         }
 
         [Test]
@@ -90,5 +44,49 @@ namespace GroboContainer.Tests.FunctionalTests
             var copy = container.Get<IContainer>();
             Assert.AreSame(expected, copy.Get<I1>());
         }
+
+        private IContainerConfiguration configuration;
+        private IContainer container;
+
+        private class C1 : I1
+        {
+        }
+
+        private class C2
+        {
+            public C2(IContainer container)
+            {
+                this.container = container;
+            }
+
+            public readonly IContainer container;
+        }
+
+        private class C3
+        {
+            public C3(Func<IContainer> getContainer)
+            {
+                this.getContainer = getContainer;
+            }
+
+            public readonly Func<IContainer> getContainer;
+        }
+
+        #region Setup/Teardown
+
+        public override void SetUp()
+        {
+            base.SetUp();
+            configuration = new ContainerConfiguration(new[] {GetType().Assembly});
+            container = new Container(configuration);
+        }
+
+        public override void TearDown()
+        {
+            Debug.WriteLine(container.LastConstructionLog);
+            base.TearDown();
+        }
+
+        #endregion
     }
 }

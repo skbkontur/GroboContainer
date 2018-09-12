@@ -6,11 +6,6 @@ namespace GroboContainer.Impl.Logging
 {
     public class ShortLog : ILog
     {
-        private readonly string containerName;
-        private static readonly int[] depthChange;
-        private readonly List<LogItem> items = new List<LogItem>();
-        private bool wasCrash;
-
         static ShortLog()
         {
             depthChange = LogSettings.depthChange;
@@ -23,27 +18,32 @@ namespace GroboContainer.Impl.Logging
 
         private void AddItem(LogItem item)
         {
-            if(wasCrash)
+            if (wasCrash)
                 return;
-            int add = depthChange[(int) item.ItemType];
+            int add = depthChange[(int)item.ItemType];
             switch (add)
             {
-                case +1:
-                    items.Add(item);
-                    break;
-                case -1:
-                    items.RemoveAt(items.Count - 1);
-                    break;
-                case 0:
-                    break;
-                //    goto case 0;
-                //case 0:
-                //    items[items.Count - 1] = item; //todo ??
-                //    break;
-                default:
-                    throw new NotSupportedException(string.Format("bad item {0}", item.ItemType));
+            case +1:
+                items.Add(item);
+                break;
+            case -1:
+                items.RemoveAt(items.Count - 1);
+                break;
+            case 0:
+                break;
+            //    goto case 0;
+            //case 0:
+            //    items[items.Count - 1] = item; //todo ??
+            //    break;
+            default:
+                throw new NotSupportedException(string.Format("bad item {0}", item.ItemType));
             }
         }
+
+        private readonly string containerName;
+        private static readonly int[] depthChange;
+        private readonly List<LogItem> items = new List<LogItem>();
+        private bool wasCrash;
 
         #region ILog Members
 
@@ -104,7 +104,7 @@ namespace GroboContainer.Impl.Logging
             builder.AppendLine(string.Format("Container: '{0}'", containerName));
             foreach (LogItem item in items)
             {
-                int delta = depthChange[(int) item.ItemType];
+                int delta = depthChange[(int)item.ItemType];
                 if (delta < 0)
                     depth += delta;
                 builder.Append(new string(' ', depth));

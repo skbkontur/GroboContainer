@@ -28,29 +28,15 @@ namespace GroboContainer.Tests.TypesHelperTests
         {
         }
 
-        private class Impl : MyClass
-        {
-        }
-
-        private class ImplImpl : Impl
-        {
-        }
-
-        private abstract class MyClass : IInterface
-        {
-        }
-
-        private TypesHelper helpers;
-
         private void CheckTrue<TInterface, TImpl>(Type type)
         {
-            Type implementation = helpers.TryGetImplementation(typeof (TInterface), type);
-            Assert.AreEqual(typeof (TImpl), implementation);
+            Type implementation = helpers.TryGetImplementation(typeof(TInterface), type);
+            Assert.AreEqual(typeof(TImpl), implementation);
         }
 
         private void CheckFalse<TInterface>(Type type)
         {
-            Assert.IsNull(helpers.TryGetImplementation(typeof (TInterface), type));
+            Assert.IsNull(helpers.TryGetImplementation(typeof(TInterface), type));
         }
 
         [Test]
@@ -88,18 +74,32 @@ namespace GroboContainer.Tests.TypesHelperTests
         [Test]
         public void TestIsImplementation()
         {
-            CheckTrue<TypesHelperTest, TypesHelperTest>(typeof (TypesHelperTest));
-            CheckTrue<IInterface, Impl>(typeof (Impl));
-            CheckTrue<MyClass, Impl>(typeof (Impl));
-            CheckFalse<MyClass>(typeof (MyClass));
-            CheckFalse<IInterface>(typeof (IInterface));
-            CheckFalse<IInterface>(typeof (IInterface2));
+            CheckTrue<TypesHelperTest, TypesHelperTest>(typeof(TypesHelperTest));
+            CheckTrue<IInterface, Impl>(typeof(Impl));
+            CheckTrue<MyClass, Impl>(typeof(Impl));
+            CheckFalse<MyClass>(typeof(MyClass));
+            CheckFalse<IInterface>(typeof(IInterface));
+            CheckFalse<IInterface>(typeof(IInterface2));
         }
 
         [Test]
         public void TestRequestNonAbstractClass()
         {
-            CheckFalse<Impl>(typeof (ImplImpl));
+            CheckFalse<Impl>(typeof(ImplImpl));
+        }
+
+        private TypesHelper helpers;
+
+        private class Impl : MyClass
+        {
+        }
+
+        private class ImplImpl : Impl
+        {
+        }
+
+        private abstract class MyClass : IInterface
+        {
         }
     }
 }

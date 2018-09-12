@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+
 using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.ClassCreation;
 
@@ -7,30 +8,10 @@ namespace GroboContainer.New
 {
     public class Implementation : IImplementation
     {
-        private readonly object configurationLock = new object();
-        private readonly Type implementationType;
-        private volatile Hashtable factories;
-        private volatile IClassFactory noArgumentsFactory;
-
         public Implementation(Type implementationType)
         {
-            this.implementationType = implementationType;
+            this.ObjectType = implementationType;
         }
-
-        #region IImplementation Members
-
-        public Type ObjectType
-        {
-            get { return implementationType; }
-        }
-
-        public IClassFactory GetFactory(Type[] parameterTypes, ICreationContext creationContext)
-        {
-            IClassFactory classFactory = ChooseFactory(creationContext, parameterTypes);
-            return classFactory;
-        }
-
-        #endregion
 
         private IClassFactory ChooseFactory(ICreationContext creationContext, Type[] parameterTypes)
         {
@@ -39,7 +20,7 @@ namespace GroboContainer.New
                 if (noArgumentsFactory == null)
                     lock (configurationLock)
                         if (noArgumentsFactory == null)
-                            noArgumentsFactory = creationContext.BuildFactory(implementationType, Type.EmptyTypes);
+                            noArgumentsFactory = creationContext.BuildFactory(ObjectType, Type.EmptyTypes);
                 return noArgumentsFactory;
             }
             var types = new TypeArray(parameterTypes);
@@ -50,7 +31,7 @@ namespace GroboContainer.New
                     {
                         if (factories == null)
                             factories = new Hashtable();
-                        factories.Add(types, factory = creationContext.BuildFactory(implementationType, parameterTypes));
+                        factories.Add(types, factory = creationContext.BuildFactory(ObjectType, parameterTypes));
                     }
             return factory;
         }
@@ -58,8 +39,24 @@ namespace GroboContainer.New
         private IClassFactory TryGetFactory(TypeArray types)
         {
             if (factories == null) return null;
-            var classFactory = (IClassFactory) factories[types];
+            var classFactory = (IClassFactory)factories[types];
             return classFactory;
         }
+
+        private readonly object configurationLock = new object();
+        private volatile Hashtable factories;
+        private volatile IClassFactory noArgumentsFactory;
+
+        #region IImplementation Members
+
+        public Type ObjectType { get; }
+
+        public IClassFactory GetFactory(Type[] parameterTypes, ICreationContext creationContext)
+        {
+            IClassFactory classFactory = ChooseFactory(creationContext, parameterTypes);
+            return classFactory;
+        }
+
+        #endregion
     }
 }

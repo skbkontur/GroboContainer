@@ -12,11 +12,6 @@ namespace GroboContainer.Tests.ChildContainerSupportTests
 {
     public class CompositeContainerContextTest : TestBase
     {
-        [ChildType]
-        private class CChild
-        {
-        }
-
         [Test]
         public void TestAbstractionCollectionSharedBetweenContexts()
         {
@@ -27,15 +22,20 @@ namespace GroboContainer.Tests.ChildContainerSupportTests
             Assert.That(compositeContainerContext.AbstractionConfigurationCollection, Is.InstanceOf<CompositeCollection>());
 
             IContainerContext childContextA = compositeContainerContext.MakeChildContext();
-            IClassFactory factoryFromA = childContextA.AbstractionConfigurationCollection.Get(typeof (CChild)).
-                GetImplementations()[0].GetFactory(
-                    Type.EmptyTypes, compositeContainerContext.CreationContext);
+            IClassFactory factoryFromA = childContextA.AbstractionConfigurationCollection.Get(typeof(CChild)).
+                                                       GetImplementations()[0].GetFactory(
+                                                           Type.EmptyTypes, compositeContainerContext.CreationContext);
 
             IContainerContext childContextB = compositeContainerContext.MakeChildContext();
-            IClassFactory factoryFromB = childContextB.AbstractionConfigurationCollection.Get(typeof (CChild)).
-                GetImplementations()[0].GetFactory(
-                    Type.EmptyTypes, compositeContainerContext.CreationContext);
+            IClassFactory factoryFromB = childContextB.AbstractionConfigurationCollection.Get(typeof(CChild)).
+                                                       GetImplementations()[0].GetFactory(
+                                                           Type.EmptyTypes, compositeContainerContext.CreationContext);
             Assert.AreSame(factoryFromA, factoryFromB);
+        }
+
+        [ChildType]
+        private class CChild
+        {
         }
     }
 }

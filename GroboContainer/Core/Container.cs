@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
 using GroboContainer.Config;
 using GroboContainer.Impl;
 using GroboContainer.Impl.ChildContainersSupport;
@@ -15,13 +16,6 @@ namespace GroboContainer.Core
 {
     public class Container : IContainer, IContainerForFuncBuilder, IContainerInternals
     {
-        private readonly IContextHolder holder;
-        private readonly IInternalContainer internalContainer;
-        private volatile ILog lastConstructedLog;
-        private static readonly MethodInfo getLazyFuncMethod = typeof(Container).GetMethods(BindingFlags.Public | BindingFlags.Instance).Single(x => x.Name == "GetLazyFunc" && x.IsGenericMethod);
-        private static readonly Type getLazyFuncMethodReturnType = getLazyFuncMethod.ReturnType.GetGenericTypeDefinition();
-        private static readonly IDictionary<Type, MethodInfo> getCreationFuncMethods = typeof(Container).GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(x => x.Name == "GetCreationFunc" && x.IsGenericMethod).ToDictionary(x => x.ReturnType.GetGenericTypeDefinition());
-
         public Container(IInternalContainer internalContainer, IContextHolder holder, ILog currentLog)
         {
             this.internalContainer = internalContainer;
@@ -40,6 +34,34 @@ namespace GroboContainer.Core
         }
 
         IContextHolder IContainerInternals.ContextHolder => holder;
+
+        public IContainer MakeChildContainer()
+        {
+            return new Container(internalContainer.MakeChild(), new NoContextHolder(), null);
+        }
+
+        public static IContainer CreateWithChilds(IContainerConfiguration configuration,
+                                                  IClassWrapperCreator classWrapperCreator, IContainerSelector selector)
+        {
+            return
+                new Container(
+                    new InternalContainer(new CompositeContainerContext(configuration, classWrapperCreator, selector)),
+                    new NoContextHolder(), null);
+        }
+
+        private IInjectionContext GetContext()
+        {
+            var context = holder.GetContext(internalContainer);
+            lastConstructedLog = context.GetLog();
+            return context;
+        }
+
+        private readonly IContextHolder holder;
+        private readonly IInternalContainer internalContainer;
+        private volatile ILog lastConstructedLog;
+        private static readonly MethodInfo getLazyFuncMethod = typeof(Container).GetMethods(BindingFlags.Public | BindingFlags.Instance).Single(x => x.Name == "GetLazyFunc" && x.IsGenericMethod);
+        private static readonly Type getLazyFuncMethodReturnType = getLazyFuncMethod.ReturnType.GetGenericTypeDefinition();
+        private static readonly IDictionary<Type, MethodInfo> getCreationFuncMethods = typeof(Container).GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(x => x.Name == "GetCreationFunc" && x.IsGenericMethod).ToDictionary(x => x.ReturnType.GetGenericTypeDefinition());
 
         #region IContainer Members
 
@@ -237,21 +259,21 @@ namespace GroboContainer.Core
         public Delegate GetLazyFunc(Type funcType)
         {
             return internalContainer.GetLazyFunc(funcType, type =>
-            {
-                if (!type.IsGenericType || type.GetGenericTypeDefinition() != getLazyFuncMethodReturnType)
-                    throw new InvalidOperationException(string.Format("Тип {0} не поддерживаются в качестве функции получения", type));
-                return (Delegate)getLazyFuncMethod.MakeGenericMethod(type.GetGenericArguments()).Invoke(this, new object[0]);
-            });
+                {
+                    if (!type.IsGenericType || type.GetGenericTypeDefinition() != getLazyFuncMethodReturnType)
+                        throw new InvalidOperationException(string.Format("Тип {0} не поддерживаются в качестве функции получения", type));
+                    return (Delegate)getLazyFuncMethod.MakeGenericMethod(type.GetGenericArguments()).Invoke(this, new object[0]);
+                });
         }
 
         public Delegate GetCreationFunc(Type funcType)
         {
             return internalContainer.GetCreationFunc(funcType, type =>
-            {
-                if (!type.IsGenericType || !getCreationFuncMethods.TryGetValue(type.GetGenericTypeDefinition(), out var methodInfo))
-                    throw new InvalidOperationException(string.Format("Тип {0} не поддерживаются в качестве функции создания", type));
-                return (Delegate)methodInfo.MakeGenericMethod(type.GetGenericArguments()).Invoke(this, new object[0]);
-            });
+                {
+                    if (!type.IsGenericType || !getCreationFuncMethods.TryGetValue(type.GetGenericTypeDefinition(), out var methodInfo))
+                        throw new InvalidOperationException(string.Format("Тип {0} не поддерживаются в качестве функции создания", type));
+                    return (Delegate)methodInfo.MakeGenericMethod(type.GetGenericArguments()).Invoke(this, new object[0]);
+                });
         }
 
         public void Dispose()
@@ -295,26 +317,5 @@ namespace GroboContainer.Core
         }
 
         #endregion
-
-        public IContainer MakeChildContainer()
-        {
-            return new Container(internalContainer.MakeChild(), new NoContextHolder(), null);
-        }
-
-        public static IContainer CreateWithChilds(IContainerConfiguration configuration,
-                                                  IClassWrapperCreator classWrapperCreator, IContainerSelector selector)
-        {
-            return
-                new Container(
-                    new InternalContainer(new CompositeContainerContext(configuration, classWrapperCreator, selector)),
-                    new NoContextHolder(), null);
-        }
-
-        private IInjectionContext GetContext()
-        {
-            var context = holder.GetContext(internalContainer);
-            lastConstructedLog = context.GetLog();
-            return context;
-        }
     }
 }

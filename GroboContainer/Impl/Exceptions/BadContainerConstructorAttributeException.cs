@@ -7,15 +7,15 @@ namespace GroboContainer.Impl.Exceptions
     {
         public BadContainerConstructorAttributeException(ConstructorInfo constructor, Type type)
             : base(string.Format(
-                       "В аттрибуте ContainerConstructor конструктора {0} {1} тип параметра {2} должен присутствовать не более 1 раза",
-                       constructor.ReflectedType, constructor, type))
+                "В аттрибуте ContainerConstructor конструктора {0} {1} тип параметра {2} должен присутствовать не более 1 раза",
+                constructor.ReflectedType, constructor, type))
         {
         }
 
         public BadContainerConstructorAttributeException(ConstructorInfo constructor)
             : base(string.Format(
-                       "Типы, описанные в аттрибуте ContainerConstructor конструктора {0} {1}, не соответствуют типам параметров конструктора",
-                       constructor.ReflectedType, constructor))
+                "Типы, описанные в аттрибуте ContainerConstructor конструктора {0} {1}, не соответствуют типам параметров конструктора",
+                constructor.ReflectedType, constructor))
         {
         }
     }

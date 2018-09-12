@@ -15,15 +15,6 @@ namespace GroboContainer.Tests.FunctionalTests
         {
         }
 
-        private class Type1 : IInterface
-        {
-        }
-
-        private class Type2 : IInterface
-        {
-        }
-
-
         [Test]
         public void TestErrorNone()
         {
@@ -33,24 +24,32 @@ namespace GroboContainer.Tests.FunctionalTests
         [Test]
         public void TestGetImplementationTypes()
         {
-            Type[] types = container.GetImplementationTypes(typeof (IInterface));
-            CollectionAssert.AreEquivalent(new[] {typeof (Type1), typeof (Type2)}, types);
+            Type[] types = container.GetImplementationTypes(typeof(IInterface));
+            CollectionAssert.AreEquivalent(new[] {typeof(Type1), typeof(Type2)}, types);
         }
 
         [Test]
         public void TestMultiple()
         {
             IInterface[] types = container.GetAll<IInterface>();
-            CollectionAssert.AreEquivalent(new[] {typeof (Type1), typeof (Type2)},
+            CollectionAssert.AreEquivalent(new[] {typeof(Type1), typeof(Type2)},
                                            types.Select(t => t.GetType()).ToArray());
         }
 
         [Test]
         public void TestSingle()
         {
-            object[] types = container.GetAll(typeof (Type1));
+            object[] types = container.GetAll(typeof(Type1));
             Assert.AreEqual(1, types.Length);
             Assert.That(types[0], Is.InstanceOf<Type1>());
+        }
+
+        private class Type1 : IInterface
+        {
+        }
+
+        private class Type2 : IInterface
+        {
         }
     }
 }

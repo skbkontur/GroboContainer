@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
+
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
 
 namespace GroboContainer.Impl.Abstractions
 {
     public class AbstractionConfigurationCollection : IAbstractionConfigurationCollection
     {
-        private readonly ConcurrentDictionary<Type, IAbstractionConfiguration> cache = new ConcurrentDictionary<Type, IAbstractionConfiguration>();
-        private readonly Func<Type, IAbstractionConfiguration> createByType;
-
         public AbstractionConfigurationCollection(IAutoAbstractionConfigurationFactory factory)
         {
             createByType = factory.CreateByType;
         }
+
+        private readonly ConcurrentDictionary<Type, IAbstractionConfiguration> cache = new ConcurrentDictionary<Type, IAbstractionConfiguration>();
+        private readonly Func<Type, IAbstractionConfiguration> createByType;
 
         #region IAbstractionConfigurationCollection Members
 

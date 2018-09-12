@@ -6,32 +6,27 @@ namespace GroboContainer.Impl.ClassCreation
 {
     public class FuncHelper : IFuncHelper
     {
-        private readonly MethodInfo buildLazyMethodInfo;
-        private readonly MethodInfo buildGetFuncMethodInfo;
-        private readonly IDictionary<int, MethodInfo> funcArgumentCountToMethodMap = new Dictionary<int, MethodInfo>();
-        private readonly HashSet<Type> supportedFuncs = new HashSet<Type>();
-
         public FuncHelper()
         {
-            Type type = typeof (IFuncBuilder);
+            Type type = typeof(IFuncBuilder);
             foreach (MethodInfo info in type.GetMethods())
             {
                 switch (info.Name)
                 {
-                    case "BuildCreateFunc":
-                        funcArgumentCountToMethodMap.Add(info.GetGenericArguments().Length, info);
-                        supportedFuncs.Add(info.ReturnType.GetGenericTypeDefinition());
-                        break;
-                    case "BuildGetFunc":
-                        if (buildGetFuncMethodInfo != null)
-                            throw new InvalidOperationException("Duplicate method 'BuildGetFunc'");
-                        buildGetFuncMethodInfo = info;
-                        break;
-                    case "BuildLazy":
-                        if (buildLazyMethodInfo != null)
-                            throw new InvalidOperationException("Duplicate method 'BuildLazy'");
-                        buildLazyMethodInfo = info;
-                        break;
+                case "BuildCreateFunc":
+                    funcArgumentCountToMethodMap.Add(info.GetGenericArguments().Length, info);
+                    supportedFuncs.Add(info.ReturnType.GetGenericTypeDefinition());
+                    break;
+                case "BuildGetFunc":
+                    if (buildGetFuncMethodInfo != null)
+                        throw new InvalidOperationException("Duplicate method 'BuildGetFunc'");
+                    buildGetFuncMethodInfo = info;
+                    break;
+                case "BuildLazy":
+                    if (buildLazyMethodInfo != null)
+                        throw new InvalidOperationException("Duplicate method 'BuildLazy'");
+                    buildLazyMethodInfo = info;
+                    break;
                 }
             }
             if (buildLazyMethodInfo == null)
@@ -39,6 +34,11 @@ namespace GroboContainer.Impl.ClassCreation
             if (buildGetFuncMethodInfo == null)
                 throw new MissingMethodException(type.ToString(), "BuildGetFunc");
         }
+
+        private readonly MethodInfo buildLazyMethodInfo;
+        private readonly MethodInfo buildGetFuncMethodInfo;
+        private readonly IDictionary<int, MethodInfo> funcArgumentCountToMethodMap = new Dictionary<int, MethodInfo>();
+        private readonly HashSet<Type> supportedFuncs = new HashSet<Type>();
 
         #region IFuncHelper Members
 
@@ -68,8 +68,8 @@ namespace GroboContainer.Impl.ClassCreation
             int length = genericArguments.Length;
             if (!funcArgumentCountToMethodMap.TryGetValue(length, out result))
                 throw new InvalidOperationException(string.Format(
-                                                        "Функции создания с {0} аргументами на поддерживаются",
-                                                        length - 1));
+                    "Функции создания с {0} аргументами на поддерживаются",
+                    length - 1));
             return result.MakeGenericMethod(genericArguments);
         }
 

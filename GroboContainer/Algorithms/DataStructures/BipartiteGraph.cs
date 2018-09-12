@@ -2,29 +2,19 @@
 {
     public class BipartiteGraph
     {
-        private readonly int firstPartSize;
-        private readonly int secondPartSize;
-        private readonly int[][] matrix;
-
         public BipartiteGraph(int firstPartSize, int secondPartSize)
         {
-            this.firstPartSize = firstPartSize;
-            this.secondPartSize = secondPartSize;
+            this.FirstPartSize = firstPartSize;
+            this.SecondPartSize = secondPartSize;
 
             matrix = new int[FirstPartSize][];
-            for(int k =  0; k < FirstPartSize; ++k)
+            for (int k = 0; k < FirstPartSize; ++k)
                 matrix[k] = new int[SecondPartSize];
         }
 
-        public int FirstPartSize
-        {
-            get { return firstPartSize; }
-        }
+        public int FirstPartSize { get; }
 
-        public int SecondPartSize
-        {
-            get { return secondPartSize; }
-        }
+        public int SecondPartSize { get; }
 
         public bool IsConnected(int i, int j)
         {
@@ -40,5 +30,7 @@
         {
             matrix[i][j] = 0;
         }
+
+        private readonly int[][] matrix;
     }
 }

@@ -8,23 +8,8 @@ namespace GroboContainer.Tests.TypesHelperTests.GenericConstraints
         {
         }
 
-        private class Entity1
-        {
-        }
-
-        private class Entity2 : IConstraint
-        {
-        }
-
         private struct Entity3
         {
-        }
-
-        private class Entity4
-        {
-            private Entity4()
-            {
-            }
         }
 
         private interface IAbstract1<T1, T2>
@@ -35,46 +20,8 @@ namespace GroboContainer.Tests.TypesHelperTests.GenericConstraints
         {
         }
 
-        private class GenericClassWithTypeConstraint<T1, T2> : IAbstract1<T2, T1>
-            where T2 : IConstraint
-        {
-        }
-
-        private class GenericClassWithValueTypeConstraint<T> : IAbstract2<T> where T : struct
-        {
-        }
-
-        private class GenericClassWithReferenceTypeConstraint<T> : IAbstract2<T> where T : class
-        {
-        }
-
-        private class GenericClassWithDefaultConstructorConstraint<T> : IAbstract2<T> where T : new()
-        {
-        }
-
-        private class ArrayGenericClass<T> : IAbstract2<GenericClassWithReferenceTypeConstraint<T>[]> where T : class
-        {
-        }
-
         private interface IGeneric<T, TConstraint>
             where T : TConstraint
-        {
-        }
-
-        private class ConstrainedImpl<T, TConstraint> : IGeneric<T, TConstraint>
-            where T : TConstraint
-        {
-        }
-
-        private class Constraint
-        {
-        }
-
-        private class ConstrainedEntity : Constraint
-        {
-        }
-
-        private class ConstrainedEntity2 : ConstrainedEntity
         {
         }
 
@@ -82,21 +29,7 @@ namespace GroboContainer.Tests.TypesHelperTests.GenericConstraints
         {
         }
 
-        private class GenericFromSelf<T> : IGenericFromSelf<T> where T : GenericFromSelf<T>
-        {
-        }
-
-        private class GenericArg : GenericFromSelf<GenericArg>
-        {
-        }
-
         private interface IGenericFromManyArguments<T1, T2, T3, T4>
-            where T1 : T2
-            where T2 : T3, T4
-        {
-        }
-
-        private class GenericFromManyArguments<T1, T2, T3, T4> : IGenericFromManyArguments<T1, T2, T3, T4>
             where T1 : T2
             where T2 : T3, T4
         {
@@ -147,7 +80,7 @@ namespace GroboContainer.Tests.TypesHelperTests.GenericConstraints
         {
             CheckTrue<IGenericFromManyArguments<ConstrainedEntity2, ConstrainedEntity, Constraint, Constraint>,
                 GenericFromManyArguments<ConstrainedEntity2, ConstrainedEntity, Constraint, Constraint>>(
-                typeof(GenericFromManyArguments<,,,>));
+                    typeof(GenericFromManyArguments<,,,>));
         }
 
         [Test]
@@ -181,7 +114,7 @@ namespace GroboContainer.Tests.TypesHelperTests.GenericConstraints
         {
             CheckTrue<IAbstract1<Entity2, Entity1>,
                 GenericClassWithTypeConstraint<Entity1, Entity2>>(
-                typeof(GenericClassWithTypeConstraint<,>));
+                    typeof(GenericClassWithTypeConstraint<,>));
         }
 
         [Test]
@@ -195,6 +128,73 @@ namespace GroboContainer.Tests.TypesHelperTests.GenericConstraints
         {
             CheckTrue<IAbstract2<Entity3>, GenericClassWithValueTypeConstraint<Entity3>>(
                 typeof(GenericClassWithValueTypeConstraint<>));
+        }
+
+        private class Entity1
+        {
+        }
+
+        private class Entity2 : IConstraint
+        {
+        }
+
+        private class Entity4
+        {
+            private Entity4()
+            {
+            }
+        }
+
+        private class GenericClassWithTypeConstraint<T1, T2> : IAbstract1<T2, T1>
+            where T2 : IConstraint
+        {
+        }
+
+        private class GenericClassWithValueTypeConstraint<T> : IAbstract2<T> where T : struct
+        {
+        }
+
+        private class GenericClassWithReferenceTypeConstraint<T> : IAbstract2<T> where T : class
+        {
+        }
+
+        private class GenericClassWithDefaultConstructorConstraint<T> : IAbstract2<T> where T : new()
+        {
+        }
+
+        private class ArrayGenericClass<T> : IAbstract2<GenericClassWithReferenceTypeConstraint<T>[]> where T : class
+        {
+        }
+
+        private class ConstrainedImpl<T, TConstraint> : IGeneric<T, TConstraint>
+            where T : TConstraint
+        {
+        }
+
+        private class Constraint
+        {
+        }
+
+        private class ConstrainedEntity : Constraint
+        {
+        }
+
+        private class ConstrainedEntity2 : ConstrainedEntity
+        {
+        }
+
+        private class GenericFromSelf<T> : IGenericFromSelf<T> where T : GenericFromSelf<T>
+        {
+        }
+
+        private class GenericArg : GenericFromSelf<GenericArg>
+        {
+        }
+
+        private class GenericFromManyArguments<T1, T2, T3, T4> : IGenericFromManyArguments<T1, T2, T3, T4>
+            where T1 : T2
+            where T2 : T3, T4
+        {
         }
     }
 }

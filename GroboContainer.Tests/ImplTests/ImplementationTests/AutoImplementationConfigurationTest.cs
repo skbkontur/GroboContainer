@@ -27,7 +27,6 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
     //    private ContainerConstructorInfo info;
     //    private IImplementationFactoryProvider provider;
 
-
     //    [Test]
     //    public void TestDisposeNothing()
     //    {
@@ -72,7 +71,6 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
     //        constructorSelector.ExpectGetConstructor(type, Type.EmptyTypes, info);
     //        creator.ExpectBuildConstructionDelegate(info, func);
 
-
     //        var configuration = new AutoImplementationConfiguration(type, creator, constructorSelector);
 
     //        context.ExpectGetInternalContainer(internalContainer);
@@ -102,7 +100,6 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
     //                };
     //        constructorSelector.ExpectGetConstructor(type, Type.EmptyTypes, info);
     //        creator.ExpectBuildConstructionDelegate(info, func);
-
 
     //        var configuration = new AutoImplementationConfiguration(type, creator, constructorSelector);
 

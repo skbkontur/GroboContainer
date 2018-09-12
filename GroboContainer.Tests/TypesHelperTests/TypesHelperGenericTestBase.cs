@@ -14,12 +14,10 @@ namespace GroboContainer.Tests.TypesHelperTests
             helpers = new TypesHelper();
         }
 
-        private ITypesHelper helpers;
-
         protected void CheckTrue<TInterface, TImpl>(Type type) where TImpl : TInterface
         {
-            Type implementation = helpers.TryGetImplementation(typeof (TInterface), type);
-            Assert.AreEqual(typeof (TImpl), implementation);
+            Type implementation = helpers.TryGetImplementation(typeof(TInterface), type);
+            Assert.AreEqual(typeof(TImpl), implementation);
         }
 
         protected void CheckTrue<TInterface, TImpl>(Type type, Func<Type, Type[]> getImplementations) where TImpl : TInterface
@@ -30,7 +28,9 @@ namespace GroboContainer.Tests.TypesHelperTests
 
         protected void CheckFalse<TInterface>(Type type)
         {
-            Assert.IsNull(helpers.TryGetImplementation(typeof (TInterface), type));
+            Assert.IsNull(helpers.TryGetImplementation(typeof(TInterface), type));
         }
+
+        private ITypesHelper helpers;
     }
 }

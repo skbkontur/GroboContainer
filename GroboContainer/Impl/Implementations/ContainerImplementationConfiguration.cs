@@ -1,4 +1,5 @@
 using System;
+
 using GroboContainer.Core;
 using GroboContainer.Impl.ClassCreation;
 using GroboContainer.Impl.Injection;
@@ -10,14 +11,11 @@ namespace GroboContainer.Impl.Implementations
     {
         #region IImplementationConfiguration Members
 
-        public Type ObjectType
-        {
-            get { return typeof (Container); }
-        }
+        public Type ObjectType { get { return typeof(Container); } }
 
         public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext)
         {
-            context.Reused(typeof (IContainer));
+            context.Reused(typeof(IContainer));
             return context.Container;
         }
 

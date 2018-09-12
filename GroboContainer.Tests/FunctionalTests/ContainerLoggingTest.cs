@@ -17,11 +17,6 @@ namespace GroboContainer.Tests.FunctionalTests
         {
         }
 
-        private class C1 : I1
-        {
-        }
-
-
         private interface I2
         {
         }
@@ -30,32 +25,8 @@ namespace GroboContainer.Tests.FunctionalTests
         {
         }
 
-        private class Crash1 : ICrash1
-        {
-            public Crash1(ICrash2 crash2)
-            {
-            }
-        }
-
         private interface ICrash2
         {
-        }
-
-        private class Crash2 : ICrash2
-        {
-            public Crash2(int i)
-            {
-            }
-        }
-
-        private static string lastLog;
-
-        private class C2 : I2
-        {
-            public C2(IContainer container)
-            {
-                lastLog = container.LastConstructionLog;
-            }
         }
 
         [Test]
@@ -79,7 +50,7 @@ Get<GroboContainer.Tests.FunctionalTests.ContainerLoggingTest+ICrash1>()
         {
             Assert.AreEqual("<no>", container.LastConstructionLog);
             RunFail<NoConstructorException>(() =>
-                                            container.Get(typeof (int)));
+                                            container.Get(typeof(int)));
             StringAssert.Contains("Get<System.Int32>()", container.LastConstructionLog);
             container.GetAll<I1>();
             Assert.AreEqual(
@@ -105,6 +76,34 @@ Get<GroboContainer.Tests.FunctionalTests.ContainerLoggingTest+I2>()
   EndGet<GroboContainer.Core.IContainer>()
 ",
                 lastLog);
+        }
+
+        private static string lastLog;
+
+        private class C1 : I1
+        {
+        }
+
+        private class Crash1 : ICrash1
+        {
+            public Crash1(ICrash2 crash2)
+            {
+            }
+        }
+
+        private class Crash2 : ICrash2
+        {
+            public Crash2(int i)
+            {
+            }
+        }
+
+        private class C2 : I2
+        {
+            public C2(IContainer container)
+            {
+                lastLog = container.LastConstructionLog;
+            }
         }
     }
 }

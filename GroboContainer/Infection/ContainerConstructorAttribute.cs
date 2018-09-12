@@ -6,8 +6,6 @@ namespace GroboContainer.Infection
     [AttributeUsage(AttributeTargets.Constructor, AllowMultiple = false, Inherited = false)]
     public class ContainerConstructorAttribute : Attribute
     {
-        private readonly Type[] parameterTypes;
-
         public ContainerConstructorAttribute(params Type[] parameterTypes)
         {
             this.parameterTypes = parameterTypes;
@@ -17,5 +15,7 @@ namespace GroboContainer.Infection
         {
             return parameterTypes;
         }
+
+        private readonly Type[] parameterTypes;
     }
 }

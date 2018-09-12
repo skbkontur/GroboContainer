@@ -11,7 +11,7 @@ namespace GroboContainer.Tests.ImplTests
             Expect
                 .Once
                 .On(mock)
-                .Method("GetForFunc", typeof (T))
+                .Method("GetForFunc", typeof(T))
                 .With()
                 .Will(Return.Value(result));
         }
@@ -21,7 +21,7 @@ namespace GroboContainer.Tests.ImplTests
             Expect
                 .Once
                 .On(mock)
-                .Method("CreateForFunc", typeof (T))
+                .Method("CreateForFunc", typeof(T))
                 .With()
                 .Will(Return.Value(result));
         }
@@ -31,7 +31,7 @@ namespace GroboContainer.Tests.ImplTests
             Expect
                 .Once
                 .On(mock)
-                .Method("CreateForFunc", typeof (T1), typeof (T))
+                .Method("CreateForFunc", typeof(T1), typeof(T))
                 .With(arg1)
                 .Will(Return.Value(result));
         }

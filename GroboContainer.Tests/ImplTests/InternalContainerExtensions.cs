@@ -15,7 +15,7 @@ namespace GroboContainer.Tests.ImplTests
             Expect
                 .Once
                 .On(mock)
-                .Method("Get", typeof (T))
+                .Method("Get", typeof(T))
                 .With(context)
                 .Will(Return.Value(result));
         }
@@ -26,7 +26,7 @@ namespace GroboContainer.Tests.ImplTests
             Expect
                 .Once
                 .On(mock)
-                .Method("Create", typeof (T))
+                .Method("Create", typeof(T))
                 .With(context)
                 .Will(Return.Value(result));
         }
@@ -37,7 +37,7 @@ namespace GroboContainer.Tests.ImplTests
             Expect
                 .Once
                 .On(mock)
-                .Method("Create", typeof (T1), typeof (T))
+                .Method("Create", typeof(T1), typeof(T))
                 .With(context, arg1)
                 .Will(Return.Value(result));
         }
@@ -48,7 +48,7 @@ namespace GroboContainer.Tests.ImplTests
             Expect
                 .Once
                 .On(mock)
-                .Method("Create", typeof (T1), typeof (T2), typeof (T))
+                .Method("Create", typeof(T1), typeof(T2), typeof(T))
                 .With(context, arg1, arg2)
                 .Will(Return.Value(result));
         }
@@ -59,7 +59,7 @@ namespace GroboContainer.Tests.ImplTests
             Expect
                 .Once
                 .On(mock)
-                .Method("Create", typeof (T1), typeof (T2), typeof (T3), typeof (T))
+                .Method("Create", typeof(T1), typeof(T2), typeof(T3), typeof(T))
                 .With(context, arg1, arg2, arg3)
                 .Will(Return.Value(result));
         }
@@ -71,7 +71,7 @@ namespace GroboContainer.Tests.ImplTests
             Expect
                 .Once
                 .On(mock)
-                .Method("Create", typeof (T1), typeof (T2), typeof (T3), typeof (T4), typeof (T))
+                .Method("Create", typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T))
                 .With(context, arg1, arg2, arg3, arg4)
                 .Will(Return.Value(result));
         }
@@ -82,7 +82,7 @@ namespace GroboContainer.Tests.ImplTests
             Expect
                 .Once
                 .On(mock)
-                .Method("Get", typeof (T))
+                .Method("Get", typeof(T))
                 .With(context)
                 .Will(Throw.Exception(e));
         }
@@ -104,7 +104,7 @@ namespace GroboContainer.Tests.ImplTests
             Expect
                 .Once
                 .On(mock)
-                .Method("GetAll", typeof (T))
+                .Method("GetAll", typeof(T))
                 .With(context)
                 .Will(Return.Value(result));
         }
@@ -124,7 +124,7 @@ namespace GroboContainer.Tests.ImplTests
             Expect
                 .Once
                 .On(mock)
-                .Method("BuildGetFunc", typeof (T))
+                .Method("BuildGetFunc", typeof(T))
                 .With(context)
                 .Will(Return.Value(result));
         }
@@ -135,7 +135,7 @@ namespace GroboContainer.Tests.ImplTests
             Expect
                 .Once
                 .On(mock)
-                .Method("BuildCreateFunc", typeof (T))
+                .Method("BuildCreateFunc", typeof(T))
                 .With(context)
                 .Will(Return.Value(result));
         }
@@ -146,7 +146,7 @@ namespace GroboContainer.Tests.ImplTests
             Expect
                 .Once
                 .On(mock)
-                .Method("BuildCreateFunc", typeof (T1), typeof (T))
+                .Method("BuildCreateFunc", typeof(T1), typeof(T))
                 .With(context)
                 .Will(Return.Value(result));
         }

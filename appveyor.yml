@@ -5,7 +5,7 @@ init:
 
 before_build:
   - cmd: dotnet --info
-  - cmd: dotnet restore ./GroboContainer.sln --verbosity m
+  - cmd: dotnet restore ./GroboContainer.sln --verbosity minimal
 
 build_script:
   - cmd: dotnet build --configuration Release ./GroboContainer.sln

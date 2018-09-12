@@ -5,8 +5,6 @@ namespace GroboContainer.Tests
 {
     public static class FieldsCleanerCache
     {
-        private static readonly IDictionary<long, Action<object>> cache = new Dictionary<long, Action<object>>();
-
         public static void Clean(object obj)
         {
             var type = obj.GetType();
@@ -18,5 +16,7 @@ namespace GroboContainer.Tests
             }
             action(obj);
         }
+
+        private static readonly IDictionary<long, Action<object>> cache = new Dictionary<long, Action<object>>();
     }
 }

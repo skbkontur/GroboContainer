@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -184,6 +184,16 @@ namespace GroboContainer.Tests.FunctionalTests
         }
 
         [Test]
+        public void TestCreateWithUseTypesConfiguration()
+        {
+            container.Configurator.ForAbstraction(typeof(I1)).UseTypes(new[] {typeof(C1), typeof(C2)});
+            var actual = container.GetAll<I1>();
+            Assert.That(actual.Length, Is.EqualTo(2));
+            Assert.That(actual[0].GetType(), Is.EqualTo(typeof(C1)));
+            Assert.That(actual[1].GetType(), Is.EqualTo(typeof(C2)));
+        }
+
+        [Test]
         public void TestWithDynamicType()
         {
             var implementationTypes = container.GetImplementationTypes(typeof(INotImplemented));
@@ -221,6 +231,20 @@ namespace GroboContainer.Tests.FunctionalTests
         [IgnoredImplementation]
         private class X1Impl2 : IX1, IX2
         {
+        }
+
+        [Test]
+        public void TestWithMultiDynamicType()
+        {
+            var proxyType1 = CreateProxyType(typeof(INotImplemented));
+            var proxyType2 = CreateProxyType(typeof(INotImplemented));
+            container.Configurator.ForAbstraction(typeof(INotImplemented)).UseTypes(new[] {proxyType1, proxyType2});
+
+            var proxies = container.GetAll<INotImplemented>();
+
+            Assert.That(proxies.Length, Is.EqualTo(2));
+            Assert.That(proxies[0].GetType(), Is.EqualTo(proxyType1));
+            Assert.That(proxies[1].GetType(), Is.EqualTo(proxyType2));
         }
     }
 }

@@ -5,3 +5,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/dfo5pa6s9wbiji4x?svg=true)](https://ci.appveyor.com/project/skbkontur/grobocontainer)
 
 Simple DI-container
+
+## Release Notes
+
+See [CHANGELOG](CHANGELOG.md).

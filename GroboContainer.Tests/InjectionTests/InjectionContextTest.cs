@@ -20,7 +20,7 @@ namespace GroboContainer.Tests.InjectionTests
         {
             base.SetUp();
             internalContainer = NewMock<IInternalContainer>();
-            log = NewMock<ILog>();
+            log = NewMock<IGroboContainerLog>();
             holder = null;
             injectionContext = new InjectionContext(internalContainer, log, GetHolder);
         }
@@ -122,7 +122,7 @@ namespace GroboContainer.Tests.InjectionTests
         public void TestRealConstructor()
         {
             var container = GetMock<IInternalContainer>();
-            container.Expect(c => c.CreateNewLog()).Return(new Log("root"));
+            container.Expect(c => c.CreateNewLog()).Return(new GroboContainerLog("root"));
             injectionContext = new InjectionContext(container);
             Assert.That(injectionContext.Container, Is.InstanceOf<Container>());
             Assert.That(((ContextHolder)((IContainerInternals)injectionContext.Container).ContextHolder).OwnerThreadId, Is.EqualTo(Thread.CurrentThread.ManagedThreadId));
@@ -136,7 +136,7 @@ namespace GroboContainer.Tests.InjectionTests
         }
 
         private IInternalContainer internalContainer;
-        private ILog log;
+        private IGroboContainerLog log;
         private InjectionContext injectionContext;
         private IContextHolder holder;
     }

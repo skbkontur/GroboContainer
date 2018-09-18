@@ -100,12 +100,12 @@ namespace GroboContainer.Impl
 
         #region IInternalContainer Members
 
-        public ILog CreateNewLog()
+        public IGroboContainerLog CreateNewLog()
         {
             string containerName = containerContext.Configuration.ContainerName;
             if ((containerContext.Configuration.Mode & ContainerMode.UseShortLog) == ContainerMode.UseShortLog)
-                return new ShortLog(containerName);
-            return new Log(containerName);
+                return new ShortGroboContainerLog(containerName);
+            return new GroboContainerLog(containerName);
         }
 
         public string Name { get { return containerContext.Configuration.ContainerName; } }

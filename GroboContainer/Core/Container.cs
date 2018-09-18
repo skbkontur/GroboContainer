@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -16,7 +16,7 @@ namespace GroboContainer.Core
 {
     public class Container : IContainer, IContainerForFuncBuilder, IContainerInternals
     {
-        public Container(IInternalContainer internalContainer, IContextHolder holder, ILog currentLog)
+        public Container(IInternalContainer internalContainer, IContextHolder holder, IGroboContainerLog currentLog)
         {
             this.internalContainer = internalContainer;
             this.holder = holder;
@@ -58,7 +58,7 @@ namespace GroboContainer.Core
 
         private readonly IContextHolder holder;
         private readonly IInternalContainer internalContainer;
-        private volatile ILog lastConstructedLog;
+        private volatile IGroboContainerLog lastConstructedLog;
         private static readonly MethodInfo getLazyFuncMethod = typeof(Container).GetMethods(BindingFlags.Public | BindingFlags.Instance).Single(x => x.Name == "GetLazyFunc" && x.IsGenericMethod);
         private static readonly Type getLazyFuncMethodReturnType = getLazyFuncMethod.ReturnType.GetGenericTypeDefinition();
         private static readonly IDictionary<Type, MethodInfo> getCreationFuncMethods = typeof(Container).GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(x => x.Name == "GetCreationFunc" && x.IsGenericMethod).ToDictionary(x => x.ReturnType.GetGenericTypeDefinition());

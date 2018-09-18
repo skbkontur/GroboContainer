@@ -9,7 +9,7 @@ namespace GroboContainer.Impl
 {
     public interface IInternalContainer : IFuncBuilder
     {
-        ILog CreateNewLog();
+        IGroboContainerLog CreateNewLog();
         string Name { get; }
         IInternalContainer MakeChild();
         IContainerConfigurator Configurator { get; }

@@ -4,14 +4,14 @@ using System.Text;
 
 namespace GroboContainer.Impl.Logging
 {
-    public class Log : ILog
+    public class GroboContainerLog : IGroboContainerLog
     {
-        static Log()
+        static GroboContainerLog()
         {
             depthChange = LogSettings.depthChange;
         }
 
-        public Log(string containerName)
+        public GroboContainerLog(string containerName)
         {
             this.containerName = containerName;
         }
@@ -21,7 +21,7 @@ namespace GroboContainer.Impl.Logging
         private readonly List<LogItem> items = new List<LogItem>();
         private int crashIndex = int.MaxValue;
 
-        #region ILog Members
+        #region IGroboContainerLog Members
 
         public void BeginConstruct(Type implementationType)
         {

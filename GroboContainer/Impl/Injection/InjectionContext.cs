@@ -10,7 +10,7 @@ namespace GroboContainer.Impl.Injection
 {
     public class InjectionContext : IInjectionContext
     {
-        public InjectionContext(IInternalContainer internalContainer, ILog log,
+        public InjectionContext(IInternalContainer internalContainer, IGroboContainerLog log,
                                 Func<IInjectionContext, IContextHolder> createHolder)
         {
             InternalContainer = internalContainer;
@@ -63,7 +63,7 @@ namespace GroboContainer.Impl.Injection
         private readonly HashSet<Type> constructed = new HashSet<Type>();
         private readonly Func<IInjectionContext, IContextHolder> createHolder;
         private readonly object lockObject = new object();
-        private readonly ILog log;
+        private readonly IGroboContainerLog log;
         private volatile Container container;
         private volatile IContextHolder contextHolder;
 
@@ -123,7 +123,7 @@ namespace GroboContainer.Impl.Injection
             log.EndCreate(abstractionType);
         }
 
-        public ILog GetLog()
+        public IGroboContainerLog GetLog()
         {
             return log;
         }

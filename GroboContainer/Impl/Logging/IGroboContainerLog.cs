@@ -2,7 +2,7 @@ using System;
 
 namespace GroboContainer.Impl.Logging
 {
-    public interface ILog
+    public interface IGroboContainerLog
     {
         void BeginConstruct(Type implementationType);
         void EndConstruct(Type implementationType);

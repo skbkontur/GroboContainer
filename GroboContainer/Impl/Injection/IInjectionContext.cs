@@ -24,6 +24,6 @@ namespace GroboContainer.Impl.Injection
         void BeginCreate(Type abstractionType);
         void EndCreate(Type abstractionType);
 
-        ILog GetLog();
+        IGroboContainerLog GetLog();
     }
 }

@@ -22,7 +22,7 @@ namespace GroboContainer.Tests.CoreTests
             internalContainer = NewMock<IInternalContainer>();
             holder = NewMock<IContextHolder>();
             context = NewMock<IInjectionContext>();
-            log = NewMock<ILog>();
+            log = NewMock<IGroboContainerLog>();
             container = new Container(internalContainer, holder, log);
         }
 
@@ -143,6 +143,6 @@ namespace GroboContainer.Tests.CoreTests
         private IInternalContainer internalContainer;
         private IContextHolder holder;
         private IInjectionContext context;
-        private ILog log;
+        private IGroboContainerLog log;
     }
 }

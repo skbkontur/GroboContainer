@@ -4,14 +4,14 @@ using System.Text;
 
 namespace GroboContainer.Impl.Logging
 {
-    public class ShortLog : ILog
+    public class ShortGroboContainerLog : IGroboContainerLog
     {
-        static ShortLog()
+        static ShortGroboContainerLog()
         {
             depthChange = LogSettings.depthChange;
         }
 
-        public ShortLog(string containerName)
+        public ShortGroboContainerLog(string containerName)
         {
             this.containerName = containerName;
         }
@@ -45,7 +45,7 @@ namespace GroboContainer.Impl.Logging
         private readonly List<LogItem> items = new List<LogItem>();
         private bool wasCrash;
 
-        #region ILog Members
+        #region IGroboContainerLog Members
 
         public void BeginConstruct(Type implementationType)
         {

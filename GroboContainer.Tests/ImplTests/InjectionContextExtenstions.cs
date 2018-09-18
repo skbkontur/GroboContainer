@@ -32,7 +32,7 @@ namespace GroboContainer.Tests.ImplTests
                   .Will(Return.Value(result));
         }
 
-        public static void ExpectGetLog(this IInjectionContext mock, ILog result)
+        public static void ExpectGetLog(this IInjectionContext mock, IGroboContainerLog result)
         {
             Expect.Once.On(mock)
                   .Method("GetLog")

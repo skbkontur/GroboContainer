@@ -13,7 +13,7 @@ namespace GroboContainer.Tests.LoggingTests
         public override void SetUp()
         {
             base.SetUp();
-            log = new Log("root");
+            log = new GroboContainerLog("root");
         }
 
         #endregion
@@ -76,6 +76,6 @@ EndGetAll<System.Int64>()
                 log.GetLog());
         }
 
-        private ILog log;
+        private IGroboContainerLog log;
     }
 }

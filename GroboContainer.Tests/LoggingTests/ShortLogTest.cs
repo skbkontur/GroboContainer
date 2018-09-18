@@ -11,7 +11,7 @@ namespace GroboContainer.Tests.LoggingTests
         public override void SetUp()
         {
             base.SetUp();
-            log = new ShortLog("root");
+            log = new ShortGroboContainerLog("root");
         }
 
         [Test]
@@ -118,6 +118,6 @@ GetAll<System.Object>()
                 log.GetLog());
         }
 
-        private ILog log;
+        private IGroboContainerLog log;
     }
 }

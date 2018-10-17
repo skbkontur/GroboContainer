@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using GroboContainer.Impl.ClassCreation;
 using GroboContainer.Impl.Implementations;
@@ -28,8 +28,8 @@ namespace GroboContainer.Impl.Abstractions.AutoConfiguration
                 lock (configurationLock)
                     if (instance == null)
                     {
-                        IClassFactory noParametersFactory = implementation.GetFactory(Type.EmptyTypes, creationContext);
-                        return instance = noParametersFactory.Create(context, new object[0]);
+                        IClassFactory noParametersFactory = implementation.GetFactory(Arrays<Type>.Empty, creationContext);
+                        return instance = noParametersFactory.Create(context, Arrays<object>.Empty);
                     }
             context.Reused(ObjectType);
             return instance;

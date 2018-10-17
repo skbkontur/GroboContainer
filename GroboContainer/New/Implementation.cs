@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections;
+using System;
+using System.Collections.Concurrent;
 
 using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.ClassCreation;
@@ -30,21 +30,21 @@ namespace GroboContainer.New
                     if ((factory = TryGetFactory(types)) == null)
                     {
                         if (factories == null)
-                            factories = new Hashtable();
-                        factories.Add(types, factory = creationContext.BuildFactory(ObjectType, parameterTypes));
+                            factories = new ConcurrentDictionary<TypeArray, IClassFactory>();
+                        factories[types] = factory = creationContext.BuildFactory(ObjectType, parameterTypes);
                     }
             return factory;
         }
 
         private IClassFactory TryGetFactory(TypeArray types)
         {
-            if (factories == null) return null;
-            var classFactory = (IClassFactory)factories[types];
-            return classFactory;
+            return factories != null && factories.TryGetValue(types, out var classFactory)
+                       ? classFactory
+                       : null;
         }
 
         private readonly object configurationLock = new object();
-        private volatile Hashtable factories;
+        private volatile ConcurrentDictionary<TypeArray, IClassFactory> factories;
         private volatile IClassFactory noArgumentsFactory;
 
         #region IImplementation Members

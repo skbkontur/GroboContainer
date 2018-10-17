@@ -2,26 +2,17 @@ using System;
 
 namespace GroboContainer.Impl.Abstractions
 {
-    public class TypeArray : IEquatable<TypeArray>
+    public struct TypeArray : IEquatable<TypeArray>
     {
         public TypeArray(Type[] types)
         {
             this.types = types;
-            hash = GetHash();
+            hash = GetHash(types);
         }
 
         #region IEquatable<TypeArray> Members
 
         public bool Equals(TypeArray other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return IsEqual(other);
-        }
-
-        #endregion
-
-        private bool IsEqual(TypeArray other)
         {
             if (other.types.Length != types.Length) return false;
             for (int i = 0; i < types.Length; i++)
@@ -29,12 +20,15 @@ namespace GroboContainer.Impl.Abstractions
             return true;
         }
 
+        #endregion
+
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof(TypeArray)) return false;
-            return Equals((TypeArray)obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+            return obj is TypeArray other && Equals(other);
         }
 
         public override int GetHashCode()
@@ -42,13 +36,13 @@ namespace GroboContainer.Impl.Abstractions
             return hash;
         }
 
-        private int GetHash()
+        private static int GetHash(Type[] types)
         {
             unchecked
             {
                 int result = 0;
-                foreach (Type type in types)
-                    result = (result * 397) ^ type.GetHashCode();
+                for(int i = 0; i < types.Length; ++i)
+                    result = (result * 397) ^ types[i].GetHashCode();
                 return result;
             }
         }

@@ -3,7 +3,7 @@ using System.Text;
 
 namespace GroboContainer.Impl.Logging
 {
-    public class LogItem
+    public struct LogItem
     {
         public LogItem(ItemType itemType, Type type)
         {

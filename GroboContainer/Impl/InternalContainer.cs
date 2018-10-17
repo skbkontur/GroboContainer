@@ -243,7 +243,7 @@ namespace GroboContainer.Impl
 
         public object Create(Type abstractionType, IInjectionContext context)
         {
-            return CreateImpl(abstractionType, context, Type.EmptyTypes, new object[0]);
+            return CreateImpl(abstractionType, context, Arrays<Type>.Empty, Arrays<object>.Empty);
         }
 
         public Type[] GetImplementationTypes(Type abstractionType)

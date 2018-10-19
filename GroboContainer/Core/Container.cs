@@ -262,7 +262,7 @@ namespace GroboContainer.Core
                 {
                     if (!type.IsGenericType || type.GetGenericTypeDefinition() != getLazyFuncMethodReturnType)
                         throw new InvalidOperationException(string.Format("Тип {0} не поддерживаются в качестве функции получения", type));
-                    return (Delegate)getLazyFuncMethod.MakeGenericMethod(type.GetGenericArguments()).Invoke(this, Arrays<object>.Empty);
+                    return (Delegate)getLazyFuncMethod.MakeGenericMethod(type.GetGenericArguments()).Invoke(this, EmptyArray<object>.Instance);
                 });
         }
 
@@ -272,7 +272,7 @@ namespace GroboContainer.Core
                 {
                     if (!type.IsGenericType || !getCreationFuncMethods.TryGetValue(type.GetGenericTypeDefinition(), out var methodInfo))
                         throw new InvalidOperationException(string.Format("Тип {0} не поддерживаются в качестве функции создания", type));
-                    return (Delegate)methodInfo.MakeGenericMethod(type.GetGenericArguments()).Invoke(this, Arrays<object>.Empty);
+                    return (Delegate)methodInfo.MakeGenericMethod(type.GetGenericArguments()).Invoke(this, EmptyArray<object>.Instance);
                 });
         }
 

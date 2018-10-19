@@ -162,27 +162,23 @@ namespace GroboContainer.Impl
 
         public T Create<T1, T>(IInjectionContext context, T1 arg1)
         {
-            return (T)CreateImpl(typeof(T), context, new[] {typeof(T1)}, arg1);
+            return (T)CreateImpl(typeof(T), context, TypeArrays<T1>.Instance, arg1);
         }
 
         public T Create<T1, T2, T>(IInjectionContext context, T1 arg1, T2 arg2)
         {
-            return (T)CreateImpl(typeof(T), context, new[] {typeof(T1), typeof(T2)}, arg1, arg2);
+            return (T)CreateImpl(typeof(T), context, TypeArrays<T1, T2>.Instance, arg1, arg2);
         }
 
         public T Create<T1, T2, T3, T>(IInjectionContext context, T1 arg1, T2 arg2, T3 arg3)
         {
-            return (T)CreateImpl(typeof(T), context,
-                                 new[] {typeof(T1), typeof(T2), typeof(T3)},
-                                 arg1, arg2, arg3);
+            return (T)CreateImpl(typeof(T), context, TypeArrays<T1, T2, T3>.Instance, arg1, arg2, arg3);
         }
 
         public T Create<T1, T2, T3, T4, T>(IInjectionContext context, T1 arg1, T2 arg2,
                                            T3 arg3, T4 arg4)
         {
-            return (T)CreateImpl(typeof(T), context,
-                                 new[] {typeof(T1), typeof(T2), typeof(T3), typeof(T4)},
-                                 arg1, arg2, arg3, arg4);
+            return (T)CreateImpl(typeof(T), context, TypeArrays<T1, T2, T3, T4>.Instance, arg1, arg2, arg3, arg4);
         }
 
         public object Get(Type type, IInjectionContext context)

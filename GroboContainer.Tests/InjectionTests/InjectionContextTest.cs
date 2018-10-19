@@ -25,7 +25,7 @@ namespace GroboContainer.Tests.InjectionTests
             injectionContext = new InjectionContext(internalContainer, log, GetHolder);
         }
 
-        private IContextHolder GetHolder(IInjectionContext context)
+        private IContextHolder GetHolder(IInjectionContext context, int threadId)
         {
             Assert.AreSame(injectionContext, context);
             Assert.IsNull(holder, "duplicate call");

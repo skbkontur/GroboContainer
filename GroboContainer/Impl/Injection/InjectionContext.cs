@@ -11,7 +11,7 @@ namespace GroboContainer.Impl.Injection
     public class InjectionContext : IInjectionContext
     {
         public InjectionContext(IInternalContainer internalContainer, IGroboContainerLog log,
-                                Func<IInjectionContext, IContextHolder> createHolder)
+                                Func<IInjectionContext, int, IContextHolder> createHolder)
         {
             InternalContainer = internalContainer;
             this.log = log;
@@ -20,9 +20,8 @@ namespace GroboContainer.Impl.Injection
         }
 
         public InjectionContext(IInternalContainer internalContainer)
-            : this(internalContainer, internalContainer.CreateNewLog(), null)
+            : this(internalContainer, internalContainer.CreateNewLog(), (y, t) => new ContextHolder(y, t))
         {
-            createHolder = CreateHolder;
         }
 
         public int ThreadId { get; }
@@ -32,15 +31,10 @@ namespace GroboContainer.Impl.Injection
             //TODO MT bug
             if (container == null)
             {
-                contextHolder = createHolder(this);
+                contextHolder = createHolder(this, ThreadId);
                 container = new Container(InternalContainer, contextHolder, log);
             }
             return container;
-        }
-
-        private IContextHolder CreateHolder(IInjectionContext context)
-        {
-            return new ContextHolder(context, ThreadId);
         }
 
         private void Begin(Type type)
@@ -61,7 +55,7 @@ namespace GroboContainer.Impl.Injection
         }
 
         private readonly HashSet<Type> constructed = new HashSet<Type>();
-        private readonly Func<IInjectionContext, IContextHolder> createHolder;
+        private readonly Func<IInjectionContext, int, IContextHolder> createHolder;
         private readonly object lockObject = new object();
         private readonly IGroboContainerLog log;
         private volatile Container container;

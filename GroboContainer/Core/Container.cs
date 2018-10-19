@@ -24,7 +24,7 @@ namespace GroboContainer.Core
         }
 
         public Container(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator)
-            : this(new InternalContainer(configuration, classWrapperCreator), new NoContextHolder(), null)
+            : this(new InternalContainer(configuration, classWrapperCreator), NoContextHolder.Instance, null)
         {
         }
 
@@ -37,7 +37,7 @@ namespace GroboContainer.Core
 
         public IContainer MakeChildContainer()
         {
-            return new Container(internalContainer.MakeChild(), new NoContextHolder(), null);
+            return new Container(internalContainer.MakeChild(), NoContextHolder.Instance, null);
         }
 
         public static IContainer CreateWithChilds(IContainerConfiguration configuration,
@@ -46,7 +46,7 @@ namespace GroboContainer.Core
             return
                 new Container(
                     new InternalContainer(new CompositeContainerContext(configuration, classWrapperCreator, selector)),
-                    new NoContextHolder(), null);
+                    NoContextHolder.Instance, null);
         }
 
         private IInjectionContext GetContext()

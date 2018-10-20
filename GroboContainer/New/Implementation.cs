@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
-using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.ClassCreation;
 
 namespace GroboContainer.New
@@ -23,20 +23,20 @@ namespace GroboContainer.New
                             noArgumentsFactory = creationContext.BuildFactory(ObjectType, Type.EmptyTypes);
                 return noArgumentsFactory;
             }
-            var types = new TypeArray(parameterTypes);
+
             IClassFactory factory;
-            if ((factory = TryGetFactory(types)) == null)
+            if ((factory = TryGetFactory(parameterTypes)) == null)
                 lock (configurationLock)
-                    if ((factory = TryGetFactory(types)) == null)
+                    if ((factory = TryGetFactory(parameterTypes)) == null)
                     {
                         if (factories == null)
-                            factories = new ConcurrentDictionary<TypeArray, IClassFactory>();
-                        factories[types] = factory = creationContext.BuildFactory(ObjectType, parameterTypes);
+                            factories = new ConcurrentDictionary<Type[], IClassFactory>(TypeArrayEqualityComparer.Instance);
+                        factories[parameterTypes] = factory = creationContext.BuildFactory(ObjectType, parameterTypes);
                     }
             return factory;
         }
 
-        private IClassFactory TryGetFactory(TypeArray types)
+        private IClassFactory TryGetFactory(Type[] types)
         {
             return factories != null && factories.TryGetValue(types, out var classFactory)
                        ? classFactory
@@ -44,7 +44,7 @@ namespace GroboContainer.New
         }
 
         private readonly object configurationLock = new object();
-        private volatile ConcurrentDictionary<TypeArray, IClassFactory> factories;
+        private volatile ConcurrentDictionary<Type[], IClassFactory> factories;
         private volatile IClassFactory noArgumentsFactory;
 
         #region IImplementation Members
@@ -58,5 +58,34 @@ namespace GroboContainer.New
         }
 
         #endregion
+
+        internal sealed class TypeArrayEqualityComparer : IEqualityComparer<Type[]>
+        {
+            public static readonly TypeArrayEqualityComparer Instance = new TypeArrayEqualityComparer();
+
+            public bool Equals(Type[] x, Type[] y)
+            {
+                if (x == y)
+                    return true;
+                if (x == null)
+                    return false;
+                if (y == null)
+                    return false;
+                if (x.Length != y.Length)
+                    return false;
+                for (int i = 0; i < x.Length; i++)
+                    if (x[i] == y[i])
+                        return false;
+                return true;
+            }
+
+            public int GetHashCode(Type[] x)
+            {
+                int result = 0;
+                for(int i = 0; i < x.Length; ++i)
+                    result = (result * 397) ^ x[i].GetHashCode();
+                return result;
+            }
+        }
     }
 }

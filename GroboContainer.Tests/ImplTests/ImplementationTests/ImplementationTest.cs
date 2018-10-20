@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using GroboContainer.Impl.ClassCreation;
 using GroboContainer.New;

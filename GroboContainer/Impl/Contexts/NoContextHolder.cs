@@ -4,6 +4,12 @@ namespace GroboContainer.Impl.Contexts
 {
     public class NoContextHolder : IContextHolder
     {
+        public static readonly NoContextHolder Instance = new NoContextHolder();
+
+        private NoContextHolder()
+        {
+        }
+
         #region IContextHolder Members
 
         public IInjectionContext GetContext(IInternalContainer worker)

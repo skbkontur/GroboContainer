@@ -9,7 +9,7 @@ namespace GroboContainer.Tests.ContextsTests
         [Test]
         public void TestGetKill()
         {
-            IContextHolder holder = new NoContextHolder();
+            IContextHolder holder = NoContextHolder.Instance;
             CheckGet(holder);
             holder.KillContext();
             CheckGet(holder);

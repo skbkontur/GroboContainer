@@ -16,27 +16,23 @@ namespace GroboContainer.Impl.Logging
             this.containerName = containerName;
         }
 
-        private void AddItem(LogItem item)
+        private void AddItem(ItemType itemType, Type type)
         {
             if (wasCrash)
                 return;
-            int add = depthChange[(int)item.ItemType];
+            int add = depthChange[(int)itemType];
             switch (add)
             {
-            case +1:
-                items.Add(item);
-                break;
-            case -1:
-                items.RemoveAt(items.Count - 1);
-                break;
-            case 0:
-                break;
-            //    goto case 0;
-            //case 0:
-            //    items[items.Count - 1] = item; //todo ??
-            //    break;
-            default:
-                throw new NotSupportedException(string.Format("bad item {0}", item.ItemType));
+                case +1:
+                    items.Add(new LogItem(itemType, type));
+                    break;
+                case -1:
+                    items.RemoveAt(items.Count - 1);
+                    break;
+                case 0:
+                    break;
+                default:
+                    throw new NotSupportedException(string.Format("bad item {0}", itemType));
             }
         }
 
@@ -49,17 +45,17 @@ namespace GroboContainer.Impl.Logging
 
         public void BeginConstruct(Type implementationType)
         {
-            AddItem(new LogItem(ItemType.Constructing, implementationType));
+            AddItem(ItemType.Constructing, implementationType);
         }
 
         public void EndConstruct(Type implementationType)
         {
-            AddItem(new LogItem(ItemType.Constructed, implementationType));
+            AddItem(ItemType.Constructed, implementationType);
         }
 
         public void Reused(Type implementationType)
         {
-            AddItem(new LogItem(ItemType.Reused, implementationType));
+            AddItem(ItemType.Reused, implementationType);
         }
 
         public void Crash()
@@ -69,32 +65,32 @@ namespace GroboContainer.Impl.Logging
 
         public void BeginGet(Type type)
         {
-            AddItem(new LogItem(ItemType.Get, type));
+            AddItem(ItemType.Get, type);
         }
 
         public void EndGet(Type type)
         {
-            AddItem(new LogItem(ItemType.EndGet, type));
+            AddItem(ItemType.EndGet, type);
         }
 
         public void BeginCreate(Type type)
         {
-            AddItem(new LogItem(ItemType.Create, type));
+            AddItem(ItemType.Create, type);
         }
 
         public void EndCreate(Type type)
         {
-            AddItem(new LogItem(ItemType.EndCreate, type));
+            AddItem(ItemType.EndCreate, type);
         }
 
         public void BeginGetAll(Type type)
         {
-            AddItem(new LogItem(ItemType.GetAll, type));
+            AddItem(ItemType.GetAll, type);
         }
 
         public void EndGetAll(Type type)
         {
-            AddItem(new LogItem(ItemType.EndGetAll, type));
+            AddItem(ItemType.EndGetAll, type);
         }
 
         public string GetLog()
@@ -107,7 +103,7 @@ namespace GroboContainer.Impl.Logging
                 int delta = depthChange[(int)item.ItemType];
                 if (delta < 0)
                     depth += delta;
-                builder.Append(new string(' ', depth));
+                builder.Append(' ', depth);
                 item.AppendTo(builder);
                 if (delta > 0)
                     depth += delta;

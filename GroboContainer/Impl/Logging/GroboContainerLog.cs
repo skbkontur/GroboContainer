@@ -86,7 +86,7 @@ namespace GroboContainer.Impl.Logging
                 int delta = depthChange[(int)item.ItemType];
                 if (delta < 0)
                     depth += delta;
-                builder.Append(new string(' ', depth));
+                builder.Append(' ', depth);
                 item.AppendTo(builder);
                 if (delta > 0)
                     depth += delta;

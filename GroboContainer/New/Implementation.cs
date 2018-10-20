@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
@@ -65,26 +66,12 @@ namespace GroboContainer.New
 
             public bool Equals(Type[] x, Type[] y)
             {
-                if (x == y)
-                    return true;
-                if (x == null)
-                    return false;
-                if (y == null)
-                    return false;
-                if (x.Length != y.Length)
-                    return false;
-                for (int i = 0; i < x.Length; i++)
-                    if (x[i] == y[i])
-                        return false;
-                return true;
+                return StructuralComparisons.StructuralEqualityComparer.Equals(x, y);
             }
 
             public int GetHashCode(Type[] x)
             {
-                int result = 0;
-                for(int i = 0; i < x.Length; ++i)
-                    result = (result * 397) ^ x[i].GetHashCode();
-                return result;
+                return StructuralComparisons.StructuralEqualityComparer.GetHashCode(x);
             }
         }
     }

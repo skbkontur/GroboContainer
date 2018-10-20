@@ -3,17 +3,16 @@ using System.Collections.Concurrent;
 
 namespace GroboContainer.Impl
 {
-    public static class ConcurrentDictionaryExtensions
+    internal static class ConcurrentDictionaryExtensions
     {
         public static bool TryAddOrUpdate<TKey, TValue>(
-            this ConcurrentDictionary<TKey, TValue> dict,
+            this ConcurrentDictionary<TKey, TValue> source,
             TKey key, TValue value, Func<TValue, bool> updateFilter)
         {
-            TValue curValue;
             bool found;
-            while ((found = dict.TryGetValue(key, out curValue)) && updateFilter(curValue) || !found)
+            while ((found = source.TryGetValue(key, out var existingValue)) && updateFilter(existingValue) || !found)
             {
-                if ((!found && dict.TryAdd(key, value)) || (found && dict.TryUpdate(key, value, curValue)))
+                if (!found && source.TryAdd(key, value) || found && source.TryUpdate(key, value, existingValue))
                     return true;
             }
             return false;

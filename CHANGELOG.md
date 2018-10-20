@@ -6,6 +6,7 @@
 - Update [Gremit](https://github.com/skbkontur/gremit) dependency to v2.3.
 - Add `IAbstractionConfigurator.UseTypes(Type[] types)` overload.
 - Rename `ILog` -> `IGroboContainerLog` to not pollute intellisense in dependent projects with irrelevant symbols.
+- Reduce memory allocations (PR [#3](https://github.com/skbkontur/GroboContainer/pull/3)).
 
 ## v1.1 - 2018.01.10
 - Support .NET Standard 2.0.

@@ -27,12 +27,9 @@ namespace GroboContainer.Impl
             ImplementationCache = new ImplementationCache();
             abstractionsCollection = new AbstractionsCollection(implementationTypesCollection, ImplementationCache); //g
             ImplementationConfigurationCache = new ImplementationConfigurationCache(); //l
-            var factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollection,
-                                                                  ImplementationConfigurationCache);
+            var factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollection, ImplementationConfigurationCache);
             AbstractionConfigurationCollection = new AbstractionConfigurationCollection(factory);
-            AbstractionConfigurationCollection.Add(typeof(IContainer),
-                                                   new StupidAbstractionConfiguration(
-                                                       new ContainerImplementationConfiguration()));
+            AbstractionConfigurationCollection.Add(typeof(IContainer), new StupidAbstractionConfiguration(new ContainerImplementationConfiguration()));
         }
 
         public IClassWrapperCreator ClassWrapperCreator { get; private set; }

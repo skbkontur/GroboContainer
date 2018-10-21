@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using GroboContainer.Impl.Exceptions;
 using GroboContainer.Infection;
 
 namespace GroboContainer.Impl.Implementations
@@ -48,7 +49,7 @@ namespace GroboContainer.Impl.Implementations
                 if (candidateInterface.MatchWith(abstractionType, arguments))
                 {
                     while (arguments.Any(arg => arg == null))
-                        if (!MatchFromGenericConstraints(arguments, candidateArguments, getImplementations))
+                        if (!MatchFromGenericConstraints(candidate, arguments, candidateArguments, getImplementations))
                             break;
                     if (arguments.Any(arg => arg == null))
                         continue;
@@ -67,7 +68,7 @@ namespace GroboContainer.Impl.Implementations
             return null;
         }
 
-        private bool MatchFromGenericConstraints(Type[] arguments, Type[] candidateArguments,
+        private bool MatchFromGenericConstraints(Type candidate, Type[] arguments, Type[] candidateArguments,
                                                  Func<Type, IEnumerable<Type>> getImplementations)
         {
             bool resolvedSomething = false;
@@ -92,14 +93,22 @@ namespace GroboContainer.Impl.Implementations
                 }
                 if (possibleImplementations == null)
                     continue;
-                var singleImplementation =
-                    possibleImplementations.SingleOrDefault(
-                        impl => ValidateGenericParameterAttributes(candidateArguments[i], impl));
-                if (singleImplementation != null)
+
+                var validatedImplementations = possibleImplementations
+                    .Where(impl => ValidateGenericParameterAttributes(candidateArguments[i], impl))
+                    .ToArray();
+
+                if(validatedImplementations.Length == 0)
+                    continue;
+
+                if (validatedImplementations.Length == 1)
                 {
-                    arguments[i] = singleImplementation;
+                    arguments[i] = validatedImplementations[0];
                     resolvedSomething = true;
+                    continue;
                 }
+
+                throw new ManyGenericSubstitutionsException(candidate, candidateArguments[i], validatedImplementations);
             }
             return resolvedSomething;
         }

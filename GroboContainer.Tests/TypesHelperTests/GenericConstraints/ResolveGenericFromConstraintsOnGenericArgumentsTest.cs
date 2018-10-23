@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using NUnit.Framework;
 
@@ -24,6 +24,12 @@ namespace GroboContainer.Tests.TypesHelperTests.GenericConstraints
 
         private interface IC
         {
+        }
+
+        [Test]
+        public void TestCannotResolveWhenManyTypesMatchGenericConstraint()
+        {
+            CheckManyGenericSubstitutionsException<IC>(typeof(C3<>), t => new[] {typeof(C3Arg), typeof(AnotherC3Arg)});
         }
 
         [Test]
@@ -132,6 +138,18 @@ namespace GroboContainer.Tests.TypesHelperTests.GenericConstraints
 
         private class C2<T1, T2> : I<T1>
             where T2 : T1
+        {
+        }
+
+        private class C3<T1> : IC where T1: C3Arg
+        {
+        }
+
+        private class C3Arg
+        {
+        }
+
+        private class AnotherC3Arg : C3Arg
         {
         }
 

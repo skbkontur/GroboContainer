@@ -1,5 +1,6 @@
 using System;
 
+using GroboContainer.Impl.Exceptions;
 using GroboContainer.Impl.Implementations;
 
 using NUnit.Framework;
@@ -29,6 +30,11 @@ namespace GroboContainer.Tests.TypesHelperTests
         protected void CheckFalse<TInterface>(Type type)
         {
             Assert.IsNull(helpers.TryGetImplementation(typeof(TInterface), type));
+        }
+
+        protected void CheckManyGenericSubstitutionsException<TInterface>(Type type, Func<Type, Type[]> getImplementations)
+        {
+            Assert.Throws<ManyGenericSubstitutionsException>(() => helpers.TryGetImplementation(typeof(TInterface), type, getImplementations));
         }
 
         private ITypesHelper helpers;

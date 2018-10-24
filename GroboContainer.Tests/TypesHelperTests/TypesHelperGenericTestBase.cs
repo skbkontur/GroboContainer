@@ -31,6 +31,6 @@ namespace GroboContainer.Tests.TypesHelperTests
             Assert.IsNull(helpers.TryGetImplementation(typeof(TInterface), type));
         }
 
-        private ITypesHelper helpers;
+        protected ITypesHelper helpers;
     }
 }

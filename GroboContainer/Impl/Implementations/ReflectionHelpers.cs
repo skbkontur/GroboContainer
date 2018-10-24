@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GroboContainer.Impl.Implementations
 {
-    public static class ReflectionHelpers
+    internal static class ReflectionHelpers
     {
         public static IEnumerable<Type> ParentsOrSelf(this Type type)
         {
@@ -30,8 +30,8 @@ namespace GroboContainer.Impl.Implementations
             if (pattern.IsArray && value.IsArray)
             {
                 var type = pattern.GetElementType();
-                var value_type = value.GetElementType();
-                if (!MatchWith(type, value_type, matched))
+                var valueType = value.GetElementType();
+                if (!MatchWith(type, valueType, matched))
                     return false;
                 return true;
             }

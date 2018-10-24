@@ -143,7 +143,7 @@ namespace GroboContainer.Tests.TypesHelperTests.GenericConstraints
         {
         }
 
-        private class C3<T1> : IC where T1: C3Arg
+        private class C3<T> : IC where T: C3Arg
         {
         }
 

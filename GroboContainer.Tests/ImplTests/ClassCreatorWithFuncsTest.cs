@@ -25,8 +25,8 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestSimple()
         {
-            var @delegate =
-                classCreator.BuildConstructionDelegate(
+            IClassFactory classFactory =
+                classCreator.BuildFactory(
                     new ContainerConstructorInfo
                         {
                             ConstructorInfo = typeof(C1).GetConstructor(new[] {typeof(Func<int, I2>)})
@@ -38,7 +38,7 @@ namespace GroboContainer.Tests.ImplTests
                     return c2;
                 };
             container.ExpectBuildCreateFunc(context, func);
-            var c1 = (C1)@delegate(container, context, new object[0]);
+            var c1 = (C1)classFactory.Create(context, new object[0]);
             Assert.AreSame(c2, c1.i2);
         }
 

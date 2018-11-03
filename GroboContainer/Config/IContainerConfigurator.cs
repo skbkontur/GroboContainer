@@ -7,6 +7,6 @@ namespace GroboContainer.Config
     public interface IContainerConfigurator
     {
         IAbstractionConfigurator<T> ForAbstraction<T>();
-        IAbstractionConfigurator ForAbstraction(Type anstractionType);
+        IAbstractionConfigurator ForAbstraction(Type abstractionType);
     }
 }

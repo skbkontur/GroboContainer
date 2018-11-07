@@ -33,9 +33,9 @@ namespace GroboContainer.Config
                                                   implementationConfigurationCache, implementationCache);
         }
 
-        public IAbstractionConfigurator ForAbstraction(Type anstractionType)
+        public IAbstractionConfigurator ForAbstraction(Type abstractionType)
         {
-            return new AbstractionConfigurator(anstractionType, abstractionConfigurationCollection, classWrapperCreator,
+            return new AbstractionConfigurator(abstractionType, abstractionConfigurationCollection, classWrapperCreator,
                                                implementationConfigurationCache, implementationCache);
         }
 

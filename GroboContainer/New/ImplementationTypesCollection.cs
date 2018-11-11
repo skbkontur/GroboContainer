@@ -7,10 +7,14 @@ namespace GroboContainer.New
 {
     public class ImplementationTypesCollection : IImplementationTypesCollection
     {
+        private readonly Func<Type, Type[]> getImplementationTypes;
+
         public ImplementationTypesCollection(ITypeSource typeSource, ITypesHelper typesHelper)
         {
             this.typeSource = typeSource;
             this.typesHelper = typesHelper;
+
+            getImplementationTypes = GetImplementationTypes;
         }
 
         #region IImplementationTypesCollection Members
@@ -18,8 +22,8 @@ namespace GroboContainer.New
         public Type[] GetImplementationTypes(Type abstractionType)
         {
             var implementationTypes = new List<Type>();
-            bool added = false;
-            foreach (Type type in typeSource.GetTypesToScan())
+            var added = false;
+            foreach (var type in typeSource.GetTypesToScan())
                 added |= TryAdd(type, abstractionType, implementationTypes);
             if (!added)
                 TryAdd(ToDefinition(abstractionType), abstractionType, implementationTypes);
@@ -30,17 +34,14 @@ namespace GroboContainer.New
 
         private static Type ToDefinition(Type abstractionType)
         {
-            if (abstractionType.IsGenericType)
-                return abstractionType.GetGenericTypeDefinition();
-            return abstractionType;
+            return abstractionType.IsGenericType ? abstractionType.GetGenericTypeDefinition() : abstractionType;
         }
 
-        private bool TryAdd(Type candidate, Type abstractionType,
-                            ICollection<Type> implementationTypes)
+        private bool TryAdd(Type candidate, Type abstractionType, ICollection<Type> implementationTypes)
         {
             if (typesHelper.IsIgnoredImplementation(candidate))
                 return false;
-            Type implementation = typesHelper.TryGetImplementation(abstractionType, candidate, GetImplementationTypes);
+            Type implementation = typesHelper.TryGetImplementation(abstractionType, candidate, getImplementationTypes);
             if (implementation != null)
                 implementationTypes.Add(implementation);
             return implementation == abstractionType;

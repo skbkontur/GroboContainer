@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 
 using GroboContainer.Core;
@@ -48,7 +48,7 @@ namespace GroboContainer.Config
         {
             var implementation = implementationCache.GetOrCreate(type);
             var implementationConfiguration = implementationConfigurationCache.GetOrCreate(implementation);
-            var abstractionConfiguration = new StupidAbstractionConfiguration(new[] {implementationConfiguration});
+            var abstractionConfiguration = new StupidAbstractionConfiguration(implementationConfiguration);
             abstractionConfigurationCollection.Add(abstractionType, abstractionConfiguration);
         }
 

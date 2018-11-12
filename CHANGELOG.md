@@ -7,6 +7,8 @@
 - Add `IAbstractionConfigurator.UseTypes(Type[] types)` overload.
 - Rename `ILog` -> `IGroboContainerLog` to not pollute intellisense in dependent projects with irrelevant symbols.
 - Reduce memory allocations (PR [#3](https://github.com/skbkontur/GroboContainer/pull/3)).
+- Instead of InvalidOperationException throw ManyGenericSubstitutionsException (PR [#5])(https://github.com/skbkontur/GroboContainer/pull/5).
+- Reduce memory allocations (PR [#9](https://github.com/skbkontur/GroboContainer/pull/9)).
 
 ## v1.1 - 2018.01.10
 - Support .NET Standard 2.0.

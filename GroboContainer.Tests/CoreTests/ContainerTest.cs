@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 using GroboContainer.Core;
 using GroboContainer.Impl;
@@ -18,7 +19,6 @@ namespace GroboContainer.Tests.CoreTests
         public override void SetUp()
         {
             base.SetUp();
-            configuration = NewMock<IContainerConfiguration>();
             internalContainer = NewMock<IInternalContainer>();
             holder = NewMock<IContextHolder>();
             context = NewMock<IInjectionContext>();
@@ -123,7 +123,7 @@ namespace GroboContainer.Tests.CoreTests
         [Test]
         public void TestNoLog()
         {
-            container = new Container(configuration);
+            container = new Container(new TestConfiguration(Enumerable.Empty<Type>()));
             Assert.AreEqual("<no>", container.LastConstructionLog);
         }
 
@@ -138,7 +138,6 @@ namespace GroboContainer.Tests.CoreTests
             Assert.AreEqual("zzz", container.LastConstructionLog);
         }
 
-        private IContainerConfiguration configuration;
         private Container container;
         private IInternalContainer internalContainer;
         private IContextHolder holder;

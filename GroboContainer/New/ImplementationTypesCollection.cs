@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using GroboContainer.Impl.Implementations;
 
@@ -7,12 +8,10 @@ namespace GroboContainer.New
 {
     public class ImplementationTypesCollection : IImplementationTypesCollection
     {
-        private readonly Func<Type, Type[]> getImplementationTypes;
-
-        public ImplementationTypesCollection(ITypeSource typeSource, ITypesHelper typesHelper)
+        public ImplementationTypesCollection(IEnumerable<Type> typesToScan, ITypesHelper typesHelper)
         {
-            this.typeSource = typeSource;
             this.typesHelper = typesHelper;
+            this.typesToScan = new HashSet<Type>(typesToScan.Where(x => !typesHelper.IsIgnoredImplementation(x)));
 
             getImplementationTypes = GetImplementationTypes;
         }
@@ -23,10 +22,14 @@ namespace GroboContainer.New
         {
             var implementationTypes = new List<Type>();
             var added = false;
-            foreach (var type in typeSource.GetTypesToScan())
-                added |= TryAdd(type, abstractionType, implementationTypes);
-            if (!added)
-                TryAdd(ToDefinition(abstractionType), abstractionType, implementationTypes);
+            foreach (var typeToScan in typesToScan)
+                added |= TryAdd(typeToScan, abstractionType, implementationTypes);
+            if (added)
+                return implementationTypes.ToArray();
+
+            var definitionType = ToDefinition(abstractionType);
+            if (typesToScan.Contains(definitionType) || !typesHelper.IsIgnoredImplementation(definitionType))
+                TryAdd(definitionType, abstractionType, implementationTypes);
             return implementationTypes.ToArray();
         }
 
@@ -39,15 +42,14 @@ namespace GroboContainer.New
 
         private bool TryAdd(Type candidate, Type abstractionType, ICollection<Type> implementationTypes)
         {
-            if (typesHelper.IsIgnoredImplementation(candidate))
-                return false;
-            Type implementation = typesHelper.TryGetImplementation(abstractionType, candidate, getImplementationTypes);
+            var implementation = typesHelper.TryGetImplementation(abstractionType, candidate, getImplementationTypes);
             if (implementation != null)
                 implementationTypes.Add(implementation);
             return implementation == abstractionType;
         }
 
-        private readonly ITypeSource typeSource;
+        private readonly Func<Type, Type[]> getImplementationTypes;
         private readonly ITypesHelper typesHelper;
+        private readonly HashSet<Type> typesToScan;
     }
 }

@@ -15,7 +15,7 @@ namespace GroboContainer.Impl
         {
             this.Configuration = configuration;
             ClassWrapperCreator = classWrapperCreator;
-            typesHelper = new TypesHelper();
+            ITypesHelper typesHelper = new TypesHelper();
 
             var funcHelper = new FuncHelper();
             FuncBuilder = new FuncBuilder();
@@ -23,9 +23,9 @@ namespace GroboContainer.Impl
             var constructorSelector = new ConstructorSelector();
             CreationContext = new CreationContext(classCreator, constructorSelector, classWrapperCreator);
 
-            var implementationTypesCollection = new ImplementationTypesCollection(configuration, typesHelper);
+            var implementationTypesCollection = new ImplementationTypesCollection(configuration.GetTypesToScan(), typesHelper);
             ImplementationCache = new ImplementationCache();
-            abstractionsCollection = new AbstractionsCollection(implementationTypesCollection, ImplementationCache); //g
+            IAbstractionsCollection abstractionsCollection = new AbstractionsCollection(implementationTypesCollection, ImplementationCache);
             ImplementationConfigurationCache = new ImplementationConfigurationCache(); //l
             var factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollection, ImplementationConfigurationCache);
             AbstractionConfigurationCollection = new AbstractionConfigurationCollection(factory);
@@ -35,8 +35,6 @@ namespace GroboContainer.Impl
         public IClassWrapperCreator ClassWrapperCreator { get; private set; }
         public IImplementationConfigurationCache ImplementationConfigurationCache { get; private set; }
         public IImplementationCache ImplementationCache { get; private set; }
-        private readonly IAbstractionsCollection abstractionsCollection;
-        private readonly ITypesHelper typesHelper;
 
         #region IContainerContext Members
 

@@ -1,4 +1,4 @@
-﻿using GroboContainer.Core;
+using GroboContainer.Core;
 using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
 using GroboContainer.Impl.ChildContainersSupport.Selectors;
@@ -23,7 +23,7 @@ namespace GroboContainer.Impl.ChildContainersSupport
             var constructorSelector = new ConstructorSelector();
             CreationContext = new CreationContext(classCreator, constructorSelector, classWrapperCreator);
 
-            var implementationTypesCollection = new ImplementationTypesCollection(configuration, typesHelper);
+            var implementationTypesCollection = new ImplementationTypesCollection(configuration.GetTypesToScan(), typesHelper);
             ImplementationCache = new ImplementationCache();
             abstractionsCollection = new AbstractionsCollection(implementationTypesCollection, ImplementationCache);
             ImplementationConfigurationCache = new ImplementationConfigurationCache();

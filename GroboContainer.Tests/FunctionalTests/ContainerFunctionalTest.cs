@@ -34,7 +34,7 @@ namespace GroboContainer.Tests.FunctionalTests
         }
 
         [Test]
-        public void TestConstructorAgruments()
+        public void TestConstructorArguments()
         {
             var instance = container.Get<ClassWithArguments>();
             Assert.That(instance, Is.InstanceOf<ClassWithArguments>());
@@ -48,7 +48,7 @@ namespace GroboContainer.Tests.FunctionalTests
         }
 
         [Test]
-        public void TestFuncDependecy()
+        public void TestFuncDependency()
         {
             var instance = container.Get<ClassWithFuncDependecy>();
             Assert.IsInstanceOf<Func<IInterface>>(instance.Dependency);
@@ -60,7 +60,7 @@ namespace GroboContainer.Tests.FunctionalTests
         }
 
         [Test]
-        public void TestLazyDependecy()
+        public void TestLazyDependency()
         {
             var instance = container.Get<ClassWithLazyDependecy>();
             Assert.IsInstanceOf<Lazy<IInterface>>(instance.Dependency);

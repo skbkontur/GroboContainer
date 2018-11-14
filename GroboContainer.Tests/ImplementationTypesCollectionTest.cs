@@ -30,50 +30,47 @@ namespace GroboContainer.Tests
             var types = new[] {typeof(int), typeof(long)};
             Type abstractionType = typeof(long);
             Type typeImpl = typeof(long);
-            var collection = new ImplementationTypesCollection(new TestConfiguration(types), helper);
-
+          
             helper.ExpectIsIgnoredImplementation(types[0], false);
             helper.ExpectTryGetImplementation(abstractionType, types[0], null);
 
             helper.ExpectIsIgnoredImplementation(types[1], false);
             helper.ExpectTryGetImplementation(abstractionType, types[1], typeImpl);
 
-            CollectionAssert.AreEquivalent(new[] {typeImpl},
-                                           collection.GetImplementationTypes(abstractionType));
+            var collection = new ImplementationTypesCollection(types, helper);
+            CollectionAssert.AreEquivalent(new[] {typeImpl}, collection.GetImplementationTypes(abstractionType));
         }
 
         [Test]
         public void TestGetGeneric()
         {
             var types = new[] {typeof(int)};
-            Type abstractionType = typeof(I1<int>);
-            Type typeImpl = typeof(Guid);
-            var collection = new ImplementationTypesCollection(new TestConfiguration(types), helper);
-
+            var abstractionType = typeof(I1<int>);
+            var typeImpl = typeof(Guid);
+          
             helper.ExpectIsIgnoredImplementation(types[0], false);
             helper.ExpectTryGetImplementation(abstractionType, types[0], null);
 
-            Type definition = abstractionType.GetGenericTypeDefinition();
+            var definition = abstractionType.GetGenericTypeDefinition();
             helper.ExpectIsIgnoredImplementation(definition, false);
             helper.ExpectTryGetImplementation(abstractionType, definition, typeImpl);
 
-            CollectionAssert.AreEquivalent(new[] {typeImpl},
-                                           collection.GetImplementationTypes(abstractionType));
+            var collection = new ImplementationTypesCollection(types, helper);
+            CollectionAssert.AreEquivalent(new[] {typeImpl}, collection.GetImplementationTypes(abstractionType));
         }
 
         [Test]
-        public void TestGetGenericInCofig()
+        public void TestGetGenericInConfig()
         {
             var types = new[] {typeof(I1<>)};
-            Type abstractionType = typeof(I1<int>);
-            Type typeImpl = abstractionType;
-            var collection = new ImplementationTypesCollection(new TestConfiguration(types), helper);
-
+            var abstractionType = typeof(I1<int>);
+            var typeImpl = abstractionType;
+            
             helper.ExpectIsIgnoredImplementation(types[0], false);
             helper.ExpectTryGetImplementation(abstractionType, types[0], typeImpl);
 
-            CollectionAssert.AreEquivalent(new[] {typeImpl},
-                                           collection.GetImplementationTypes(abstractionType));
+            var collection = new ImplementationTypesCollection(types, helper);
+            CollectionAssert.AreEquivalent(new[] {typeImpl}, collection.GetImplementationTypes(abstractionType));
         }
 
         [Test]
@@ -81,11 +78,12 @@ namespace GroboContainer.Tests
         {
             var types = new[] {typeof(int)};
             Type abstractionType = typeof(long);
-            var collection = new ImplementationTypesCollection(new TestConfiguration(types), helper);
+            
             helper.ExpectIsIgnoredImplementation(types[0], false);
             helper.ExpectTryGetImplementation(abstractionType, types[0], null);
-
             helper.ExpectIsIgnoredImplementation(abstractionType, true);
+
+            var collection = new ImplementationTypesCollection(types, helper);
             CollectionAssert.IsEmpty(collection.GetImplementationTypes(abstractionType));
         }
 

@@ -76,14 +76,14 @@ namespace GroboContainer.Impl.Logging
 
         public string GetLog()
         {
-            int depth = 0;
+            var depth = 0;
             var builder = new StringBuilder();
-            builder.AppendLine(string.Format("Container: '{0}'", containerName));
-            int index = 0;
-            foreach (LogItem item in items)
+            builder.AppendLine($"Container: '{containerName}'");
+            var index = 0;
+            foreach (var item in items)
             {
                 if (crashIndex <= index) break;
-                int delta = depthChange[(int)item.ItemType];
+                var delta = depthChange[(int)item.ItemType];
                 if (delta < 0)
                     depth += delta;
                 builder.Append(' ', depth);

@@ -33,7 +33,7 @@ namespace GroboContainer.Tests.FunctionalTests
         [Test]
         public void TestGetImplementationTypes()
         {
-            Type[] types = container.GetImplementationTypes(typeof(IContainer));
+            var types = container.GetImplementationTypes(typeof(IContainer));
             CollectionAssert.AreEquivalent(new[] {typeof(Container)}, types);
         }
 
@@ -77,7 +77,7 @@ namespace GroboContainer.Tests.FunctionalTests
         public override void SetUp()
         {
             base.SetUp();
-            configuration = new ContainerConfiguration(new[] {GetType().Assembly});
+            configuration = new ContainerConfiguration(GetType().Assembly);
             container = new Container(configuration);
         }
 

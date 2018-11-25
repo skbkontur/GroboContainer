@@ -16,7 +16,7 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
         public override void SetUp()
         {
             base.SetUp();
-            var configuration = new ContainerConfiguration(new[] {GetType().Assembly});
+            var configuration = new ContainerConfiguration(GetType().Assembly);
             selector = new AttributedChildSelector();
             container = Container.CreateWithChilds(configuration, null, selector);
         }
@@ -39,7 +39,7 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
         [Test]
         public void TestBadConfigure()
         {
-            IContainer childContainerA = container.MakeChildContainer();
+            var childContainerA = container.MakeChildContainer();
             RunMethodWithException<InvalidOperationException>(
                 () => childContainerA.Configurator.ForAbstraction<IRoot>().Fail());
             RunMethodWithException<InvalidOperationException>(
@@ -51,12 +51,12 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
         [Test]
         public void TestChildContainersInConstructors()
         {
-            IContainer childContainerA = container.MakeChildContainer();
+            var childContainerA = container.MakeChildContainer();
             var childA = childContainerA.Get<IChild>();
             Assert.That(childA, Is.InstanceOf<Child>());
             var childClassA = (Child)childA;
 
-            IContainer childContainerB = container.MakeChildContainer();
+            var childContainerB = container.MakeChildContainer();
             var childB = childContainerB.Get<IChild>();
             Assert.That(childB, Is.InstanceOf<Child>());
             var childClassB = (Child)childB;
@@ -82,8 +82,8 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
         [Test]
         public void TestConfigurationNotSharedBetweenChilds()
         {
-            IContainer childContainerA = container.MakeChildContainer();
-            IContainer childContainerB = container.MakeChildContainer();
+            var childContainerA = container.MakeChildContainer();
+            var childContainerB = container.MakeChildContainer();
             childContainerA.Configurator.ForAbstraction<Child2>().Fail();
             RunFail<ForbiddenAbstractionException>(() =>
                                                    childContainerA.Get<Child2>());

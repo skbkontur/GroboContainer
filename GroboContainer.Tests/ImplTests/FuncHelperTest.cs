@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 
 using GroboContainer.Impl.ClassCreation;
 
@@ -25,31 +24,31 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestGetBuildCreateFuncMethodInfo()
         {
-            Type type = typeof(Func<int, long, Guid, string, object>);
-            MethodInfo expected =
+            var type = typeof(Func<int, long, Guid, string, object>);
+            var expected =
                 typeof(IFuncBuilder).GetMethods().Where(
                     info => info.ReturnType.IsGenericType && info.ReturnType.GetGenericArguments().Length == 5).Single();
-            MethodInfo actual = helper.GetBuildCreateFuncMethodInfo(type);
+            var actual = helper.GetBuildCreateFuncMethodInfo(type);
             Assert.AreSame(expected.MakeGenericMethod(type.GetGenericArguments()), actual);
         }
 
         [Test]
         public void TestGetBuildLazyMethodInfo()
         {
-            Type type = typeof(Lazy<object>);
-            MethodInfo expected = typeof(IFuncBuilder).GetMethods().Single(info => info.Name.Contains("BuildLazy"));
-            MethodInfo actual = helper.GetBuildLazyMethodInfo(type);
+            var type = typeof(Lazy<object>);
+            var expected = typeof(IFuncBuilder).GetMethods().Single(info => info.Name.Contains("BuildLazy"));
+            var actual = helper.GetBuildLazyMethodInfo(type);
             Assert.AreSame(expected.MakeGenericMethod(type.GetGenericArguments()), actual);
         }
 
         [Test]
         public void TestGetBuildMethodInfo()
         {
-            Type type = typeof(Func<object>);
-            MethodInfo expected =
+            var type = typeof(Func<object>);
+            var expected =
                 typeof(IFuncBuilder).GetMethods().Where(
                     info => info.Name.Contains("BuildGetFunc")).Single();
-            MethodInfo actual = helper.GetBuildGetFuncMethodInfo(type);
+            var actual = helper.GetBuildGetFuncMethodInfo(type);
             Assert.AreSame(expected.MakeGenericMethod(type.GetGenericArguments()), actual);
         }
 

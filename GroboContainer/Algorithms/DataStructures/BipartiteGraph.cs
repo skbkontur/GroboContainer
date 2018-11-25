@@ -4,11 +4,11 @@
     {
         public BipartiteGraph(int firstPartSize, int secondPartSize)
         {
-            this.FirstPartSize = firstPartSize;
-            this.SecondPartSize = secondPartSize;
+            FirstPartSize = firstPartSize;
+            SecondPartSize = secondPartSize;
 
             matrix = new int[FirstPartSize][];
-            for (int k = 0; k < FirstPartSize; ++k)
+            for (var k = 0; k < FirstPartSize; ++k)
                 matrix[k] = new int[SecondPartSize];
         }
 

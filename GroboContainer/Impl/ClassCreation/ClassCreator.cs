@@ -148,9 +148,7 @@ namespace GroboContainer.Impl.ClassCreation
             else
             {
                 throw new NotSupportedException(
-                    string.Format(
-                        "Невозможно разрешить параметр '{0}' типа {1}. Должен иметь имя с префиксом 'get' или 'create'",
-                        parameterInfo.Name, parameterType));
+                    $"Невозможно разрешить параметр '{parameterInfo.Name}' типа {parameterType}. Должен иметь имя с префиксом 'get' или 'create'");
             }
         }
 

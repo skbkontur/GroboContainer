@@ -60,12 +60,11 @@ namespace GroboContainer.Tests.ChildContainerSupportTests
         [Test]
         public void TestMakeChildCollection()
         {
-            var rootToChildCollections = new[] {GetMock<IAbstractionConfigurationCollection>(),};
+            var rootToChildCollections = new[] {GetMock<IAbstractionConfigurationCollection>()};
             var compositeCollection = new CompositeCollection(rootToChildCollections, selector);
 
             var abstractionConfigurationCollection = GetMock<IAbstractionConfigurationCollection>();
-            CompositeCollection childCollection =
-                compositeCollection.MakeChildCollection(abstractionConfigurationCollection);
+            var childCollection = compositeCollection.MakeChildCollection(abstractionConfigurationCollection);
 
             var configs = new[] {GetMock<IAbstractionConfiguration>()};
             abstractionConfigurationCollection.Expect(c => c.GetAll()).Return(configs);
@@ -83,7 +82,7 @@ namespace GroboContainer.Tests.ChildContainerSupportTests
         [Test]
         public void TestOneCollection()
         {
-            var rootToChildCollections = new[] {GetMock<IAbstractionConfigurationCollection>(),};
+            var rootToChildCollections = new[] {GetMock<IAbstractionConfigurationCollection>()};
             var compositeCollection = new CompositeCollection(rootToChildCollections, selector);
 
             selector.Expect(s => s.Select(typeof(int), 0)).Return(0);

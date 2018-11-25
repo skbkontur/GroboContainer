@@ -5,7 +5,7 @@ namespace GroboContainer.Algorithms.DataStructures
         public Matching(int size)
         {
             matching = new int[size];
-            for (int i = 0; i < size; ++i)
+            for (var i = 0; i < size; ++i)
             {
                 matching[i] = -1;
             }

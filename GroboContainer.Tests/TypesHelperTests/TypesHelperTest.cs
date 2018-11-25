@@ -30,7 +30,7 @@ namespace GroboContainer.Tests.TypesHelperTests
 
         private void CheckTrue<TInterface, TImpl>(Type type)
         {
-            Type implementation = helpers.TryGetImplementation(typeof(TInterface), type);
+            var implementation = helpers.TryGetImplementation(typeof(TInterface), type);
             Assert.AreEqual(typeof(TImpl), implementation);
         }
 

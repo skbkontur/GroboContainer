@@ -18,7 +18,7 @@ namespace GroboContainer.Impl.Implementations
 
         #region IImplementationConfiguration Members
 
-        public Type ObjectType { get { throw new ForbiddenAbstractionException(abstractionType); } }
+        public Type ObjectType => throw new ForbiddenAbstractionException(abstractionType);
 
         public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext)
         {

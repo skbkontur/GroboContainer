@@ -11,7 +11,7 @@ namespace GroboContainer.New
     {
         public Implementation(Type implementationType)
         {
-            this.ObjectType = implementationType;
+            ObjectType = implementationType;
         }
 
         private IClassFactory ChooseFactory(ICreationContext creationContext, Type[] parameterTypes)
@@ -44,26 +44,20 @@ namespace GroboContainer.New
                        : null;
         }
 
-        private readonly object configurationLock = new object();
-        private volatile ConcurrentDictionary<Type[], IClassFactory> factories;
-        private volatile IClassFactory noArgumentsFactory;
-
-        #region IImplementation Members
-
         public Type ObjectType { get; }
 
         public IClassFactory GetFactory(Type[] parameterTypes, ICreationContext creationContext)
         {
-            IClassFactory classFactory = ChooseFactory(creationContext, parameterTypes);
+            var classFactory = ChooseFactory(creationContext, parameterTypes);
             return classFactory;
         }
 
-        #endregion
+        private readonly object configurationLock = new object();
+        private volatile ConcurrentDictionary<Type[], IClassFactory> factories;
+        private volatile IClassFactory noArgumentsFactory;
 
         internal sealed class TypeArrayEqualityComparer : IEqualityComparer<Type[]>
         {
-            public static readonly TypeArrayEqualityComparer Instance = new TypeArrayEqualityComparer();
-
             public bool Equals(Type[] x, Type[] y)
             {
                 return StructuralComparisons.StructuralEqualityComparer.Equals(x, y);
@@ -73,6 +67,8 @@ namespace GroboContainer.New
             {
                 return StructuralComparisons.StructuralEqualityComparer.GetHashCode(x);
             }
+
+            public static readonly TypeArrayEqualityComparer Instance = new TypeArrayEqualityComparer();
         }
     }
 }

@@ -20,19 +20,19 @@ namespace GroboContainer.Impl.Logging
         {
             if (wasCrash)
                 return;
-            int add = depthChange[(int)itemType];
+            var add = depthChange[(int)itemType];
             switch (add)
             {
-                case +1:
-                    items.Add(new LogItem(itemType, type));
-                    break;
-                case -1:
-                    items.RemoveAt(items.Count - 1);
-                    break;
-                case 0:
-                    break;
-                default:
-                    throw new NotSupportedException(string.Format("bad item {0}", itemType));
+            case +1:
+                items.Add(new LogItem(itemType, type));
+                break;
+            case -1:
+                items.RemoveAt(items.Count - 1);
+                break;
+            case 0:
+                break;
+            default:
+                throw new NotSupportedException($"bad item {itemType}");
             }
         }
 
@@ -95,12 +95,12 @@ namespace GroboContainer.Impl.Logging
 
         public string GetLog()
         {
-            int depth = 0;
+            var depth = 0;
             var builder = new StringBuilder();
-            builder.AppendLine(string.Format("Container: '{0}'", containerName));
-            foreach (LogItem item in items)
+            builder.AppendLine($"Container: '{containerName}'");
+            foreach (var item in items)
             {
-                int delta = depthChange[(int)item.ItemType];
+                var delta = depthChange[(int)item.ItemType];
                 if (delta < 0)
                     depth += delta;
                 builder.Append(' ', depth);

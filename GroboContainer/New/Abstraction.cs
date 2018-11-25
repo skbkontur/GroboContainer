@@ -7,7 +7,7 @@ namespace GroboContainer.New
         public Abstraction(Type[] implementationTypes, IImplementationCache implementationCache)
         {
             implementations = new IImplementation[implementationTypes.Length];
-            for (int i = 0; i < implementationTypes.Length; i++)
+            for (var i = 0; i < implementationTypes.Length; i++)
                 implementations[i] = implementationCache.GetOrCreate(implementationTypes[i]);
         }
 

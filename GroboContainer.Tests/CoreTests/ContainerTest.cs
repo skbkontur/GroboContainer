@@ -76,7 +76,7 @@ namespace GroboContainer.Tests.CoreTests
         {
             holder.ExpectGetContext(internalContainer, context);
             context.ExpectGetLog(log);
-            Guid arg2 = Guid.NewGuid();
+            var arg2 = Guid.NewGuid();
             internalContainer.ExpectCreate(context, "s", arg2, 1);
             Assert.AreEqual(1, container.Create<string, Guid, int>("s", arg2));
         }
@@ -86,7 +86,7 @@ namespace GroboContainer.Tests.CoreTests
         {
             holder.ExpectGetContext(internalContainer, context);
             context.ExpectGetLog(log);
-            Guid arg2 = Guid.NewGuid();
+            var arg2 = Guid.NewGuid();
             internalContainer.ExpectCreate(context, "s", arg2, true, 1);
             Assert.AreEqual(1, container.Create<string, Guid, bool, int>("s", arg2, true));
         }
@@ -96,7 +96,7 @@ namespace GroboContainer.Tests.CoreTests
         {
             holder.ExpectGetContext(internalContainer, context);
             context.ExpectGetLog(log);
-            Guid arg2 = Guid.NewGuid();
+            var arg2 = Guid.NewGuid();
             var ints = new[] {2};
             internalContainer.ExpectCreate(context, "s", arg2, true, ints, 1);
             Assert.AreEqual(1, container.Create<string, Guid, bool, int[], int>("s", arg2, true, ints));

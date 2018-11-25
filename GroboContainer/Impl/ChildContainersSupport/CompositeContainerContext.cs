@@ -13,7 +13,7 @@ namespace GroboContainer.Impl.ChildContainersSupport
         public CompositeContainerContext(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator,
                                          IContainerSelector containerSelector)
         {
-            this.Configuration = configuration;
+            Configuration = configuration;
             ClassWrapperCreator = classWrapperCreator;
             typesHelper = new TypesHelper();
 
@@ -65,15 +65,15 @@ namespace GroboContainer.Impl.ChildContainersSupport
 
         #region IContainerContext Members
 
-        public IImplementationCache ImplementationCache { get; private set; }
-        public IImplementationConfigurationCache ImplementationConfigurationCache { get; private set; }
-        public IClassWrapperCreator ClassWrapperCreator { get; private set; }
+        public IImplementationCache ImplementationCache { get; }
+        public IImplementationConfigurationCache ImplementationConfigurationCache { get; }
+        public IClassWrapperCreator ClassWrapperCreator { get; }
 
-        public IFuncBuilder FuncBuilder { get; private set; }
+        public IFuncBuilder FuncBuilder { get; }
 
-        public ICreationContext CreationContext { get; private set; }
+        public ICreationContext CreationContext { get; }
 
-        public IAbstractionConfigurationCollection AbstractionConfigurationCollection { get { return compositeCollection; } }
+        public IAbstractionConfigurationCollection AbstractionConfigurationCollection => compositeCollection;
 
         public IContainerContext MakeChildContext()
         {

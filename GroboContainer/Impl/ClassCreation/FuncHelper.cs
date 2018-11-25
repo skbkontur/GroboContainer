@@ -8,8 +8,8 @@ namespace GroboContainer.Impl.ClassCreation
     {
         public FuncHelper()
         {
-            Type type = typeof(IFuncBuilder);
-            foreach (MethodInfo info in type.GetMethods())
+            var type = typeof(IFuncBuilder);
+            foreach (var info in type.GetMethods())
             {
                 switch (info.Name)
                 {
@@ -46,30 +46,27 @@ namespace GroboContainer.Impl.ClassCreation
         {
             var genericArguments = lazyType.GetGenericArguments();
             if (genericArguments.Length != 1)
-                throw new InvalidOperationException(string.Format("Invalid lazyType: {0}", lazyType.FullName));
+                throw new InvalidOperationException($"Invalid lazyType: {lazyType.FullName}");
             return buildLazyMethodInfo.MakeGenericMethod(genericArguments);
         }
 
         public MethodInfo GetBuildGetFuncMethodInfo(Type funcType)
         {
-            Type[] genericArguments = funcType.GetGenericArguments();
-            int length = genericArguments.Length;
+            var genericArguments = funcType.GetGenericArguments();
+            var length = genericArguments.Length;
             if (length != 1)
                 throw new InvalidOperationException(
-                    string.Format("Функции получения с {0} аргументами на поддерживаются",
-                                  length - 1));
+                    $"Функции получения с {length - 1} аргументами на поддерживаются");
             return buildGetFuncMethodInfo.MakeGenericMethod(genericArguments);
         }
 
         public MethodInfo GetBuildCreateFuncMethodInfo(Type funcType)
         {
             MethodInfo result;
-            Type[] genericArguments = funcType.GetGenericArguments();
-            int length = genericArguments.Length;
+            var genericArguments = funcType.GetGenericArguments();
+            var length = genericArguments.Length;
             if (!funcArgumentCountToMethodMap.TryGetValue(length, out result))
-                throw new InvalidOperationException(string.Format(
-                    "Функции создания с {0} аргументами на поддерживаются",
-                    length - 1));
+                throw new InvalidOperationException($"Функции создания с {length - 1} аргументами на поддерживаются");
             return result.MakeGenericMethod(genericArguments);
         }
 

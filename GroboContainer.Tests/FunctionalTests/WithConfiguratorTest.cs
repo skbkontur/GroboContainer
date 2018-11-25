@@ -35,7 +35,7 @@ namespace GroboContainer.Tests.FunctionalTests
         private static Type CreateProxyType(Type interfaceType)
         {
             if (!interfaceType.IsInterface)
-                throw new ArgumentException(string.Format("{0} is not an interface", interfaceType.FullName), "interfaceType");
+                throw new ArgumentException($"{interfaceType.FullName} is not an interface", "interfaceType");
 
             const string serviceNamePrefix = "DynamicTest";
             var assemblyName = new AssemblyName {Name = serviceNamePrefix + "Assembly"};
@@ -107,7 +107,7 @@ namespace GroboContainer.Tests.FunctionalTests
         public void TestUseType()
         {
             container.Configurator.ForAbstraction<I1>().UseType<C1>();
-            I1[] actual = container.GetAll<I1>();
+            var actual = container.GetAll<I1>();
             Assert.AreEqual(1, actual.Length);
             Assert.IsInstanceOf(typeof(C1), actual[0]);
             Assert.IsInstanceOf(typeof(C1), container.Create<I1>());
@@ -212,6 +212,20 @@ namespace GroboContainer.Tests.FunctionalTests
             Assert.Throws<InvalidOperationException>(() => container.Configurator.ForAbstraction(typeof(INotImplemented)).UseType(proxyType2));
         }
 
+        [Test]
+        public void TestWithMultiDynamicType()
+        {
+            var proxyType1 = CreateProxyType(typeof(INotImplemented));
+            var proxyType2 = CreateProxyType(typeof(INotImplemented));
+            container.Configurator.ForAbstraction(typeof(INotImplemented)).UseTypes(new[] {proxyType1, proxyType2});
+
+            var proxies = container.GetAll<INotImplemented>();
+
+            Assert.That(proxies.Length, Is.EqualTo(2));
+            Assert.That(proxies[0].GetType(), Is.EqualTo(proxyType1));
+            Assert.That(proxies[1].GetType(), Is.EqualTo(proxyType2));
+        }
+
         private class C2 : I1
         {
         }
@@ -231,20 +245,6 @@ namespace GroboContainer.Tests.FunctionalTests
         [IgnoredImplementation]
         private class X1Impl2 : IX1, IX2
         {
-        }
-
-        [Test]
-        public void TestWithMultiDynamicType()
-        {
-            var proxyType1 = CreateProxyType(typeof(INotImplemented));
-            var proxyType2 = CreateProxyType(typeof(INotImplemented));
-            container.Configurator.ForAbstraction(typeof(INotImplemented)).UseTypes(new[] {proxyType1, proxyType2});
-
-            var proxies = container.GetAll<INotImplemented>();
-
-            Assert.That(proxies.Length, Is.EqualTo(2));
-            Assert.That(proxies[0].GetType(), Is.EqualTo(proxyType1));
-            Assert.That(proxies[1].GetType(), Is.EqualTo(proxyType2));
         }
     }
 }

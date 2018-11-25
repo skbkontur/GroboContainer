@@ -9,7 +9,7 @@ namespace GroboContainer.Impl.Exceptions
     {
         public ManyImplementationsException(Type requested, IImplementationConfiguration[] existingConfigs)
             : base(
-                string.Format("Тип {0} имеет более 1 реализации. Реализации:\r\n{1}", requested, DumpExistingTypes(existingConfigs))
+                $"Тип {requested} имеет более 1 реализации. Реализации:\r\n{DumpExistingTypes(existingConfigs)}"
                 )
         {
         }
@@ -17,7 +17,7 @@ namespace GroboContainer.Impl.Exceptions
         private static string DumpExistingTypes(IImplementationConfiguration[] existingConfigs)
         {
             var stringBuilder = new StringBuilder();
-            foreach (IImplementationConfiguration configuration in existingConfigs)
+            foreach (var configuration in existingConfigs)
             {
                 stringBuilder.AppendFormat("{0}\r\n", configuration.ObjectType.FullName);
             }

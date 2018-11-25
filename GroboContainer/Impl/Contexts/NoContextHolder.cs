@@ -4,11 +4,11 @@ namespace GroboContainer.Impl.Contexts
 {
     public class NoContextHolder : IContextHolder
     {
-        public static readonly NoContextHolder Instance = new NoContextHolder();
-
         private NoContextHolder()
         {
         }
+
+        public static readonly NoContextHolder Instance = new NoContextHolder();
 
         #region IContextHolder Members
 

@@ -16,7 +16,7 @@ namespace GroboContainer.Impl.ClassCreation
 
         public ContainerConstructorInfo GetConstructor(Type source, Type[] parameterTypes)
         {
-            ConstructorInfo[] constructors = source.GetConstructors();
+            var constructors = source.GetConstructors();
             return TryGetAttributedConstructor(source, parameterTypes, constructors)
                    ?? GetNonAttributedConstructor(source, parameterTypes, constructors);
         }
@@ -27,9 +27,9 @@ namespace GroboContainer.Impl.ClassCreation
                                                                             IEnumerable<ConstructorInfo> constructors)
         {
             ContainerConstructorInfo result = null;
-            foreach (ConstructorInfo constructor in constructors)
+            foreach (var constructor in constructors)
             {
-                int[] parametersInfo = CanUseParameters(constructor, parameterTypes);
+                var parametersInfo = CanUseParameters(constructor, parameterTypes);
                 if (parametersInfo != null)
                 {
                     if (result != null)
@@ -50,17 +50,17 @@ namespace GroboContainer.Impl.ClassCreation
                                                                             IEnumerable<ConstructorInfo> constructors)
         {
             ContainerConstructorInfo result = null;
-            HashSet<Type> parameterTypesSet = GetParameterTypesSet(parameterTypes);
-            IEnumerable<ConstructorInfo> attributedConstructors =
+            var parameterTypesSet = GetParameterTypesSet(parameterTypes);
+            var attributedConstructors =
                 constructors.Where(info => info.IsDefined(typeof(ContainerConstructorAttribute), false));
-            bool hasContainerConstructors = false;
-            foreach (ConstructorInfo constructor in attributedConstructors)
+            var hasContainerConstructors = false;
+            foreach (var constructor in attributedConstructors)
             {
                 hasContainerConstructors = true;
-                HashSet<Type> constructorTypesSet = GetConstructorTypesSet(constructor);
+                var constructorTypesSet = GetConstructorTypesSet(constructor);
                 if (parameterTypesSet.SetEquals(constructorTypesSet))
                 {
-                    int[] parametersInfo = CanUseParameters(constructor, parameterTypes);
+                    var parametersInfo = CanUseParameters(constructor, parameterTypes);
                     if (parametersInfo == null)
                         throw new BadContainerConstructorAttributeException(constructor);
                     if (result != null)
@@ -79,16 +79,16 @@ namespace GroboContainer.Impl.ClassCreation
 
         private static int[] CanUseParameters(MethodBase info, Type[] parameterTypes)
         {
-            ParameterInfo[] parameters = info.GetParameters();
+            var parameters = info.GetParameters();
             if (parameters.Length < parameterTypes.Length) return null;
             var permutation = new int[parameters.Length];
             var graph = new BipartiteGraph(parameterTypes.Length, parameters.Length);
-            for (int index = 0; index < parameters.Length; index++)
+            for (var index = 0; index < parameters.Length; index++)
             {
                 permutation[index] = -1;
-                ParameterInfo parameter = parameters[index];
+                var parameter = parameters[index];
                 if (parameter.IsOut) return null;
-                for (int i = 0; i < parameterTypes.Length; i++)
+                for (var i = 0; i < parameterTypes.Length; i++)
                     if (parameter.ParameterType.IsAssignableFrom(parameterTypes[i]))
                     {
                         graph.AddEdge(i, index);
@@ -98,7 +98,7 @@ namespace GroboContainer.Impl.ClassCreation
             if (!matchingBuilder.TryBuild(graph, out matching) || matchingBuilder.HasAnotherMatching(graph, matching))
                 return null;
 
-            for (int i = 0; i < parameters.Length; i++)
+            for (var i = 0; i < parameters.Length; i++)
             {
                 if (matching.HasPair(i))
                     permutation[i] = matching.GetPair(i);
@@ -109,10 +109,9 @@ namespace GroboContainer.Impl.ClassCreation
         private static HashSet<Type> GetParameterTypesSet(IEnumerable<Type> parameterTypes)
         {
             var types = new HashSet<Type>();
-            foreach (Type type in parameterTypes)
+            foreach (var type in parameterTypes)
                 if (!types.Add(type))
-                    throw new ArgumentException(string.Format(
-                        "Тип параметра {0} должен присутствовать не более 1 раза", type));
+                    throw new ArgumentException($"Тип параметра {type} должен присутствовать не более 1 раза");
             return types;
         }
 
@@ -122,7 +121,7 @@ namespace GroboContainer.Impl.ClassCreation
             var attribute =
                 (ContainerConstructorAttribute)
                 constructor.GetCustomAttributes(typeof(ContainerConstructorAttribute), false)[0];
-            foreach (Type type in attribute.GetParameterTypes())
+            foreach (var type in attribute.GetParameterTypes())
                 if (!types.Add(type))
                     throw new BadContainerConstructorAttributeException(constructor, type);
             return types;

@@ -14,8 +14,7 @@ namespace GroboContainer.Impl.ChildContainersSupport.Selectors
             {
             case 0:
                 if (IsChild(abstractionType))
-                    throw new InvalidOperationException(string.Format("Тип {0} пытаются взять из контейнера глубины 0, а он помечен как Child",
-                                                                      abstractionType));
+                    throw new InvalidOperationException($"Тип {abstractionType} пытаются взять из контейнера глубины 0, а он помечен как Child");
                 return 0;
             case 1:
                 if (IsChild(abstractionType))

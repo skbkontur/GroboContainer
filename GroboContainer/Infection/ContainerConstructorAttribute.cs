@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GroboContainer.Infection
 {
+    [SuppressMessage("ReSharper", "RedundantAttributeUsageProperty")]
     [AttributeUsage(AttributeTargets.Constructor, AllowMultiple = false, Inherited = false)]
     public class ContainerConstructorAttribute : Attribute
     {

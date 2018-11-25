@@ -12,9 +12,9 @@ namespace GroboContainer.Impl.Abstractions.AutoConfiguration
                                             IImplementationConfigurationCache implementationConfigurationCache)
         {
             var abstraction = abstractionsCollection.Get(abstractionType);
-            IImplementation[] implementations = abstraction.GetImplementations();
+            var implementations = abstraction.GetImplementations();
             implementationConfigurations = new IImplementationConfiguration[implementations.Length];
-            for (int i = 0; i < implementations.Length; i++)
+            for (var i = 0; i < implementations.Length; i++)
                 implementationConfigurations[i] = implementationConfigurationCache.GetOrCreate(implementations[i]);
         }
 

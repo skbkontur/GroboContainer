@@ -12,9 +12,9 @@ namespace GroboContainer.Impl.Abstractions
             if (instances == null || instances.Length == 0)
                 throw new ArgumentException("instances");
             implementationConfigurations = new IImplementationConfiguration[instances.Length];
-            for (int i = 0; i < implementationConfigurations.Length; i++)
+            for (var i = 0; i < implementationConfigurations.Length; i++)
             {
-                Type type = instances[i].GetType();
+                var type = instances[i].GetType();
                 if (!abstractionType.IsAssignableFrom(type))
                     throw new ArgumentException("Заданная реализация на являются объектами типа " + abstractionType +
                                                 " (реальный тип " + type + ")");

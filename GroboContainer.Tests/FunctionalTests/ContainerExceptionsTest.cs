@@ -11,7 +11,7 @@ namespace GroboContainer.Tests.FunctionalTests
         [Test]
         public void TestExceptionInConstructor()
         {
-            C1 c1 = container.Create<string, C1>("s");
+            var c1 = container.Create<string, C1>("s");
             RunMethodWithException<MockException>(() => c1.createC2());
             RunFail<MockException>(() => container.Create<int, C1>(1));
         }

@@ -28,9 +28,9 @@ namespace GroboContainer.Tests
         public void TestGet()
         {
             var types = new[] {typeof(int), typeof(long)};
-            Type abstractionType = typeof(long);
-            Type typeImpl = typeof(long);
-          
+            var abstractionType = typeof(long);
+            var typeImpl = typeof(long);
+
             helper.ExpectIsIgnoredImplementation(types[0], false);
             helper.ExpectTryGetImplementation(abstractionType, types[0], null);
 
@@ -47,7 +47,7 @@ namespace GroboContainer.Tests
             var types = new[] {typeof(int)};
             var abstractionType = typeof(I1<int>);
             var typeImpl = typeof(Guid);
-          
+
             helper.ExpectIsIgnoredImplementation(types[0], false);
             helper.ExpectTryGetImplementation(abstractionType, types[0], null);
 
@@ -65,7 +65,7 @@ namespace GroboContainer.Tests
             var types = new[] {typeof(I1<>)};
             var abstractionType = typeof(I1<int>);
             var typeImpl = abstractionType;
-            
+
             helper.ExpectIsIgnoredImplementation(types[0], false);
             helper.ExpectTryGetImplementation(abstractionType, types[0], typeImpl);
 
@@ -77,8 +77,8 @@ namespace GroboContainer.Tests
         public void TestNoResult()
         {
             var types = new[] {typeof(int)};
-            Type abstractionType = typeof(long);
-            
+            var abstractionType = typeof(long);
+
             helper.ExpectIsIgnoredImplementation(types[0], false);
             helper.ExpectTryGetImplementation(abstractionType, types[0], null);
             helper.ExpectIsIgnoredImplementation(abstractionType, true);

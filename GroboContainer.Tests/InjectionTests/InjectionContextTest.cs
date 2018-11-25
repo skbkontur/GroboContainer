@@ -1,4 +1,3 @@
-using System;
 using System.Threading;
 
 using GroboContainer.Core;
@@ -36,7 +35,7 @@ namespace GroboContainer.Tests.InjectionTests
         [Test]
         public void TestCycle()
         {
-            Type type = typeof(int);
+            var type = typeof(int);
             log.ExpectBeginConstruct(type);
             injectionContext.BeginConstruct(type);
 
@@ -44,8 +43,7 @@ namespace GroboContainer.Tests.InjectionTests
             injectionContext.BeginConstruct(typeof(long));
             log.ExpectGetLog("zzz");
             log.ExpectBeginConstruct(type);
-            RunMethodWithException<CyclicDependencyException>(() =>
-                                                              injectionContext.BeginConstruct(type), "zzz");
+            RunMethodWithException<CyclicDependencyException>(() => injectionContext.BeginConstruct(type), "zzz");
         }
 
         [Test]
@@ -63,7 +61,7 @@ namespace GroboContainer.Tests.InjectionTests
         [Test]
         public void TestKillNoHolder()
         {
-            Type type = typeof(int);
+            var type = typeof(int);
             log.ExpectBeginConstruct(type);
             injectionContext.BeginConstruct(type);
             log.ExpectEndConstruct(type);
@@ -73,7 +71,7 @@ namespace GroboContainer.Tests.InjectionTests
         [Test]
         public void TestKillWithContainer()
         {
-            Type type = typeof(int);
+            var type = typeof(int);
             log.ExpectBeginConstruct(type);
             injectionContext.BeginConstruct(type);
             injectionContext.Container.ToString(); //container created
@@ -85,7 +83,7 @@ namespace GroboContainer.Tests.InjectionTests
         [Test]
         public void TestLogging()
         {
-            Type type = typeof(int);
+            var type = typeof(int);
             log.ExpectBeginConstruct(type);
             injectionContext.BeginConstruct(type);
 
@@ -101,7 +99,7 @@ namespace GroboContainer.Tests.InjectionTests
             log.ExpectCrash();
             injectionContext.Crash();
 
-            Type type1 = typeof(long);
+            var type1 = typeof(long);
             log.ExpectBeginGet(type1);
             injectionContext.BeginGet(type1);
 

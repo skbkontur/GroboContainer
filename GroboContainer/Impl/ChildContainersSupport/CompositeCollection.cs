@@ -31,10 +31,9 @@ namespace GroboContainer.Impl.ChildContainersSupport
         {
             if (abstractionType == typeof(IContainer))
                 return leafCollection;
-            int index = selector.Select(abstractionType, containerTreeDepth);
+            var index = selector.Select(abstractionType, containerTreeDepth);
             if (index < 0 || index > containerTreeDepth)
-                throw new BadSelectorException(string.Format("Bad selector result {0}. Depth={1}, Type={2}", index,
-                                                             containerTreeDepth, abstractionType));
+                throw new BadSelectorException($"Bad selector result {index}. Depth={containerTreeDepth}, Type={abstractionType}");
             return rootToChildCollections[index];
         }
 
@@ -47,15 +46,15 @@ namespace GroboContainer.Impl.ChildContainersSupport
 
         public IAbstractionConfiguration Get(Type abstractionType)
         {
-            IAbstractionConfigurationCollection collection = ChooseCollection(abstractionType);
+            var collection = ChooseCollection(abstractionType);
             return collection.Get(abstractionType);
         }
 
         public void Add(Type abstractionType, IAbstractionConfiguration abstractionConfiguration)
         {
-            IAbstractionConfigurationCollection collection = ChooseCollection(abstractionType);
+            var collection = ChooseCollection(abstractionType);
             if (!ReferenceEquals(collection, leafCollection))
-                throw new InvalidOperationException(string.Format("Тип {0} нельзя конфигурировать", abstractionType));
+                throw new InvalidOperationException($"Тип {abstractionType} нельзя конфигурировать");
             leafCollection.Add(abstractionType, abstractionConfiguration);
         }
 

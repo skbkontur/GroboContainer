@@ -27,10 +27,10 @@ namespace GroboContainer.Tests.PerfTests
             var threads = new Thread[threadCount];
             for (var i = 0; i < containers.Length; i++)
                 containers[i] = new Container(new ContainerConfiguration(Assembly.GetExecutingAssembly()));
-            int index = 0;
+            var index = 0;
             var start = new ManualResetEvent(false);
             var times = new ConcurrentBag<long>();
-            for (int i = 0; i < threads.Length; i++)
+            for (var i = 0; i < threads.Length; i++)
             {
                 threads[i] = new Thread(() =>
                     {
@@ -50,7 +50,7 @@ namespace GroboContainer.Tests.PerfTests
                 threads[i].Start();
             }
             start.Set();
-            for (int i = 0; i < containers.Length; i++)
+            for (var i = 0; i < containers.Length; i++)
             {
                 Thread.Sleep(1);
                 Interlocked.Increment(ref index);

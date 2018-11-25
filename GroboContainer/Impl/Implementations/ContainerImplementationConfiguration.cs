@@ -11,7 +11,7 @@ namespace GroboContainer.Impl.Implementations
     {
         #region IImplementationConfiguration Members
 
-        public Type ObjectType { get { return typeof(Container); } }
+        public Type ObjectType => typeof(Container);
 
         public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext)
         {

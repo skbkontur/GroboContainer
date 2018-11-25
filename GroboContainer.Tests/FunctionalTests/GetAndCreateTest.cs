@@ -12,7 +12,7 @@ namespace GroboContainer.Tests.FunctionalTests
         public override void SetUp()
         {
             base.SetUp();
-            configuration = new ContainerConfiguration(new[] {GetType().Assembly});
+            configuration = new ContainerConfiguration(GetType().Assembly);
             container = new Container(configuration);
         }
 
@@ -67,7 +67,7 @@ namespace GroboContainer.Tests.FunctionalTests
                 Dependency = createReuseNever();
             }
 
-            public IClassReuseNever Dependency { get; private set; }
+            public IClassReuseNever Dependency { get; }
         }
 
         private class ClassWithArgumentsReuseAllways
@@ -77,7 +77,7 @@ namespace GroboContainer.Tests.FunctionalTests
                 Dependency = reuseAllways;
             }
 
-            public ClassReuseAllways Dependency { get; private set; }
+            public ClassReuseAllways Dependency { get; }
         }
 
         public class ClassReuseAllways

@@ -71,8 +71,8 @@ namespace GroboContainer.Impl.Implementations
         private bool MatchFromGenericConstraints(Type candidate, Type[] arguments, Type[] candidateArguments,
                                                  Func<Type, IEnumerable<Type>> getImplementations)
         {
-            bool resolvedSomething = false;
-            for (int i = 0; i < arguments.Length; ++i)
+            var resolvedSomething = false;
+            for (var i = 0; i < arguments.Length; ++i)
             {
                 if (arguments[i] != null)
                     continue;
@@ -98,7 +98,7 @@ namespace GroboContainer.Impl.Implementations
                     .Where(impl => ValidateGenericParameterAttributes(candidateArguments[i], impl))
                     .ToArray();
 
-                if(validatedImplementations.Length == 0)
+                if (validatedImplementations.Length == 0)
                     continue;
 
                 if (validatedImplementations.Length == 1)
@@ -121,9 +121,9 @@ namespace GroboContainer.Impl.Implementations
                     .FirstOrDefault();
             if (!constraint.IsGenericType)
                 return constraint;
-            Type[] genericArgumentTypes = new Type[constraint.GetGenericArguments().Length];
+            var genericArgumentTypes = new Type[constraint.GetGenericArguments().Length];
             var genericArguments = constraint.GetGenericArguments();
-            for (int i = 0; i < genericArguments.Length; ++i)
+            for (var i = 0; i < genericArguments.Length; ++i)
                 genericArgumentTypes[i] =
                     SubstituteResolvedParameters(resolvedArguments, candidateArguments, genericArguments[i]);
             if (genericArgumentTypes.All(t => t != null))

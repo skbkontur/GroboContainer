@@ -13,7 +13,7 @@ namespace GroboContainer.Impl
     {
         public ContainerContext(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator)
         {
-            this.Configuration = configuration;
+            Configuration = configuration;
             ClassWrapperCreator = classWrapperCreator;
             ITypesHelper typesHelper = new TypesHelper();
 
@@ -32,16 +32,16 @@ namespace GroboContainer.Impl
             AbstractionConfigurationCollection.Add(typeof(IContainer), new StupidAbstractionConfiguration(new ContainerImplementationConfiguration()));
         }
 
-        public IClassWrapperCreator ClassWrapperCreator { get; private set; }
-        public IImplementationConfigurationCache ImplementationConfigurationCache { get; private set; }
-        public IImplementationCache ImplementationCache { get; private set; }
+        public IClassWrapperCreator ClassWrapperCreator { get; }
+        public IImplementationConfigurationCache ImplementationConfigurationCache { get; }
+        public IImplementationCache ImplementationCache { get; }
 
         #region IContainerContext Members
 
-        public IFuncBuilder FuncBuilder { get; private set; } //s, no state
+        public IFuncBuilder FuncBuilder { get; } //s, no state
 
-        public ICreationContext CreationContext { get; private set; } //s, no statexx
-        public IAbstractionConfigurationCollection AbstractionConfigurationCollection { get; private set; }
+        public ICreationContext CreationContext { get; } //s, no statexx
+        public IAbstractionConfigurationCollection AbstractionConfigurationCollection { get; }
 
         public IContainerContext MakeChildContext()
         {

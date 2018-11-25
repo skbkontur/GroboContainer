@@ -15,8 +15,7 @@ namespace GroboContainer.Impl.ChildContainersSupport.Selectors
             case 0:
                 if (IsRoot(abstractionType))
                     return 0;
-                throw new InvalidOperationException(string.Format("Тип {0} нельзя брать из контейнера глубины 0",
-                                                                  abstractionType));
+                throw new InvalidOperationException($"Тип {abstractionType} нельзя брать из контейнера глубины 0");
 
             case 1:
                 if (IsRoot(abstractionType))

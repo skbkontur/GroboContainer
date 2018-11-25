@@ -16,13 +16,13 @@ namespace GroboContainer.Tests.TypesHelperTests
 
         protected void CheckTrue<TInterface, TImpl>(Type type) where TImpl : TInterface
         {
-            Type implementation = helpers.TryGetImplementation(typeof(TInterface), type);
+            var implementation = helpers.TryGetImplementation(typeof(TInterface), type);
             Assert.AreEqual(typeof(TImpl), implementation);
         }
 
         protected void CheckTrue<TInterface, TImpl>(Type type, Func<Type, Type[]> getImplementations) where TImpl : TInterface
         {
-            Type implementation = helpers.TryGetImplementation(typeof(TInterface), type, getImplementations);
+            var implementation = helpers.TryGetImplementation(typeof(TInterface), type, getImplementations);
             Assert.AreEqual(typeof(TImpl), implementation);
         }
 

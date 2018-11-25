@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 
 using NUnit.Framework;
@@ -24,14 +23,14 @@ namespace GroboContainer.Tests.FunctionalTests
         [Test]
         public void TestGetImplementationTypes()
         {
-            Type[] types = container.GetImplementationTypes(typeof(IInterface));
+            var types = container.GetImplementationTypes(typeof(IInterface));
             CollectionAssert.AreEquivalent(new[] {typeof(Type1), typeof(Type2)}, types);
         }
 
         [Test]
         public void TestMultiple()
         {
-            IInterface[] types = container.GetAll<IInterface>();
+            var types = container.GetAll<IInterface>();
             CollectionAssert.AreEquivalent(new[] {typeof(Type1), typeof(Type2)},
                                            types.Select(t => t.GetType()).ToArray());
         }
@@ -39,7 +38,7 @@ namespace GroboContainer.Tests.FunctionalTests
         [Test]
         public void TestSingle()
         {
-            object[] types = container.GetAll(typeof(Type1));
+            var types = container.GetAll(typeof(Type1));
             Assert.AreEqual(1, types.Length);
             Assert.That(types[0], Is.InstanceOf<Type1>());
         }

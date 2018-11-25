@@ -50,7 +50,7 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestBuildCreateFunc()
         {
-            Func<int, string> func = internalContainer.BuildCreateFunc<int, string>(context);
+            var func = internalContainer.BuildCreateFunc<int, string>(context);
             var container = NewMock<IContainerForFuncBuilder>();
             context.ExpectGetContainerForFunc(container);
             container.ExpectCreateForFunc(1, "s");
@@ -60,7 +60,7 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestBuildGetFunc()
         {
-            Func<int> func = internalContainer.BuildGetFunc<int>(context);
+            var func = internalContainer.BuildGetFunc<int>(context);
             var container = NewMock<IContainerForFuncBuilder>();
             context.ExpectGetContainerForFunc(container);
             container.ExpectGetForFunc(1);
@@ -73,7 +73,7 @@ namespace GroboContainer.Tests.ImplTests
             var configurations = new[]
                 {NewMock<IAbstractionConfiguration>(), NewMock<IAbstractionConfiguration>(), null};
             abstractionConfigurationCollection.ExpectGetAll(configurations);
-            var impls1 = new[] {GetMock<IImplementationConfiguration>(),};
+            var impls1 = new[] {GetMock<IImplementationConfiguration>()};
             var impls2 = new[] {GetMock<IImplementationConfiguration>(), GetMock<IImplementationConfiguration>()};
             configurations[0].ExpectGetImplementations(impls1);
             impls1[0].Expect(impl => impl.DisposeInstance());
@@ -86,14 +86,14 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestConfigurator()
         {
-            IContainerConfigurator containerConfigurator = internalContainer.Configurator;
+            var containerConfigurator = internalContainer.Configurator;
             Assert.That(containerConfigurator, Is.InstanceOf<ContainerConfigurator>());
         }
 
         [Test]
         public void TestCreate()
         {
-            IDisposable ordered = mockery.Ordered;
+            var ordered = mockery.Ordered;
             {
                 context.ExpectBeginCreate(type);
                 abstractionConfigurationCollection.ExpectGet(type, abstractionConfiguration);
@@ -111,7 +111,7 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestCreateGeneric()
         {
-            IDisposable ordered = mockery.Ordered;
+            var ordered = mockery.Ordered;
             context.ExpectBeginCreate(typeof(string));
 
             abstractionConfigurationCollection.ExpectGet(typeof(string), abstractionConfiguration);
@@ -129,7 +129,7 @@ namespace GroboContainer.Tests.ImplTests
         public void TestCreateNullParameter()
         {
             var parameters = new object[] {null};
-            IDisposable ordered = mockery.Ordered;
+            var ordered = mockery.Ordered;
             {
                 context.ExpectBeginCreate(type);
                 abstractionConfigurationCollection.ExpectGet(type, abstractionConfiguration);
@@ -150,7 +150,7 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestGet()
         {
-            IDisposable ordered = mockery.Ordered;
+            var ordered = mockery.Ordered;
             context.ExpectBeginGet(type);
             abstractionConfigurationCollection.ExpectGet(type, abstractionConfiguration);
 
@@ -169,7 +169,7 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestGetAll()
         {
-            IDisposable ordered = mockery.Ordered;
+            var ordered = mockery.Ordered;
             context.ExpectBeginGetAll(type);
             abstractionConfigurationCollection.ExpectGet(type, abstractionConfiguration);
 
@@ -191,7 +191,7 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestGetAllCrash()
         {
-            IDisposable ordered = mockery.Ordered;
+            var ordered = mockery.Ordered;
             context.ExpectBeginGetAll(type);
             abstractionConfigurationCollection.ExpectGet(type, abstractionConfiguration);
             abstractionConfiguration.ExpectGetImplementations(new MockException());
@@ -216,7 +216,7 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestGetCrash()
         {
-            IDisposable ordered = mockery.Ordered;
+            var ordered = mockery.Ordered;
             context.ExpectBeginGet(type);
             abstractionConfigurationCollection.ExpectGet(type, abstractionConfiguration);
             abstractionConfiguration.ExpectGetImplementations(new MockException());
@@ -229,14 +229,14 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestGetManyImpls()
         {
-            IDisposable ordered = mockery.Ordered;
+            var ordered = mockery.Ordered;
             context.ExpectBeginGet(type);
             abstractionConfigurationCollection.ExpectGet(type, abstractionConfiguration);
 
             var implementationConfiguration = new[]
                 {
                     GetMock<IImplementationConfiguration>(),
-                    GetMock<IImplementationConfiguration>(),
+                    GetMock<IImplementationConfiguration>()
                 };
             implementationConfiguration[0].Expect(c => c.ObjectType).Return(typeof(int));
             implementationConfiguration[1].Expect(c => c.ObjectType).Return(typeof(long));
@@ -244,8 +244,7 @@ namespace GroboContainer.Tests.ImplTests
             context.ExpectCrash();
             context.ExpectEndGet(type);
             ordered.Dispose();
-            RunMethodWithException<ManyImplementationsException>(() =>
-                                                                 internalContainer.Get(type, context));
+            RunMethodWithException<ManyImplementationsException>(() => internalContainer.Get(type, context));
         }
 
         private IContainerConfiguration configuration;

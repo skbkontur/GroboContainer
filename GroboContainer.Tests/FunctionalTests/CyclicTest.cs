@@ -35,7 +35,7 @@ namespace GroboContainer.Tests.FunctionalTests
         [Test]
         public void TestGetImplementationTypes()
         {
-            Type[] types = container.GetImplementationTypes(typeof(MyClass1));
+            var types = container.GetImplementationTypes(typeof(MyClass1));
             CollectionAssert.AreEquivalent(new[] {typeof(MyClass1)}, types);
         }
 

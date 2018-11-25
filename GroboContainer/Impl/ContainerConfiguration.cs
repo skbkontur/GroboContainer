@@ -21,7 +21,7 @@ namespace GroboContainer.Impl
             ContainerName = name;
             Mode = mode;
             var typesSet = new HashSet<Type>();
-            foreach (Assembly assembly in assembliesToScan)
+            foreach (var assembly in assembliesToScan)
             {
                 Type[] typesInAssembly;
                 try
@@ -31,19 +31,17 @@ namespace GroboContainer.Impl
                 catch (ReflectionTypeLoadException e)
                 {
                     var sb = new StringBuilder();
-                    foreach (Exception loaderException in e.LoaderExceptions)
+                    foreach (var loaderException in e.LoaderExceptions)
                         sb.AppendLine(loaderException.Message);
                     throw new ContainerConfigurationException(
-                        string.Format("Ошибка при получении типов из сборки '{0}'\r\n(Path:'{1}')\n{2}",
-                                      assembly.FullName, assembly.Location, sb), e);
+                        $"Ошибка при получении типов из сборки '{assembly.FullName}'\r\n(Path:'{assembly.Location}')\n{sb}", e);
                 }
                 catch (Exception e)
                 {
                     throw new ContainerConfigurationException(
-                        string.Format("Ошибка при получении типов из сборки '{0}'\r\n(Path:'{1}')",
-                                      assembly.FullName, assembly.Location), e);
+                        $"Ошибка при получении типов из сборки '{assembly.FullName}'\r\n(Path:'{assembly.Location}')", e);
                 }
-                foreach (Type type in typesInAssembly)
+                foreach (var type in typesInAssembly)
                     typesSet.Add(type);
             }
             types = typesSet.ToArray();
@@ -54,8 +52,8 @@ namespace GroboContainer.Impl
             return types;
         }
 
-        public string ContainerName { get; private set; }
-        public ContainerMode Mode { get; private set; }
+        public string ContainerName { get; }
+        public ContainerMode Mode { get; }
         private readonly Type[] types;
     }
 }

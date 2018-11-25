@@ -22,7 +22,7 @@ namespace GroboContainer.Tests.FunctionalTests
         [Test]
         public void TestCreate()
         {
-            object obj = container.Create(typeof(I1), new[] {typeof(long), typeof(int)}, new object[] {1L, 2});
+            var obj = container.Create(typeof(I1), new[] {typeof(long), typeof(int)}, new object[] {1L, 2});
             Assert.That(obj, Is.InstanceOf<C1>());
             Assert.AreEqual(1, ((C1)obj).b);
             Assert.AreEqual(2, ((C1)obj).a);

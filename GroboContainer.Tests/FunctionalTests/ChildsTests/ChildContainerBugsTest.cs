@@ -15,7 +15,7 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
         public override void SetUp()
         {
             base.SetUp();
-            var configuration = new ContainerConfiguration(new[] {GetType().Assembly});
+            var configuration = new ContainerConfiguration(GetType().Assembly);
             selector = new AttributedChildSelector();
             container = Container.CreateWithChilds(configuration, null, selector);
         }

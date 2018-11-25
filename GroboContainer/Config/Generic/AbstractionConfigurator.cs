@@ -28,7 +28,7 @@ namespace GroboContainer.Config.Generic
 
         public void UseInstances(params T[] instances)
         {
-            object[] objects = instances.Cast<object>().ToArray();
+            var objects = instances.Cast<object>().ToArray();
             worker.UseInstances(objects);
         }
 

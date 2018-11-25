@@ -22,7 +22,7 @@ namespace GroboContainer.Tests.FunctionalTests
         public void Test3Args()
         {
             var obj = container.Get<C13Args>();
-            C13Args.C13ArgsInner c2 = obj.createI2(1, true, "q");
+            var c2 = obj.createI2(1, true, "q");
             Assert.AreEqual(true, c2.b);
             Assert.AreEqual(1, c2.a);
             Assert.AreEqual("q", c2.s);
@@ -33,7 +33,7 @@ namespace GroboContainer.Tests.FunctionalTests
         {
             var obj = container.Get<C4Args>();
             var ints = new[] {1};
-            C4Args.C4ArgsInner c2 = obj.createI2(1, true, "q", ints);
+            var c2 = obj.createI2(1, true, "q", ints);
             Assert.AreEqual(true, c2.b);
             Assert.AreEqual(1, c2.a);
             Assert.AreEqual("q", c2.s);
@@ -57,7 +57,7 @@ namespace GroboContainer.Tests.FunctionalTests
         public void TestTwoArgs()
         {
             var obj = container.Get<C1TwoArgs>();
-            C1TwoArgs.C1TwoArgsInner c2 = obj.createI2(1, true);
+            var c2 = obj.createI2(1, true);
             Assert.AreEqual(true, c2.b);
             Assert.AreEqual(1, c2.a);
         }
@@ -221,8 +221,8 @@ namespace GroboContainer.Tests.FunctionalTests
                 Ticks = ticks;
             }
 
-            public IReusedDependendecy ReusedDependendecy { get; private set; }
-            public long Ticks { get; private set; }
+            public IReusedDependendecy ReusedDependendecy { get; }
+            public long Ticks { get; }
         }
 
         private class TestDependecyIsReusedWithFactoryFuncClass

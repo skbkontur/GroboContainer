@@ -10,7 +10,7 @@ namespace GroboContainer.Tests.FunctionalTests
         public override void SetUp()
         {
             base.SetUp();
-            configuration = new ContainerConfiguration(new[] {GetType().Assembly});
+            configuration = new ContainerConfiguration(GetType().Assembly);
             container = new Container(configuration, new TestClassWrapperCreator());
         }
 

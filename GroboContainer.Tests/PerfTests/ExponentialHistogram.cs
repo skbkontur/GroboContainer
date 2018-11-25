@@ -62,7 +62,7 @@ namespace GroboContainer.Tests.PerfTests
         private void DoRegister(long value)
         {
             if (value < 0)
-                throw new InvalidOperationException(string.Format("Invalid value: {0}", value));
+                throw new InvalidOperationException($"Invalid value: {value}");
             int i;
             for (i = 1; i < limits.Length && value >= limits[i]; i++)
             {
@@ -98,7 +98,7 @@ namespace GroboContainer.Tests.PerfTests
         private long DoGetPercentile(double percent)
         {
             if (percent <= 0 || percent > 1.0)
-                throw new InvalidOperationException(string.Format("Percent must be in range (0.00, 1.00] but was: {0}", percent));
+                throw new InvalidOperationException($"Percent must be in range (0.00, 1.00] but was: {percent}");
             var itemsCount = 0L;
             var itemsThreshold = (long)Math.Ceiling(percent * totalCount);
             for (var i = 0; i < limits.Length; i++)
@@ -120,8 +120,7 @@ namespace GroboContainer.Tests.PerfTests
             for (var i = 0; i < limits.Length; i++)
                 sb.AppendFormat("{0}:{1}, ", limits[i] / scale, buckets[i]);
             var histogram = sb.ToString(0, sb.Length - 2);
-            return string.Format("TotalValue: {0}; TotalCount: {1}; Avg: {2}; 95%%: {3}; 99%%: {4}; 99.9%%: {5}; Min: {6}; Max: {7}; Histogram: {{{8}}}",
-                                 TotalValue.ToString("F0"), TotalCount, average.ToString("F0"), percentile95Latency, percentile99Latency, percentile999Latency, Min, Max, histogram);
+            return $"TotalValue: {TotalValue.ToString("F0")}; TotalCount: {TotalCount}; Avg: {average.ToString("F0")}; 95%%: {percentile95Latency}; 99%%: {percentile99Latency}; 99.9%%: {percentile999Latency}; Min: {Min}; Max: {Max}; Histogram: {{{histogram}}}";
         }
 
         private readonly object locker = new object();

@@ -15,13 +15,13 @@ namespace GroboContainer.Tests.NewTests
         [Test]
         public void TestCacheWorks()
         {
-            IImplementation implementation = implementationCache.GetOrCreate(typeof(int));
+            var implementation = implementationCache.GetOrCreate(typeof(int));
             Assert.That(implementation, Is.InstanceOf<Implementation>());
             Assert.AreEqual(typeof(int), implementation.ObjectType);
 
             Assert.AreSame(implementation, implementationCache.GetOrCreate(typeof(int)));
 
-            IImplementation implementationLong = implementationCache.GetOrCreate(typeof(long));
+            var implementationLong = implementationCache.GetOrCreate(typeof(long));
             Assert.AreNotEqual(implementation, implementationLong);
 
             Assert.AreSame(implementation, implementationCache.GetOrCreate(typeof(int)));

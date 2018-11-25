@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 using GroboContainer.Impl;
@@ -29,21 +28,20 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
         public void TestCrash()
         {
             var args = new object[1];
-            Type constructedType = typeof(int);
+            var constructedType = typeof(int);
             var classFactory = new ClassFactory(delegate { throw new MockException(); }, constructedType);
 
             injectionContext.Expect(c => c.BeginConstruct(constructedType));
             injectionContext.Expect(c => c.Crash());
             injectionContext.Expect(c => c.EndConstruct(constructedType));
-            RunMethodWithException<MockException>(() =>
-                                                  classFactory.Create(injectionContext, args));
+            RunMethodWithException<MockException>(() => classFactory.Create(injectionContext, args));
         }
 
         [Test]
         public void TestWork()
         {
             var args = new object[1];
-            Type constructedType = typeof(int);
+            var constructedType = typeof(int);
             var q = new Queue<int>();
             var classFactory =
                 new ClassFactory(delegate(IInternalContainer aContainer, IInjectionContext aContext, object[] arg3)

@@ -118,7 +118,7 @@ namespace GroboContainer.Tests.FunctionalTests
         [Test]
         public void TestGetImplementationTypes()
         {
-            Type[] types = container.GetImplementationTypes(typeof(IInterface));
+            var types = container.GetImplementationTypes(typeof(IInterface));
             CollectionAssert.AreEquivalent(new[] {typeof(ClassWithoutArguments)}, types);
         }
 
@@ -196,7 +196,7 @@ namespace GroboContainer.Tests.FunctionalTests
                 Dependency = dependency;
             }
 
-            public ClassWithoutArguments Dependency { get; private set; }
+            public ClassWithoutArguments Dependency { get; }
         }
 
         private class ClassWithFuncDependecy
@@ -206,7 +206,7 @@ namespace GroboContainer.Tests.FunctionalTests
                 Dependency = getDependency;
             }
 
-            public Func<IInterface> Dependency { get; private set; }
+            public Func<IInterface> Dependency { get; }
         }
 
         private class ClassWithSameFuncDependecy
@@ -216,7 +216,7 @@ namespace GroboContainer.Tests.FunctionalTests
                 Dependency = getDependency;
             }
 
-            public Func<IInterface> Dependency { get; private set; }
+            public Func<IInterface> Dependency { get; }
         }
 
         private class ClassWithLazyDependecy
@@ -226,7 +226,7 @@ namespace GroboContainer.Tests.FunctionalTests
                 Dependency = dependency;
             }
 
-            public Lazy<IInterface> Dependency { get; private set; }
+            public Lazy<IInterface> Dependency { get; }
         }
 
         private class ClassWithSameLazyDependecy
@@ -236,7 +236,7 @@ namespace GroboContainer.Tests.FunctionalTests
                 Dependency = dependency;
             }
 
-            public Lazy<IInterface> Dependency { get; private set; }
+            public Lazy<IInterface> Dependency { get; }
         }
 
         private class WithArrayArgument
@@ -246,7 +246,7 @@ namespace GroboContainer.Tests.FunctionalTests
                 Args = args;
             }
 
-            public IInterfaceManyImpls[] Args { get; private set; }
+            public IInterfaceManyImpls[] Args { get; }
         }
 
         private class WithEnumerableArgument
@@ -256,7 +256,7 @@ namespace GroboContainer.Tests.FunctionalTests
                 Args = args;
             }
 
-            public IEnumerable<IInterfaceManyImpls> Args { get; private set; }
+            public IEnumerable<IInterfaceManyImpls> Args { get; }
         }
 
         private class InterfaceManyImpls1 : IInterfaceManyImpls

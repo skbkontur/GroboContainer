@@ -44,9 +44,8 @@ namespace GroboContainer.Tests.ImplTests
                     ParametersInfo = new[] {1, -1, 0}
                 };
 
-            Func<IInternalContainer, IInjectionContext, object[], object> @delegate =
-                classCreator.BuildConstructionDelegate(factoryConstructorInfo, null);
-            object instance = @delegate(internalContainer, context, objects);
+            var @delegate = classCreator.BuildConstructionDelegate(factoryConstructorInfo, null);
+            var instance = @delegate(internalContainer, context, objects);
             Assert.That(instance, Is.InstanceOf<C3>());
             Assert.AreSame(i2Mock, ((C3)instance).z);
             Assert.AreSame(objects[0], ((C3)instance).b);
@@ -70,9 +69,8 @@ namespace GroboContainer.Tests.ImplTests
                     ParametersInfo = new[] {3, 1, -1, 0, 2}
                 };
 
-            Func<IInternalContainer, IInjectionContext, object[], object> @delegate =
-                classCreator.BuildConstructionDelegate(factoryConstructorInfo, null);
-            object instance = @delegate(internalContainer, context, objects);
+            var @delegate = classCreator.BuildConstructionDelegate(factoryConstructorInfo, null);
+            var instance = @delegate(internalContainer, context, objects);
             Assert.That(instance, Is.InstanceOf<C3>());
             Assert.AreSame(i1Mock, ((C3)instance).i1Field);
             Assert.AreEqual(objects[0], ((C3)instance).intField);
@@ -86,13 +84,12 @@ namespace GroboContainer.Tests.ImplTests
         {
             var i1Mock = new[] {NewMock<I1>(), NewMock<I1>()};
             internalContainer.ExpectGetAll(context, i1Mock);
-            Func<IInternalContainer, IInjectionContext, object[], object> @delegate =
-                classCreator.BuildConstructionDelegate(new ContainerConstructorInfo
-                    {
-                        ConstructorInfo =
-                            testType.GetConstructor(new[] {typeof(I1[])})
-                    }, null);
-            object instance = @delegate(internalContainer, context, new object[0]);
+            var @delegate = classCreator.BuildConstructionDelegate(new ContainerConstructorInfo
+                {
+                    ConstructorInfo =
+                        testType.GetConstructor(new[] {typeof(I1[])})
+                }, null);
+            var instance = @delegate(internalContainer, context, new object[0]);
             Assert.That(instance, Is.InstanceOf(testType));
             Assert.AreSame(i1Mock, ((I2Impl)instance).i1Array);
         }
@@ -124,8 +121,7 @@ namespace GroboContainer.Tests.ImplTests
                     ParametersInfo = new[] {0}
                 };
 
-            Func<IInternalContainer, IInjectionContext, object[], object> @delegate =
-                classCreator.BuildConstructionDelegate(factoryConstructorInfo, null);
+            var @delegate = classCreator.BuildConstructionDelegate(factoryConstructorInfo, null);
             RunMethodWithException<ArgumentException>(() => @delegate(internalContainer, context, objects), "bad parameter");
         }
 
@@ -136,14 +132,14 @@ namespace GroboContainer.Tests.ImplTests
             Func<I1> func = () => i1Mock[0];
             internalContainer.ExpectBuildCreateFunc(context, func);
             internalContainer.ExpectGet(context, 1);
-            Func<IInternalContainer, IInjectionContext, object[], object> @delegate =
+            var @delegate =
                 classCreator.BuildConstructionDelegate(
                     new ContainerConstructorInfo
                         {
                             ConstructorInfo =
                                 testType.GetConstructor(new[] {typeof(Func<I1>), typeof(int)})
                         }, null);
-            object instance = @delegate(internalContainer, context, new object[0]);
+            var instance = @delegate(internalContainer, context, new object[0]);
             Assert.That(instance, Is.InstanceOf(testType));
 
             Assert.AreSame(func, ((I2Impl)instance).i1Func);
@@ -156,13 +152,13 @@ namespace GroboContainer.Tests.ImplTests
         {
             var i1Mock = NewMock<I1>();
             internalContainer.ExpectGet(context, i1Mock);
-            Func<IInternalContainer, IInjectionContext, object[], object> @delegate =
+            var @delegate =
                 classCreator.BuildConstructionDelegate(
                     new ContainerConstructorInfo
                         {
                             ConstructorInfo = testType.GetConstructor(new[] {typeof(I1)})
                         }, null);
-            object instance = @delegate(internalContainer, context, new object[0]);
+            var instance = @delegate(internalContainer, context, new object[0]);
             Assert.That(instance, Is.InstanceOf(testType));
             Assert.AreSame(i1Mock, ((I2Impl)instance).i1);
         }
@@ -172,13 +168,13 @@ namespace GroboContainer.Tests.ImplTests
         {
             var i1Mock = NewMock<I1>();
             internalContainer.ExpectGet(context, i1Mock);
-            Func<IInternalContainer, IInjectionContext, object[], object> @delegate =
+            var @delegate =
                 classCreator.BuildConstructionDelegate(
                     new ContainerConstructorInfo
                         {
                             ConstructorInfo = testType.GetConstructor(new[] {typeof(I1)})
                         }, typeof(I2ImplWrapper));
-            object instance = @delegate(internalContainer, context, new object[0]);
+            var instance = @delegate(internalContainer, context, new object[0]);
             Assert.That(instance, Is.InstanceOf<I2ImplWrapper>());
             Assert.AreSame(i1Mock, ((I2ImplWrapper)instance).I1);
         }
@@ -190,14 +186,14 @@ namespace GroboContainer.Tests.ImplTests
             context.Expect(c => c.InternalContainer).Return(internalContainer);
             internalContainer.ExpectGet(context, i1Mock);
 
-            IClassFactory classFactory = classCreator.BuildFactory(
+            var classFactory = classCreator.BuildFactory(
                 new ContainerConstructorInfo
                     {
                         ConstructorInfo = testType.GetConstructor(new[] {typeof(I1)})
                     }, null);
             context.Expect(c => c.BeginConstruct(testType));
             context.Expect(c => c.EndConstruct(testType));
-            object instance = classFactory.Create(context, new object[0]);
+            var instance = classFactory.Create(context, new object[0]);
             Assert.That(instance, Is.InstanceOf(testType));
             Assert.AreSame(i1Mock, ((I2Impl)instance).i1);
         }
@@ -208,13 +204,13 @@ namespace GroboContainer.Tests.ImplTests
             var i1Mock = new I1[1];
             Func<I1> func = () => i1Mock[0];
             internalContainer.ExpectBuildGetFunc(context, func);
-            Func<IInternalContainer, IInjectionContext, object[], object> @delegate =
+            var @delegate =
                 classCreator.BuildConstructionDelegate(
                     new ContainerConstructorInfo
                         {
                             ConstructorInfo = testType.GetConstructor(new[] {typeof(Func<I1>)})
                         }, null);
-            object instance = @delegate(internalContainer, context, new object[0]);
+            var instance = @delegate(internalContainer, context, new object[0]);
             Assert.That(instance, Is.InstanceOf(testType));
 
             Assert.AreSame(func, ((I2Impl)instance).i1Func);
@@ -228,13 +224,13 @@ namespace GroboContainer.Tests.ImplTests
             var i1Mock = NewMock<I1>();
             internalContainer.ExpectGet(context, i1Mock);
             internalContainer.ExpectGet(context, 5);
-            Func<IInternalContainer, IInjectionContext, object[], object> @delegate =
+            var @delegate =
                 classCreator.BuildConstructionDelegate(
                     new ContainerConstructorInfo
                         {
                             ConstructorInfo = testType.GetConstructor(new[] {typeof(I1), typeof(int)})
                         }, null);
-            object instance = @delegate(internalContainer, context, new object[0]);
+            var instance = @delegate(internalContainer, context, new object[0]);
             Assert.That(instance, Is.InstanceOf(testType));
             Assert.AreSame(i1Mock, ((I2Impl)instance).i1);
         }
@@ -311,7 +307,7 @@ namespace GroboContainer.Tests.ImplTests
                 this.impl = (I2Impl)impl;
             }
 
-            public I1 I1 { get { return impl.i1; } }
+            public I1 I1 => impl.i1;
             private readonly I2Impl impl;
         }
 

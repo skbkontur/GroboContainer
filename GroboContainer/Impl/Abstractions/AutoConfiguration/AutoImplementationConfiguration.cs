@@ -20,7 +20,7 @@ namespace GroboContainer.Impl.Abstractions.AutoConfiguration
 
         #region IImplementationConfiguration Members
 
-        public Type ObjectType { get { return implementation.ObjectType; } }
+        public Type ObjectType => implementation.ObjectType;
 
         public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext)
         {
@@ -28,7 +28,7 @@ namespace GroboContainer.Impl.Abstractions.AutoConfiguration
                 lock (configurationLock)
                     if (instance == null)
                     {
-                        IClassFactory noParametersFactory = implementation.GetFactory(Type.EmptyTypes, creationContext);
+                        var noParametersFactory = implementation.GetFactory(Type.EmptyTypes, creationContext);
                         return instance = noParametersFactory.Create(context, EmptyArray<object>.Instance);
                     }
             context.Reused(ObjectType);
@@ -37,14 +37,14 @@ namespace GroboContainer.Impl.Abstractions.AutoConfiguration
 
         public void DisposeInstance()
         {
-            object impl = instance;
+            var impl = instance;
             if (impl != null && impl is IDisposable)
                 ((IDisposable)impl).Dispose();
         }
 
         public IClassFactory GetFactory(Type[] parameterTypes, ICreationContext creationContext)
         {
-            IClassFactory classFactory = implementation.GetFactory(parameterTypes, creationContext);
+            var classFactory = implementation.GetFactory(parameterTypes, creationContext);
             return classFactory;
         }
 

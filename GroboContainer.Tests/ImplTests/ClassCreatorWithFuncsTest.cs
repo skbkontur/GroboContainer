@@ -25,7 +25,7 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestSimple()
         {
-            Func<IInternalContainer, IInjectionContext, object[], object> @delegate =
+            var @delegate =
                 classCreator.BuildConstructionDelegate(
                     new ContainerConstructorInfo
                         {

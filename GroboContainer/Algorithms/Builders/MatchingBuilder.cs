@@ -7,7 +7,7 @@ namespace GroboContainer.Algorithms.Builders
         public bool TryBuild(BipartiteGraph graph, out Matching matching)
         {
             matching = new Matching(graph.SecondPartSize);
-            for (int i = 0; i < graph.FirstPartSize; ++i)
+            for (var i = 0; i < graph.FirstPartSize; ++i)
             {
                 var used = new bool[graph.FirstPartSize];
                 if (!TryKuhn(i, used, graph, matching))
@@ -18,7 +18,7 @@ namespace GroboContainer.Algorithms.Builders
 
         public bool HasAnotherMatching(BipartiteGraph graph, Matching matching)
         {
-            for (int i = 0; i < graph.SecondPartSize; i++)
+            for (var i = 0; i < graph.SecondPartSize; i++)
             {
                 if (matching.HasPair(i))
                 {
@@ -43,11 +43,11 @@ namespace GroboContainer.Algorithms.Builders
         {
             if (used[v]) return false;
             used[v] = true;
-            for (int i = 0; i < bipartiteGraph.SecondPartSize; ++i)
+            for (var i = 0; i < bipartiteGraph.SecondPartSize; ++i)
             {
                 if (bipartiteGraph.IsConnected(v, i))
                 {
-                    int to = i;
+                    var to = i;
                     if (!matching.HasPair(to) || TryKuhn(matching.GetPair(to), used, bipartiteGraph, matching))
                     {
                         matching.AddPair(to, v);

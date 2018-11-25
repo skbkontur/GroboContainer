@@ -21,9 +21,9 @@ namespace GroboContainer.Tests
 
         #endregion
 
-        public string ContainerName { get { return "Test"; } }
+        public string ContainerName => "Test";
 
-        public ContainerMode Mode { get { return ContainerMode.Default; } }
+        public ContainerMode Mode => ContainerMode.Default;
 
         private readonly IEnumerable<Type> types;
     }

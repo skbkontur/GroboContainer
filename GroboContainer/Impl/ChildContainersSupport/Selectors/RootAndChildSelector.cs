@@ -15,15 +15,13 @@ namespace GroboContainer.Impl.ChildContainersSupport.Selectors
             case 0:
                 if (IsRoot(abstractionType))
                     return 0;
-                throw new InvalidOperationException(string.Format("Type {0} not marked as Root type",
-                                                                  abstractionType));
+                throw new InvalidOperationException($"Type {abstractionType} not marked as Root type");
             case 1:
                 if (IsChild(abstractionType))
                     return 1;
                 if (IsRoot(abstractionType))
                     return 0;
-                throw new InvalidOperationException(string.Format("Type {0} not marked as Root or Child type",
-                                                                  abstractionType));
+                throw new InvalidOperationException($"Type {abstractionType} not marked as Root or Child type");
             }
             throw new NotSupportedException("Контейнеры с глубиной больше 1 не поддерживаются");
         }

@@ -1,5 +1,3 @@
-using System;
-
 using GroboContainer.Core;
 using GroboContainer.Impl.ClassCreation;
 using GroboContainer.Impl.Injection;
@@ -25,7 +23,7 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestGet()
         {
-            Func<int> func = funcBuilder.BuildGetFunc<int>(context);
+            var func = funcBuilder.BuildGetFunc<int>(context);
             context.ExpectGetContainerForFunc(container);
             container.ExpectGetForFunc(1);
             Assert.AreEqual(1, func());
@@ -34,7 +32,7 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestNoArgs()
         {
-            Func<int> func = funcBuilder.BuildCreateFunc<int>(context);
+            var func = funcBuilder.BuildCreateFunc<int>(context);
             context.ExpectGetContainerForFunc(container);
             container.ExpectCreateForFunc(1);
             Assert.AreEqual(1, func());
@@ -43,7 +41,7 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestOneArg()
         {
-            Func<string, int> func = funcBuilder.BuildCreateFunc<string, int>(context);
+            var func = funcBuilder.BuildCreateFunc<string, int>(context);
             context.ExpectGetContainerForFunc(container);
             container.ExpectCreateForFunc("q", 1);
             Assert.AreEqual(1, func("q"));

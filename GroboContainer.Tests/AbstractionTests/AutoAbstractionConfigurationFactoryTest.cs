@@ -26,9 +26,9 @@ namespace GroboContainer.Tests.AbstractionTests
         public void TestIgnoredAbstraction()
         {
             typesHelper.ExpectIsIgnoredAbstraction(typeof(int), true);
-            IAbstractionConfiguration configuration = factory.CreateByType(typeof(int));
+            var configuration = factory.CreateByType(typeof(int));
             Assert.That(configuration, Is.InstanceOf<StupidAbstractionConfiguration>());
-            IImplementationConfiguration[] implementations = configuration.GetImplementations();
+            var implementations = configuration.GetImplementations();
             CollectionAssert.AllItemsAreInstancesOfType(implementations, typeof(ForbiddenImplementationConfiguration));
         }
 
@@ -51,9 +51,9 @@ namespace GroboContainer.Tests.AbstractionTests
             implementationConfigurationCache.Expect(icc => icc.GetOrCreate(implementations[1])).Return(
                 implementationConfigs[1]);
 
-            IAbstractionConfiguration configuration = factory.CreateByType(typeof(int));
+            var configuration = factory.CreateByType(typeof(int));
             Assert.That(configuration, Is.InstanceOf<AutoAbstractionConfiguration>());
-            IImplementationConfiguration[] configurations = configuration.GetImplementations();
+            var configurations = configuration.GetImplementations();
             CollectionAssert.AreEqual(implementationConfigs, configurations);
         }
 

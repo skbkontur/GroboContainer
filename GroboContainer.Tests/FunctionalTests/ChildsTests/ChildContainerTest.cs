@@ -15,7 +15,7 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
         [Test]
         public void TestChildContainerDepthCanBeOnly1()
         {
-            IContainer child = container.MakeChildContainer().MakeChildContainer();
+            var child = container.MakeChildContainer().MakeChildContainer();
             RunFail<NotSupportedException>(() => child.Get(typeof(int)),
                                            "Контейнеры с глубиной больше 1 не поддерживаются");
         }
@@ -23,15 +23,15 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
         [Test]
         public void TestChildFuncs()
         {
-            IContainer childContainerA = container.MakeChildContainer();
+            var childContainerA = container.MakeChildContainer();
             var bigChild = childContainerA.Get<BigChild>();
-            Child child = childContainerA.Get<BigChild>().getChild();
+            var child = childContainerA.Get<BigChild>().getChild();
             Assert.AreSame(child, childContainerA.Get<Child>());
-            Root expected = bigChild.getRoot();
+            var expected = bigChild.getRoot();
             var root = container.Get<Root>();
             Assert.AreSame(expected, root);
 
-            IContainer childContainerB = container.MakeChildContainer();
+            var childContainerB = container.MakeChildContainer();
             Assert.AreSame(childContainerB.Get<BigChild>().getRoot(), root);
             Assert.AreNotSame(childContainerB.Get<BigChild>().getChild(), child);
         }
@@ -39,10 +39,10 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
         [Test]
         public void TestFactories()
         {
-            IContainer childContainer = container.MakeChildContainer();
+            var childContainer = container.MakeChildContainer();
             var childWithFuncs = childContainer.Create<ChildWithFuncs>();
             Assert.AreEqual(1, childWithFuncs.createC(1).a);
-            FactoryRoot root = childWithFuncs.createRoot();
+            var root = childWithFuncs.createRoot();
             Assert.AreNotSame(childWithFuncs.createRoot(), root);
             Assert.AreEqual(3, childWithFuncs.createC(3).a);
         }
@@ -54,7 +54,7 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
             RunMethodWithException<InvalidOperationException>(() =>
                                                               container.GetImplementationTypes(typeof(Child)));
 
-            IContainer childContainer = container.MakeChildContainer();
+            var childContainer = container.MakeChildContainer();
 
             CollectionAssert.AreEquivalent(new[] {typeof(Child)}, childContainer.GetImplementationTypes(typeof(Child)));
             CollectionAssert.AreEquivalent(new[] {typeof(Root)}, childContainer.GetImplementationTypes(typeof(Root)));
@@ -79,13 +79,13 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
         public void TestSimple()
         {
             var root = container.Get<Root>();
-            IContainer childContainerA = container.MakeChildContainer();
+            var childContainerA = container.MakeChildContainer();
             var childA = childContainerA.Get<Child>();
             //Debug.WriteLine(childContainerA.LastConstructionLog);
             Assert.AreSame(root, childA.r);
             Assert.AreSame(childA, childContainerA.Get<Child>());
 
-            IContainer childContainerB = container.MakeChildContainer();
+            var childContainerB = container.MakeChildContainer();
             var childB = childContainerB.Get<Child>();
             Assert.AreSame(root, childB.r);
             Assert.AreSame(childB, childContainerB.Get<Child>());
@@ -178,7 +178,7 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
         public override void SetUp()
         {
             base.SetUp();
-            var configuration = new ContainerConfiguration(new[] {GetType().Assembly});
+            var configuration = new ContainerConfiguration(GetType().Assembly);
             selector = new RootAndChildSelector();
             container = Container.CreateWithChilds(configuration, null, selector);
         }

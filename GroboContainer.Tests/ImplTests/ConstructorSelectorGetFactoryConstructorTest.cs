@@ -1,6 +1,5 @@
 using System;
 
-using GroboContainer.Impl.ClassCreation;
 using GroboContainer.Impl.Exceptions;
 
 using NUnit.Framework;
@@ -28,16 +27,14 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestParentAndChild()
         {
-            ContainerConstructorInfo constructor = constructorSelector.GetConstructor(typeof(C2),
-                                                                                      new[] {typeof(Guid), typeof(Guid?)});
+            var constructor = constructorSelector.GetConstructor(typeof(C2), new[] {typeof(Guid), typeof(Guid?)});
             CheckConstructor<C2>(new[] {typeof(Guid?), typeof(Guid)}, constructor, new[] {1, 0});
         }
 
         [Test]
         public void TestAssignableFrom()
         {
-            ContainerConstructorInfo constructor = constructorSelector.GetConstructor(typeof(C1),
-                                                                                      new[] {typeof(Impl)});
+            var constructor = constructorSelector.GetConstructor(typeof(C1), new[] {typeof(Impl)});
             CheckConstructor<C1>(new[] {typeof(I1), typeof(Base), typeof(I2)}, constructor, new[] {-1, 0, -1});
         }
 
@@ -76,12 +73,12 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestManyTypes()
         {
-            ContainerConstructorInfo constructor = constructorSelector.GetConstructor(typeof(C2),
-                                                                                      new[]
-                                                                                          {
-                                                                                              typeof(string),
-                                                                                              typeof(int)
-                                                                                          });
+            var constructor = constructorSelector.GetConstructor(typeof(C2),
+                                                                 new[]
+                                                                     {
+                                                                         typeof(string),
+                                                                         typeof(int)
+                                                                     });
             CheckConstructor<C2>(new[] {typeof(int), typeof(I2), typeof(string)}, constructor, new[] {1, -1, 0});
         }
 
@@ -108,8 +105,7 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestSimple()
         {
-            ContainerConstructorInfo constructor = constructorSelector.GetConstructor(typeof(C1),
-                                                                                      new[] {typeof(int)});
+            var constructor = constructorSelector.GetConstructor(typeof(C1), new[] {typeof(int)});
             CheckConstructor<C1>(new[] {typeof(int), typeof(I1)}, constructor, new[] {0, -1});
         }
 

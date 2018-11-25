@@ -39,8 +39,7 @@ namespace GroboContainer.Tests.NewTests
             implementation.Expect(context => context.GetFactory(Type.EmptyTypes, creationContext)).Return(classFactory);
             var instance = GetMock<IDisposable>();
             classFactory.Expect(f => f.Create(injectionContext, new object[0])).Return(instance);
-            object returnedInstance = autoImplementationConfiguration.GetOrCreateInstance(injectionContext,
-                                                                                          creationContext);
+            var returnedInstance = autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext);
             Assert.AreSame(instance, returnedInstance);
 
             injectionContext.Expect(ic => ic.Reused(typeof(int)));
@@ -97,8 +96,7 @@ namespace GroboContainer.Tests.NewTests
             implementation.Expect(context => context.GetFactory(Type.EmptyTypes, creationContext)).Return(classFactory);
             const string instance = "zzz";
             classFactory.Expect(f => f.Create(injectionContext, new object[0])).Return(instance);
-            object returnedInstance = autoImplementationConfiguration.GetOrCreateInstance(injectionContext,
-                                                                                          creationContext);
+            var returnedInstance = autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext);
             Assert.AreSame(instance, returnedInstance);
 
             injectionContext.Expect(ic => ic.Reused(typeof(int)));

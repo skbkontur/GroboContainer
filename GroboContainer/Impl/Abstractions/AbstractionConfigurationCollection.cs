@@ -26,7 +26,7 @@ namespace GroboContainer.Impl.Abstractions
         public void Add(Type abstractionType, IAbstractionConfiguration abstractionConfiguration)
         {
             if (!cache.TryAddOrUpdate(abstractionType, abstractionConfiguration, c => c.GetImplementations().Length == 0))
-                throw new InvalidOperationException(string.Format("Тип {0} уже сконфигурирован", abstractionType));
+                throw new InvalidOperationException($"Тип {abstractionType} уже сконфигурирован");
         }
 
         public IAbstractionConfiguration[] GetAll()

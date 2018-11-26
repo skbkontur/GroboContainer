@@ -9,14 +9,10 @@ namespace GroboContainer.Impl.Abstractions
             this.implementationConfigurations = implementationConfigurations;
         }
 
-        #region IAbstractionConfiguration Members
-
         public IImplementationConfiguration[] GetImplementations()
         {
             return implementationConfigurations;
         }
-
-        #endregion
 
         private readonly IImplementationConfiguration[] implementationConfigurations;
     }

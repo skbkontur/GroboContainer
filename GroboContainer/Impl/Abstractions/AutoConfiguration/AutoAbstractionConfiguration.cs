@@ -18,14 +18,10 @@ namespace GroboContainer.Impl.Abstractions.AutoConfiguration
                 implementationConfigurations[i] = implementationConfigurationCache.GetOrCreate(implementations[i]);
         }
 
-        #region IAbstractionConfiguration Members
-
         public IImplementationConfiguration[] GetImplementations()
         {
             return implementationConfigurations;
         }
-
-        #endregion
 
         private readonly IImplementationConfiguration[] implementationConfigurations;
     }

@@ -6,14 +6,11 @@ namespace GroboContainer.Impl.ClassCreation
 {
     public class ClassFactory : IClassFactory
     {
-        public ClassFactory(Func<IInternalContainer, IInjectionContext, object[], object> creatorFunc,
-                            Type constructedType)
+        public ClassFactory(Func<IInternalContainer, IInjectionContext, object[], object> creatorFunc, Type constructedType)
         {
             this.creatorFunc = creatorFunc;
             this.constructedType = constructedType;
         }
-
-        #region IClassFactory Members
 
         public object Create(IInjectionContext context, object[] args)
         {
@@ -32,8 +29,6 @@ namespace GroboContainer.Impl.ClassCreation
                 context.EndConstruct(constructedType);
             }
         }
-
-        #endregion
 
         private readonly Type constructedType;
         private readonly Func<IInternalContainer, IInjectionContext, object[], object> creatorFunc;

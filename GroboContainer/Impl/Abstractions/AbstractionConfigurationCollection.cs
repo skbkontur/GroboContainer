@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Linq;
 
@@ -13,11 +13,6 @@ namespace GroboContainer.Impl.Abstractions
             createByType = factory.CreateByType;
         }
 
-        private readonly ConcurrentDictionary<Type, IAbstractionConfiguration> cache = new ConcurrentDictionary<Type, IAbstractionConfiguration>();
-        private readonly Func<Type, IAbstractionConfiguration> createByType;
-
-        #region IAbstractionConfigurationCollection Members
-
         public IAbstractionConfiguration Get(Type abstractionType)
         {
             return cache.GetOrAdd(abstractionType, createByType);
@@ -26,7 +21,7 @@ namespace GroboContainer.Impl.Abstractions
         public void Add(Type abstractionType, IAbstractionConfiguration abstractionConfiguration)
         {
             if (!cache.TryAddOrUpdate(abstractionType, abstractionConfiguration, c => c.GetImplementations().Length == 0))
-                throw new InvalidOperationException($"Тип {abstractionType} уже сконфигурирован");
+                throw new InvalidOperationException($"Container is already configured for type {abstractionType}");
         }
 
         public IAbstractionConfiguration[] GetAll()
@@ -34,6 +29,7 @@ namespace GroboContainer.Impl.Abstractions
             return cache.Values.ToArray();
         }
 
-        #endregion
+        private readonly Func<Type, IAbstractionConfiguration> createByType;
+        private readonly ConcurrentDictionary<Type, IAbstractionConfiguration> cache = new ConcurrentDictionary<Type, IAbstractionConfiguration>();
     }
 }

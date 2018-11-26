@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
@@ -36,7 +36,7 @@ namespace GroboContainer.Tests.AbstractionTests
             Assert.AreSame(configuration, configurationCollection.Get(typeof(int)));
             RunMethodWithException<InvalidOperationException>(
                 () => configurationCollection.Add(typeof(int), configuration),
-                "Тип System.Int32 уже сконфигурирован");
+                "Container is already configured for type System.Int32");
         }
 
         [Test]

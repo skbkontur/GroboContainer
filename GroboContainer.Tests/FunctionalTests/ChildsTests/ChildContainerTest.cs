@@ -16,8 +16,7 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
         public void TestChildContainerDepthCanBeOnly1()
         {
             var child = container.MakeChildContainer().MakeChildContainer();
-            RunFail<NotSupportedException>(() => child.Get(typeof(int)),
-                                           "Контейнеры с глубиной больше 1 не поддерживаются");
+            RunFail<NotSupportedException>(() => child.Get(typeof(int)), "Containers of depth more than 1 are not supported");
         }
 
         [Test]
@@ -51,8 +50,7 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
         public void TestGetImplementationTypes()
         {
             CollectionAssert.AreEquivalent(new[] {typeof(Root)}, container.GetImplementationTypes(typeof(Root)));
-            RunMethodWithException<InvalidOperationException>(() =>
-                                                              container.GetImplementationTypes(typeof(Child)));
+            RunMethodWithException<InvalidOperationException>(() => container.GetImplementationTypes(typeof(Child)));
 
             var childContainer = container.MakeChildContainer();
 
@@ -64,15 +62,13 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
         public void TestLazyLinkToChild()
         {
             var badRootUsesFunc = container.Get<BadRootUsesFunc>();
-            RunMethodWithException<InvalidOperationException>(() =>
-                                                              badRootUsesFunc.getC(), "not marked as Root type");
+            RunMethodWithException<InvalidOperationException>(() => badRootUsesFunc.getC(), "not marked as Root type");
         }
 
         [Test]
         public void TestRootCannotUseChild()
         {
-            RunFail<InvalidOperationException>(() =>
-                                               container.Get<BadRoot>(), "not marked as Root type");
+            RunFail<InvalidOperationException>(() => container.Get<BadRoot>(), "not marked as Root type");
         }
 
         [Test]

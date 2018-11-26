@@ -35,13 +35,6 @@ namespace GroboContainer.Impl.ClassCreation
                 throw new MissingMethodException(type.ToString(), "BuildGetFunc");
         }
 
-        private readonly MethodInfo buildLazyMethodInfo;
-        private readonly MethodInfo buildGetFuncMethodInfo;
-        private readonly IDictionary<int, MethodInfo> funcArgumentCountToMethodMap = new Dictionary<int, MethodInfo>();
-        private readonly HashSet<Type> supportedFuncs = new HashSet<Type>();
-
-        #region IFuncHelper Members
-
         public MethodInfo GetBuildLazyMethodInfo(Type lazyType)
         {
             var genericArguments = lazyType.GetGenericArguments();
@@ -55,18 +48,16 @@ namespace GroboContainer.Impl.ClassCreation
             var genericArguments = funcType.GetGenericArguments();
             var length = genericArguments.Length;
             if (length != 1)
-                throw new InvalidOperationException(
-                    $"Функции получения с {length - 1} аргументами на поддерживаются");
+                throw new InvalidOperationException($"Getter functions with {length - 1} args are not supported");
             return buildGetFuncMethodInfo.MakeGenericMethod(genericArguments);
         }
 
         public MethodInfo GetBuildCreateFuncMethodInfo(Type funcType)
         {
-            MethodInfo result;
             var genericArguments = funcType.GetGenericArguments();
             var length = genericArguments.Length;
-            if (!funcArgumentCountToMethodMap.TryGetValue(length, out result))
-                throw new InvalidOperationException($"Функции создания с {length - 1} аргументами на поддерживаются");
+            if (!funcArgumentCountToMethodMap.TryGetValue(length, out var result))
+                throw new InvalidOperationException($"Factory functions with {length - 1} args are not supported");
             return result.MakeGenericMethod(genericArguments);
         }
 
@@ -77,10 +68,12 @@ namespace GroboContainer.Impl.ClassCreation
 
         public bool IsFunc(Type type)
         {
-            return type.IsGenericType && !type.IsGenericTypeDefinition &&
-                   supportedFuncs.Contains(type.GetGenericTypeDefinition());
+            return type.IsGenericType && !type.IsGenericTypeDefinition && supportedFuncs.Contains(type.GetGenericTypeDefinition());
         }
 
-        #endregion
+        private readonly MethodInfo buildLazyMethodInfo;
+        private readonly MethodInfo buildGetFuncMethodInfo;
+        private readonly IDictionary<int, MethodInfo> funcArgumentCountToMethodMap = new Dictionary<int, MethodInfo>();
+        private readonly HashSet<Type> supportedFuncs = new HashSet<Type>();
     }
 }

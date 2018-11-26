@@ -15,8 +15,7 @@ namespace GroboContainer.Impl
         {
         }
 
-        public ContainerConfiguration(IEnumerable<Assembly> assembliesToScan, string name = "root",
-                                      ContainerMode mode = ContainerMode.Default)
+        public ContainerConfiguration(IEnumerable<Assembly> assembliesToScan, string name = "root", ContainerMode mode = ContainerMode.Default)
         {
             ContainerName = name;
             Mode = mode;
@@ -33,13 +32,11 @@ namespace GroboContainer.Impl
                     var sb = new StringBuilder();
                     foreach (var loaderException in e.LoaderExceptions)
                         sb.AppendLine(loaderException.Message);
-                    throw new ContainerConfigurationException(
-                        $"Ошибка при получении типов из сборки '{assembly.FullName}'\r\n(Path:'{assembly.Location}')\n{sb}", e);
+                    throw new ContainerConfigurationException($"Assembly.GetTypes() failed for {assembly.FullName} (Path: {assembly.Location}):{Environment.NewLine}{sb}", e);
                 }
                 catch (Exception e)
                 {
-                    throw new ContainerConfigurationException(
-                        $"Ошибка при получении типов из сборки '{assembly.FullName}'\r\n(Path:'{assembly.Location}')", e);
+                    throw new ContainerConfigurationException($"Assembly.GetTypes() failed for {assembly.FullName} (Path: {assembly.Location}')", e);
                 }
                 foreach (var type in typesInAssembly)
                     typesSet.Add(type);

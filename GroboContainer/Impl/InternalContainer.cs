@@ -69,8 +69,7 @@ namespace GroboContainer.Impl
             var implementations = GetImplementations(abstractionType);
             var result = new T[implementations.Length];
             for (var i = 0; i < result.Length; i++)
-                result[i] =
-                    (T)UnWrap(abstractionType, implementations[i].GetOrCreateInstance(context, creationContext));
+                result[i] = (T)UnWrap(abstractionType, implementations[i].GetOrCreateInstance(context, creationContext));
             return result;
         }
 
@@ -174,8 +173,7 @@ namespace GroboContainer.Impl
             return (T)CreateImpl(typeof(T), context, TypeArray<T1, T2, T3>.Instance, arg1, arg2, arg3);
         }
 
-        public T Create<T1, T2, T3, T4, T>(IInjectionContext context, T1 arg1, T2 arg2,
-                                           T3 arg3, T4 arg4)
+        public T Create<T1, T2, T3, T4, T>(IInjectionContext context, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         {
             return (T)CreateImpl(typeof(T), context, TypeArray<T1, T2, T3, T4>.Instance, arg1, arg2, arg3, arg4);
         }
@@ -259,8 +257,7 @@ namespace GroboContainer.Impl
 
         public IContainerConfigurator Configurator { get; }
 
-        public object Create(Type abstractionType, IInjectionContext context,
-                             Type[] argumentTypes, object[] args)
+        public object Create(Type abstractionType, IInjectionContext context, Type[] argumentTypes, object[] args)
         {
             return CreateImpl(abstractionType, context, argumentTypes, args);
         }

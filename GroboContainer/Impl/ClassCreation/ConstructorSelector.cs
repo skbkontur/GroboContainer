@@ -12,8 +12,6 @@ namespace GroboContainer.Impl.ClassCreation
 {
     public class ConstructorSelector : IConstructorSelector
     {
-        #region IConstructorSelector Members
-
         public ContainerConstructorInfo GetConstructor(Type source, Type[] parameterTypes)
         {
             var constructors = source.GetConstructors();
@@ -21,10 +19,7 @@ namespace GroboContainer.Impl.ClassCreation
                    ?? GetNonAttributedConstructor(source, parameterTypes, constructors);
         }
 
-        #endregion
-
-        private static ContainerConstructorInfo GetNonAttributedConstructor(Type source, Type[] parameterTypes,
-                                                                            IEnumerable<ConstructorInfo> constructors)
+        private static ContainerConstructorInfo GetNonAttributedConstructor(Type source, Type[] parameterTypes, IEnumerable<ConstructorInfo> constructors)
         {
             ContainerConstructorInfo result = null;
             foreach (var constructor in constructors)
@@ -46,8 +41,7 @@ namespace GroboContainer.Impl.ClassCreation
             return result;
         }
 
-        private static ContainerConstructorInfo TryGetAttributedConstructor(Type source, Type[] parameterTypes,
-                                                                            IEnumerable<ConstructorInfo> constructors)
+        private static ContainerConstructorInfo TryGetAttributedConstructor(Type source, Type[] parameterTypes, IEnumerable<ConstructorInfo> constructors)
         {
             ContainerConstructorInfo result = null;
             var parameterTypesSet = GetParameterTypesSet(parameterTypes);
@@ -94,8 +88,7 @@ namespace GroboContainer.Impl.ClassCreation
                         graph.AddEdge(i, index);
                     }
             }
-            Matching matching;
-            if (!matchingBuilder.TryBuild(graph, out matching) || matchingBuilder.HasAnotherMatching(graph, matching))
+            if (!matchingBuilder.TryBuild(graph, out var matching) || matchingBuilder.HasAnotherMatching(graph, matching))
                 return null;
 
             for (var i = 0; i < parameters.Length; i++)
@@ -110,20 +103,22 @@ namespace GroboContainer.Impl.ClassCreation
         {
             var types = new HashSet<Type>();
             foreach (var type in parameterTypes)
+            {
                 if (!types.Add(type))
-                    throw new ArgumentException($"Тип параметра {type} должен присутствовать не более 1 раза");
+                    throw new ArgumentException($"Parameter type {type} must not appear more than once");
+            }
             return types;
         }
 
         private static HashSet<Type> GetConstructorTypesSet(ConstructorInfo constructor)
         {
             var types = new HashSet<Type>();
-            var attribute =
-                (ContainerConstructorAttribute)
-                constructor.GetCustomAttributes(typeof(ContainerConstructorAttribute), false)[0];
+            var attribute = (ContainerConstructorAttribute)constructor.GetCustomAttributes(typeof(ContainerConstructorAttribute), false)[0];
             foreach (var type in attribute.GetParameterTypes())
+            {
                 if (!types.Add(type))
                     throw new BadContainerConstructorAttributeException(constructor, type);
+            }
             return types;
         }
 

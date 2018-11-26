@@ -20,11 +20,11 @@ namespace GroboContainer.Impl.ClassCreation
             getAllMethod = GetMethod("GetAll", internalContainerType, typeof(IInjectionContext));
         }
 
-        private static MethodInfo GetMethod(string methodname, Type type, params Type[] types)
+        private static MethodInfo GetMethod(string methodName, Type type, params Type[] types)
         {
-            var method = type.GetMethod(methodname, types);
+            var method = type.GetMethod(methodName, types);
             if (method == null)
-                throw new MissingMethodException(type.ToString(), methodname);
+                throw new MissingMethodException(type.ToString(), methodName);
             return method;
         }
 
@@ -146,18 +146,8 @@ namespace GroboContainer.Impl.ClassCreation
             else if (parameterInfo.Name.StartsWith("create", StringComparison.InvariantCultureIgnoreCase))
                 il.Call(funcHelper.GetBuildCreateFuncMethodInfo(parameterInfo.ParameterType));
             else
-            {
-                throw new NotSupportedException(
-                    $"Невозможно разрешить параметр '{parameterInfo.Name}' типа {parameterType}. Должен иметь имя с префиксом 'get' или 'create'");
-            }
+                throw new NotSupportedException($"Failed to resolve func parameter {parameterInfo.Name} of type {parameterType}. Func parameter names should have 'get' or 'create' prefix.");
         }
-
-        private static readonly Type internalContainerType = typeof(IInternalContainer);
-        private readonly IFuncHelper funcHelper;
-        private readonly MethodInfo getAllMethod;
-        private readonly MethodInfo getMethod;
-
-        #region IClassCreator Members
 
         public Func<IInternalContainer, IInjectionContext, object[], object> BuildConstructionDelegate(ContainerConstructorInfo constructorInfo, Type wrapperType)
         {
@@ -169,6 +159,9 @@ namespace GroboContainer.Impl.ClassCreation
             return new ClassFactory(EmitConstruct(constructorInfo.ConstructorInfo, constructorInfo.ParametersInfo, wrapperType), constructorInfo.ConstructorInfo.ReflectedType);
         }
 
-        #endregion
+        private static readonly Type internalContainerType = typeof(IInternalContainer);
+        private readonly IFuncHelper funcHelper;
+        private readonly MethodInfo getAllMethod;
+        private readonly MethodInfo getMethod;
     }
 }

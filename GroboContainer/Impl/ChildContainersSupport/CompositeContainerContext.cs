@@ -10,8 +10,7 @@ namespace GroboContainer.Impl.ChildContainersSupport
 {
     public class CompositeContainerContext : IContainerContext
     {
-        public CompositeContainerContext(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator,
-                                         IContainerSelector containerSelector)
+        public CompositeContainerContext(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator, IContainerSelector containerSelector)
         {
             Configuration = configuration;
             ClassWrapperCreator = classWrapperCreator;
@@ -27,13 +26,9 @@ namespace GroboContainer.Impl.ChildContainersSupport
             ImplementationCache = new ImplementationCache();
             abstractionsCollection = new AbstractionsCollection(implementationTypesCollection, ImplementationCache);
             ImplementationConfigurationCache = new ImplementationConfigurationCache();
-            var factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollection,
-                                                                  ImplementationConfigurationCache);
-            compositeCollection = new CompositeCollection(new[] {new AbstractionConfigurationCollection(factory)},
-                                                          containerSelector);
-            compositeCollection.Add(typeof(IContainer),
-                                    new StupidAbstractionConfiguration(
-                                        new ContainerImplementationConfiguration()));
+            var factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollection, ImplementationConfigurationCache);
+            compositeCollection = new CompositeCollection(new[] {new AbstractionConfigurationCollection(factory)}, containerSelector);
+            compositeCollection.Add(typeof(IContainer), new StupidAbstractionConfiguration(new ContainerImplementationConfiguration()));
         }
 
         private CompositeContainerContext(CompositeContainerContext source)
@@ -48,22 +43,12 @@ namespace GroboContainer.Impl.ChildContainersSupport
             ImplementationCache = source.ImplementationCache;
 
             ImplementationConfigurationCache = new ImplementationConfigurationCache();
-            var factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollection,
-                                                                  ImplementationConfigurationCache);
+            var factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollection, ImplementationConfigurationCache);
             //NOTE для каждого экземпляра контейнера должна быть своя AbstractionConfigurationCollection
             var abstractionConfigurationCollection = new AbstractionConfigurationCollection(factory);
-            compositeCollection =
-                source.compositeCollection.MakeChildCollection(abstractionConfigurationCollection);
-            compositeCollection.Add(typeof(IContainer),
-                                    new StupidAbstractionConfiguration(
-                                        new ContainerImplementationConfiguration()));
+            compositeCollection = source.compositeCollection.MakeChildCollection(abstractionConfigurationCollection);
+            compositeCollection.Add(typeof(IContainer), new StupidAbstractionConfiguration(new ContainerImplementationConfiguration()));
         }
-
-        private readonly IAbstractionsCollection abstractionsCollection;
-        private readonly CompositeCollection compositeCollection;
-        private readonly ITypesHelper typesHelper;
-
-        #region IContainerContext Members
 
         public IImplementationCache ImplementationCache { get; }
         public IImplementationConfigurationCache ImplementationConfigurationCache { get; }
@@ -82,6 +67,8 @@ namespace GroboContainer.Impl.ChildContainersSupport
 
         public IContainerConfiguration Configuration { get; }
 
-        #endregion
+        private readonly IAbstractionsCollection abstractionsCollection;
+        private readonly CompositeCollection compositeCollection;
+        private readonly ITypesHelper typesHelper;
     }
 }

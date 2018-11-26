@@ -49,8 +49,8 @@ namespace GroboContainer.Impl.Injection
             lock (lockObject)
             {
                 constructed.Remove(type);
-                if (constructed.Count == 0 && contextHolder != null)
-                    contextHolder.KillContext();
+                if (constructed.Count == 0)
+                    contextHolder?.KillContext();
             }
         }
 

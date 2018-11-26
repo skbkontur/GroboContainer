@@ -11,14 +11,10 @@ namespace GroboContainer.New
                 implementations[i] = implementationCache.GetOrCreate(implementationTypes[i]);
         }
 
-        #region IAbstraction Members
-
         public IImplementation[] GetImplementations()
         {
             return implementations;
         }
-
-        #endregion
 
         private readonly IImplementation[] implementations;
     }

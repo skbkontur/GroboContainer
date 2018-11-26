@@ -14,14 +14,10 @@ namespace GroboContainer.New
             this.classWrapperCreator = classWrapperCreator;
         }
 
-        #region ICreationContext Members
-
         public IClassFactory BuildFactory(Type implementationType, Type[] parameterTypes)
         {
-            return classCreator.BuildFactory(constructorSelector.GetConstructor(implementationType, parameterTypes), classWrapperCreator == null ? null : classWrapperCreator.Wrap(implementationType));
+            return classCreator.BuildFactory(constructorSelector.GetConstructor(implementationType, parameterTypes), classWrapperCreator?.Wrap(implementationType));
         }
-
-        #endregion
 
         private readonly IClassCreator classCreator;
         private readonly IConstructorSelector constructorSelector;

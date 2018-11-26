@@ -6,8 +6,6 @@ namespace GroboContainer.Impl.ChildContainersSupport.Selectors
 {
     public class AttributedRootSelector : IContainerSelector
     {
-        #region IContainerSelector Members
-
         public int Select(Type abstractionType, int containerTreeDepth)
         {
             switch (containerTreeDepth)
@@ -15,17 +13,15 @@ namespace GroboContainer.Impl.ChildContainersSupport.Selectors
             case 0:
                 if (IsRoot(abstractionType))
                     return 0;
-                throw new InvalidOperationException($"Тип {abstractionType} нельзя брать из контейнера глубины 0");
+                throw new InvalidOperationException($"Type {abstractionType} cannot be obtained from container of depth 0");
 
             case 1:
                 if (IsRoot(abstractionType))
                     return 0;
                 return 1;
             }
-            throw new NotSupportedException("Контейнеры с глубиной больше 1 не поддерживаются");
+            throw new NotSupportedException("Containers of depth more than 1 are not supported");
         }
-
-        #endregion
 
         private static bool IsRoot(Type abstractionType)
         {

@@ -16,16 +16,12 @@ namespace GroboContainer.Impl.Abstractions.AutoConfiguration
             this.implConfigCache = implConfigCache;
         }
 
-        #region IAutoAbstractionConfigurationFactory Members
-
         public IAbstractionConfiguration CreateByType(Type abstractionType)
         {
             if (typesHelper.IsIgnoredAbstraction(abstractionType))
                 return new StupidAbstractionConfiguration(new ForbiddenImplementationConfiguration(abstractionType));
             return new AutoAbstractionConfiguration(abstractionType, abstractionsCollection, implConfigCache);
         }
-
-        #endregion
 
         private readonly IAbstractionsCollection abstractionsCollection;
         private readonly IImplementationConfigurationCache implConfigCache;

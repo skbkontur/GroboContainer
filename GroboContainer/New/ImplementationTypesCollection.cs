@@ -16,8 +16,6 @@ namespace GroboContainer.New
             getImplementationTypes = GetImplementationTypes;
         }
 
-        #region IImplementationTypesCollection Members
-
         public Type[] GetImplementationTypes(Type abstractionType)
         {
             var implementationTypes = new List<Type>();
@@ -32,8 +30,6 @@ namespace GroboContainer.New
                 TryAdd(definitionType, abstractionType, implementationTypes);
             return implementationTypes.ToArray();
         }
-
-        #endregion
 
         private static Type ToDefinition(Type abstractionType)
         {

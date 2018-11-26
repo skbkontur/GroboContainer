@@ -16,20 +16,15 @@ namespace GroboContainer.Impl.Abstractions
             {
                 var type = instances[i].GetType();
                 if (!abstractionType.IsAssignableFrom(type))
-                    throw new ArgumentException("Заданная реализация на являются объектами типа " + abstractionType +
-                                                " (реальный тип " + type + ")");
+                    throw new ArgumentException($"Instances of type {type} cannot be used as abstraction of type {abstractionType}");
                 implementationConfigurations[i] = new InstanceImplementationConfiguration(classWrapperCreator, instances[i]);
             }
         }
-
-        #region IAbstractionConfiguration Members
 
         public IImplementationConfiguration[] GetImplementations()
         {
             return implementationConfigurations;
         }
-
-        #endregion
 
         private readonly IImplementationConfiguration[] implementationConfigurations;
     }

@@ -6,12 +6,12 @@ namespace GroboContainer.Impl.Exceptions
     public class BadContainerConstructorAttributeException : Exception
     {
         public BadContainerConstructorAttributeException(ConstructorInfo constructor, Type type)
-            : base($"В аттрибуте ContainerConstructor конструктора {constructor.ReflectedType} {constructor} тип параметра {type} должен присутствовать не более 1 раза")
+            : base($"Parameter type {type} must not appear in list of types in [ContainerConstructor] attribute for constructor {constructor.ReflectedType} {constructor} more than once")
         {
         }
 
         public BadContainerConstructorAttributeException(ConstructorInfo constructor)
-            : base($"Типы, описанные в аттрибуте ContainerConstructor конструктора {constructor.ReflectedType} {constructor}, не соответствуют типам параметров конструктора")
+            : base($"Types listed in [ContainerConstructor] attribute for constructor {constructor.ReflectedType} {constructor} do not match with its argument types")
         {
         }
     }

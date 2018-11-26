@@ -6,9 +6,7 @@ namespace GroboContainer.Impl.Exceptions
     public class ManyGenericSubstitutionsException : Exception
     {
         public ManyGenericSubstitutionsException(Type genericType, Type genericParameterType, Type[] substitutionTypes)
-            : base(
-                $"Параметр {genericParameterType} типа {genericType} имеет более 1 типа для подстановки. Типы для подстановки:\r\n{Dump(substitutionTypes)}"
-                )
+            : base($"Generic parameter type {genericParameterType} for generic type {genericType} has more than one type for substitution:{Environment.NewLine}{Dump(substitutionTypes)}")
         {
         }
 
@@ -16,9 +14,7 @@ namespace GroboContainer.Impl.Exceptions
         {
             var stringBuilder = new StringBuilder();
             foreach (var substitutionType in substitutionTypes)
-            {
-                stringBuilder.AppendFormat("{0}\r\n", substitutionType.FullName);
-            }
+                stringBuilder.AppendLine(substitutionType.FullName);
             return stringBuilder.ToString();
         }
     }

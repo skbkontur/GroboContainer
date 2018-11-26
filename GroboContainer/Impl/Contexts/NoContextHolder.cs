@@ -8,10 +8,6 @@ namespace GroboContainer.Impl.Contexts
         {
         }
 
-        public static readonly NoContextHolder Instance = new NoContextHolder();
-
-        #region IContextHolder Members
-
         public IInjectionContext GetContext(IInternalContainer worker)
         {
             return new InjectionContext(worker);
@@ -21,6 +17,6 @@ namespace GroboContainer.Impl.Contexts
         {
         }
 
-        #endregion
+        public static readonly NoContextHolder Instance = new NoContextHolder();
     }
 }

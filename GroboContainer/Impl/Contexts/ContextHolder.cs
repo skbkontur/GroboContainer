@@ -13,9 +13,6 @@ namespace GroboContainer.Impl.Contexts
         }
 
         public int OwnerThreadId { get; }
-        private volatile IInjectionContext currentContext;
-
-        #region IContextHolder Members
 
         public IInjectionContext GetContext(IInternalContainer worker)
         {
@@ -29,6 +26,6 @@ namespace GroboContainer.Impl.Contexts
             currentContext = null;
         }
 
-        #endregion
+        private volatile IInjectionContext currentContext;
     }
 }

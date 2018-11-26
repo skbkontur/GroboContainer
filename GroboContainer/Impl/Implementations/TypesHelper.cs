@@ -25,8 +25,7 @@ namespace GroboContainer.Impl.Implementations
             return provider.IsDefined(typeof(IgnoredAbstractionAttribute), false);
         }
 
-        public Type TryGetImplementation(Type abstractionType, Type candidate,
-                                         Func<Type, IEnumerable<Type>> getImplementations)
+        public Type TryGetImplementation(Type abstractionType, Type candidate, Func<Type, IEnumerable<Type>> getImplementations)
         {
             if (candidate.IsAbstract || candidate.IsInterface)
                 return null;
@@ -68,8 +67,7 @@ namespace GroboContainer.Impl.Implementations
             return null;
         }
 
-        private bool MatchFromGenericConstraints(Type candidate, Type[] arguments, Type[] candidateArguments,
-                                                 Func<Type, IEnumerable<Type>> getImplementations)
+        private bool MatchFromGenericConstraints(Type candidate, Type[] arguments, Type[] candidateArguments, Func<Type, IEnumerable<Type>> getImplementations)
         {
             var resolvedSomething = false;
             for (var i = 0; i < arguments.Length; ++i)
@@ -124,8 +122,7 @@ namespace GroboContainer.Impl.Implementations
             var genericArgumentTypes = new Type[constraint.GetGenericArguments().Length];
             var genericArguments = constraint.GetGenericArguments();
             for (var i = 0; i < genericArguments.Length; ++i)
-                genericArgumentTypes[i] =
-                    SubstituteResolvedParameters(resolvedArguments, candidateArguments, genericArguments[i]);
+                genericArgumentTypes[i] = SubstituteResolvedParameters(resolvedArguments, candidateArguments, genericArguments[i]);
             if (genericArgumentTypes.All(t => t != null))
                 return constraint.GetGenericTypeDefinition().MakeGenericType(genericArgumentTypes);
             return null;
@@ -133,27 +130,20 @@ namespace GroboContainer.Impl.Implementations
 
         private static bool ValidateGenericParameterAttributes(Type candidateArgument, Type argument)
         {
-            var constraints = candidateArgument.GenericParameterAttributes &
-                              GenericParameterAttributes.SpecialConstraintMask;
+            var constraints = candidateArgument.GenericParameterAttributes & GenericParameterAttributes.SpecialConstraintMask;
             if (constraints == GenericParameterAttributes.None)
-            {
                 return true;
-            }
 
             if (constraints.HasFlag(GenericParameterAttributes.ReferenceTypeConstraint))
             {
                 if (!argument.IsClass)
-                {
                     return false;
-                }
             }
 
             if (constraints.HasFlag(GenericParameterAttributes.NotNullableValueTypeConstraint))
             {
                 if (!argument.IsValueType)
-                {
                     return false;
-                }
             }
 
             if (constraints.HasFlag(GenericParameterAttributes.DefaultConstructorConstraint))
@@ -162,9 +152,7 @@ namespace GroboContainer.Impl.Implementations
                 {
                     var defaultConstructor = argument.GetConstructor(Type.EmptyTypes);
                     if (defaultConstructor == null)
-                    {
                         return false;
-                    }
                 }
             }
 

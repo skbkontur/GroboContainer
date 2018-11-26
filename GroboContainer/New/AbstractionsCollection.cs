@@ -13,28 +13,20 @@ namespace GroboContainer.New
             valueFactory = ValueFactory;
         }
 
-        #region IAbstractionsCollection Members
-
         public IAbstraction Get(Type abstractionType)
         {
             return abstractions.GetOrAdd(abstractionType, valueFactory);
         }
 
-        #endregion
-
         private IAbstraction ValueFactory(Type abstractionType)
         {
             //NOTE executed outside any lock
-            return new Abstraction(implementationTypesCollection.GetImplementationTypes(abstractionType),
-                                   implementationCache);
+            return new Abstraction(implementationTypesCollection.GetImplementationTypes(abstractionType), implementationCache);
         }
 
-        private readonly ConcurrentDictionary<Type, IAbstraction> abstractions =
-            new ConcurrentDictionary<Type, IAbstraction>();
-
+        private readonly ConcurrentDictionary<Type, IAbstraction> abstractions = new ConcurrentDictionary<Type, IAbstraction>();
         private readonly IImplementationCache implementationCache;
         private readonly IImplementationTypesCollection implementationTypesCollection;
-
         private readonly Func<Type, IAbstraction> valueFactory;
     }
 }

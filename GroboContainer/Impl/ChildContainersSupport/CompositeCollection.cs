@@ -8,8 +8,7 @@ namespace GroboContainer.Impl.ChildContainersSupport
 {
     public class CompositeCollection : IAbstractionConfigurationCollection
     {
-        public CompositeCollection(IAbstractionConfigurationCollection[] rootToChildCollections,
-                                   IContainerSelector selector)
+        public CompositeCollection(IAbstractionConfigurationCollection[] rootToChildCollections, IContainerSelector selector)
         {
             if (rootToChildCollections == null || rootToChildCollections.Length == 0)
                 throw new ArgumentException("rootToChildCollections");
@@ -37,13 +36,6 @@ namespace GroboContainer.Impl.ChildContainersSupport
             return rootToChildCollections[index];
         }
 
-        private readonly int containerTreeDepth;
-        private readonly IAbstractionConfigurationCollection leafCollection;
-        private readonly IAbstractionConfigurationCollection[] rootToChildCollections;
-        private readonly IContainerSelector selector;
-
-        #region IAbstractionConfigurationCollection Members
-
         public IAbstractionConfiguration Get(Type abstractionType)
         {
             var collection = ChooseCollection(abstractionType);
@@ -54,7 +46,7 @@ namespace GroboContainer.Impl.ChildContainersSupport
         {
             var collection = ChooseCollection(abstractionType);
             if (!ReferenceEquals(collection, leafCollection))
-                throw new InvalidOperationException($"Тип {abstractionType} нельзя конфигурировать");
+                throw new InvalidOperationException($"Type {abstractionType} cannot be configured");
             leafCollection.Add(abstractionType, abstractionConfiguration);
         }
 
@@ -64,6 +56,9 @@ namespace GroboContainer.Impl.ChildContainersSupport
             return leafCollection.GetAll();
         }
 
-        #endregion
+        private readonly int containerTreeDepth;
+        private readonly IAbstractionConfigurationCollection leafCollection;
+        private readonly IAbstractionConfigurationCollection[] rootToChildCollections;
+        private readonly IContainerSelector selector;
     }
 }

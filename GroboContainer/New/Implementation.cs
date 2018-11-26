@@ -19,21 +19,29 @@ namespace GroboContainer.New
             if (parameterTypes.Length == 0)
             {
                 if (noArgumentsFactory == null)
+                {
                     lock (configurationLock)
+                    {
                         if (noArgumentsFactory == null)
                             noArgumentsFactory = creationContext.BuildFactory(ObjectType, Type.EmptyTypes);
+                    }
+                }
                 return noArgumentsFactory;
             }
 
             IClassFactory factory;
             if ((factory = TryGetFactory(parameterTypes)) == null)
+            {
                 lock (configurationLock)
+                {
                     if ((factory = TryGetFactory(parameterTypes)) == null)
                     {
                         if (factories == null)
                             factories = new ConcurrentDictionary<Type[], IClassFactory>(TypeArrayEqualityComparer.Instance);
                         factories[parameterTypes] = factory = creationContext.BuildFactory(ObjectType, parameterTypes);
                     }
+                }
+            }
             return factory;
         }
 

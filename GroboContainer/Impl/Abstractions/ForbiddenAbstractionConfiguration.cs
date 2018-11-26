@@ -11,14 +11,10 @@ namespace GroboContainer.Impl.Abstractions
             this.abstractionType = abstractionType;
         }
 
-        #region IAbstractionConfiguration Members
-
         public IImplementationConfiguration[] GetImplementations()
         {
             throw new ForbiddenAbstractionException(abstractionType);
         }
-
-        #endregion
 
         private readonly Type abstractionType;
     }

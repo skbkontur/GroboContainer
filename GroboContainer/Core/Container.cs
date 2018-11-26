@@ -40,13 +40,9 @@ namespace GroboContainer.Core
             return new Container(internalContainer.MakeChild(), NoContextHolder.Instance, null);
         }
 
-        public static IContainer CreateWithChilds(IContainerConfiguration configuration,
-                                                  IClassWrapperCreator classWrapperCreator, IContainerSelector selector)
+        public static IContainer CreateWithChilds(IContainerConfiguration configuration, IClassWrapperCreator classWrapperCreator, IContainerSelector selector)
         {
-            return
-                new Container(
-                    new InternalContainer(new CompositeContainerContext(configuration, classWrapperCreator, selector)),
-                    NoContextHolder.Instance, null);
+            return new Container(new InternalContainer(new CompositeContainerContext(configuration, classWrapperCreator, selector)), NoContextHolder.Instance, null);
         }
 
         private IInjectionContext GetContext()
@@ -261,7 +257,7 @@ namespace GroboContainer.Core
             return internalContainer.GetLazyFunc(funcType, type =>
                 {
                     if (!type.IsGenericType || type.GetGenericTypeDefinition() != getLazyFuncMethodReturnType)
-                        throw new InvalidOperationException($"Тип {type} не поддерживаются в качестве функции получения");
+                        throw new InvalidOperationException($"Type {type} cannot be used as a getter function");
                     return (Delegate)getLazyFuncMethod.MakeGenericMethod(type.GetGenericArguments()).Invoke(this, EmptyArray<object>.Instance);
                 });
         }
@@ -271,7 +267,7 @@ namespace GroboContainer.Core
             return internalContainer.GetCreationFunc(funcType, type =>
                 {
                     if (!type.IsGenericType || !getCreationFuncMethods.TryGetValue(type.GetGenericTypeDefinition(), out var methodInfo))
-                        throw new InvalidOperationException($"Тип {type} не поддерживаются в качестве функции создания");
+                        throw new InvalidOperationException($"Type {type} cannot be used as a factory function");
                     return (Delegate)methodInfo.MakeGenericMethod(type.GetGenericArguments()).Invoke(this, EmptyArray<object>.Instance);
                 });
         }

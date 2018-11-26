@@ -9,8 +9,6 @@ namespace GroboContainer.Impl.Implementations
 {
     public class ContainerImplementationConfiguration : IImplementationConfiguration
     {
-        #region IImplementationConfiguration Members
-
         public Type ObjectType => typeof(Container);
 
         public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext)
@@ -28,7 +26,5 @@ namespace GroboContainer.Impl.Implementations
         {
             throw new NotSupportedException();
         }
-
-        #endregion
     }
 }

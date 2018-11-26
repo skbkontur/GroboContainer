@@ -36,8 +36,6 @@ namespace GroboContainer.Impl
         public IImplementationConfigurationCache ImplementationConfigurationCache { get; }
         public IImplementationCache ImplementationCache { get; }
 
-        #region IContainerContext Members
-
         public IFuncBuilder FuncBuilder { get; } //s, no state
 
         public ICreationContext CreationContext { get; } //s, no statexx
@@ -49,7 +47,5 @@ namespace GroboContainer.Impl
         }
 
         public IContainerConfiguration Configuration { get; }
-
-        #endregion
     }
 }

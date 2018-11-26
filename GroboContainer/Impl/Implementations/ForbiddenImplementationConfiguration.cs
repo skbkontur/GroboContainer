@@ -14,10 +14,6 @@ namespace GroboContainer.Impl.Implementations
             this.abstractionType = abstractionType;
         }
 
-        private readonly Type abstractionType;
-
-        #region IImplementationConfiguration Members
-
         public Type ObjectType => throw new ForbiddenAbstractionException(abstractionType);
 
         public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext)
@@ -34,6 +30,6 @@ namespace GroboContainer.Impl.Implementations
             throw new ForbiddenAbstractionException(abstractionType);
         }
 
-        #endregion
+        private readonly Type abstractionType;
     }
 }

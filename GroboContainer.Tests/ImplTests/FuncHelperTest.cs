@@ -25,9 +25,7 @@ namespace GroboContainer.Tests.ImplTests
         public void TestGetBuildCreateFuncMethodInfo()
         {
             var type = typeof(Func<int, long, Guid, string, object>);
-            var expected =
-                typeof(IFuncBuilder).GetMethods().Where(
-                    info => info.ReturnType.IsGenericType && info.ReturnType.GetGenericArguments().Length == 5).Single();
+            var expected = typeof(IFuncBuilder).GetMethods().Single(info => info.ReturnType.IsGenericType && info.ReturnType.GetGenericArguments().Length == 5);
             var actual = helper.GetBuildCreateFuncMethodInfo(type);
             Assert.AreSame(expected.MakeGenericMethod(type.GetGenericArguments()), actual);
         }
@@ -45,9 +43,7 @@ namespace GroboContainer.Tests.ImplTests
         public void TestGetBuildMethodInfo()
         {
             var type = typeof(Func<object>);
-            var expected =
-                typeof(IFuncBuilder).GetMethods().Where(
-                    info => info.Name.Contains("BuildGetFunc")).Single();
+            var expected = typeof(IFuncBuilder).GetMethods().Single(info => info.Name.Contains("BuildGetFunc"));
             var actual = helper.GetBuildGetFuncMethodInfo(type);
             Assert.AreSame(expected.MakeGenericMethod(type.GetGenericArguments()), actual);
         }
@@ -56,18 +52,16 @@ namespace GroboContainer.Tests.ImplTests
         public void TestGetBuildMethodInfoCrash()
         {
             RunMethodWithException<InvalidOperationException>(() =>
-                                                              helper.GetBuildCreateFuncMethodInfo(
-                                                                  typeof(Func<int, long, Guid, string, int[], object>)),
-                                                              "Функции создания с 5 аргументами на поддерживаются");
+                                                              helper.GetBuildCreateFuncMethodInfo(typeof(Func<int, long, Guid, string, int[], object>)),
+                                                              "Factory functions with 5 args are not supported");
         }
 
         [Test]
         public void TestGetCreateMethodInfoCrash()
         {
             RunMethodWithException<InvalidOperationException>(() =>
-                                                              helper.GetBuildGetFuncMethodInfo(
-                                                                  typeof(Func<int, int[], object>)),
-                                                              "Функции получения с 2 аргументами на поддерживаются");
+                                                              helper.GetBuildGetFuncMethodInfo(typeof(Func<int, int[], object>)),
+                                                              "Getter functions with 2 args are not supported");
         }
 
         [Test]

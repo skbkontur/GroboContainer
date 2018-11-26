@@ -19,10 +19,6 @@ namespace GroboContainer.Impl.Implementations
             ObjectType = instance.GetType();
         }
 
-        private readonly object instance;
-
-        #region IImplementationConfiguration Members
-
         public Type ObjectType { get; }
 
         public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext)
@@ -33,10 +29,10 @@ namespace GroboContainer.Impl.Implementations
 
         public void DisposeInstance()
         {
-            if (instance is IDisposable)
+            if (instance is IDisposable disposable)
             {
                 Debug.WriteLine(ObjectType.FullName);
-                ((IDisposable)instance).Dispose();
+                disposable.Dispose();
             }
         }
 
@@ -45,6 +41,6 @@ namespace GroboContainer.Impl.Implementations
             throw new NotSupportedException();
         }
 
-        #endregion
+        private readonly object instance;
     }
 }

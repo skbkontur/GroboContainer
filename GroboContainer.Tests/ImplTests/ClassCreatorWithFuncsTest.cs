@@ -6,6 +6,8 @@ using GroboContainer.Impl.Injection;
 
 using NUnit.Framework;
 
+using Rhino.Mocks;
+
 namespace GroboContainer.Tests.ImplTests
 {
     public class ClassCreatorWithFuncsTest : CoreTestBase
@@ -17,7 +19,7 @@ namespace GroboContainer.Tests.ImplTests
             base.SetUp();
             classCreator = new ClassCreator(new FuncHelper());
             container = NewMock<IInternalContainer>();
-            context = NewMock<IInjectionContext>();
+            context = GetMock<IInjectionContext>();
         }
 
         #endregion
@@ -37,6 +39,10 @@ namespace GroboContainer.Tests.ImplTests
                     Assert.AreEqual(10, arg);
                     return c2;
                 };
+            
+            context.Expect(x => x.InternalContainer).Return(container);
+            context.Expect(x => x.BeginConstruct(typeof(C1)));
+            context.Expect(x => x.EndConstruct(typeof(C1)));
             container.ExpectBuildCreateFunc(context, func);
             var c1 = (C1)classFactory.Create(context, new object[0]);
             Assert.AreSame(c2, c1.i2);

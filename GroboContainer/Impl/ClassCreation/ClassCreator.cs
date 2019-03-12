@@ -30,12 +30,7 @@ namespace GroboContainer.Impl.ClassCreation
 
         private Func<IInternalContainer, IInjectionContext, object[], object> EmitConstruct(ConstructorInfo constructorInfo, int[] parametersInfo, Type wrapperType)
         {
-            var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(object),
-                                           new[]
-                                               {
-                                                   typeof(IInternalContainer), typeof(IInjectionContext),
-                                                   typeof(object[])
-                                               }, typeof(ClassCreator), true);
+            var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(object), TypeArray<IInternalContainer, IInjectionContext, object[]>.Instance, typeof(ClassCreator), true);
             using (var il = new GroboIL(method))
             {
                 var constructorParameters = constructorInfo.GetParameters();
@@ -45,7 +40,7 @@ namespace GroboContainer.Impl.ClassCreation
 
                 if (wrapperType != null)
                 {
-                    var wrapperConstructor = wrapperType.GetConstructor(new[] {typeof(object)});
+                    var wrapperConstructor = wrapperType.GetConstructor(TypeArray<object>.Instance);
                     if (wrapperConstructor == null)
                         throw new NoConstructorException(wrapperType);
                     il.Newobj(wrapperConstructor);
@@ -94,7 +89,7 @@ namespace GroboContainer.Impl.ClassCreation
             var box = il.DefineLabel("box");
             il.Dup();
             il.Brtrue(box);
-            var crashConstructor = typeof(ArgumentException).GetConstructor(new[] {typeof(string)});
+            var crashConstructor = typeof(ArgumentException).GetConstructor(TypeArray<string>.Instance);
             il.Ldstr("bad parameter");
             il.Newobj(crashConstructor);
             il.Throw();
@@ -105,19 +100,6 @@ namespace GroboContainer.Impl.ClassCreation
         {
             return parameterType.IsGenericType && parameterType.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
-
-        //private static void PushRequiredContracts(ILGenerator generator, string[] requireContracts)
-        //{
-        //    generator.Emit(OpCodes.Ldc_I4, requireContracts.Length);
-        //    generator.Emit(OpCodes.Newarr, typeof (string)); //contracts
-        //    for (int i = 0; i < requireContracts.Length; ++i)
-        //    {
-        //        generator.Emit(OpCodes.Dup);
-        //        generator.Emit(OpCodes.Ldc_I4, i);
-        //        generator.Emit(OpCodes.Ldstr, requireContracts[i]);
-        //        generator.Emit(OpCodes.Stelem_Ref);
-        //    }
-        //}
 
         private void ProcessNonArray(ParameterInfo parameterInfo, GroboIL il, Type parameterType)
         {
@@ -147,11 +129,6 @@ namespace GroboContainer.Impl.ClassCreation
                 il.Call(funcHelper.GetBuildCreateFuncMethodInfo(parameterInfo.ParameterType));
             else
                 throw new NotSupportedException($"Failed to resolve func parameter {parameterInfo.Name} of type {parameterType}. Func parameter names should have 'get' or 'create' prefix.");
-        }
-
-        public Func<IInternalContainer, IInjectionContext, object[], object> BuildConstructionDelegate(ContainerConstructorInfo constructorInfo, Type wrapperType)
-        {
-            return EmitConstruct(constructorInfo.ConstructorInfo, constructorInfo.ParametersInfo, wrapperType);
         }
 
         public IClassFactory BuildFactory(ContainerConstructorInfo constructorInfo, Type wrapperType)

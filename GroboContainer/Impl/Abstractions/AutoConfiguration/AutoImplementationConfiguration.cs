@@ -16,7 +16,7 @@ namespace GroboContainer.Impl.Abstractions.AutoConfiguration
 
         public Type ObjectType => implementation.ObjectType;
 
-        public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext)
+        public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext, Type requestedType)
         {
             if (instance == null)
             {

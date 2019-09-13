@@ -79,6 +79,26 @@ namespace GroboContainer.Tests.AbstractionTests
                                            configurationCollection.GetAll());
         }
 
+        [Test]
+        public void TestGetParametrizedGenericWhenNotParametrizedRegistered()
+        {
+            var configuration = NewMock<IAbstractionConfiguration>();
+            configurationCollection.Add(typeof(Nullable<>), configuration);
+            var actualConfiguration = configurationCollection.Get(typeof(int?));
+            Assert.AreSame(configuration, actualConfiguration);
+        }
+
+        [Test]
+        public void TestMorePreciseRegistrationUsedForGenericTypesRegistration()
+        {
+            var configuration1 = NewMock<IAbstractionConfiguration>();
+            var configuration2 = NewMock<IAbstractionConfiguration>();
+            configurationCollection.Add(typeof(Nullable<>), configuration1);
+            configurationCollection.Add(typeof(int?), configuration2);
+            var actualConfiguration = configurationCollection.Get(typeof(int?));
+            Assert.AreSame(configuration2, actualConfiguration);
+        }
+
         private IAutoAbstractionConfigurationFactory factory;
         private AbstractionConfigurationCollection configurationCollection;
     }

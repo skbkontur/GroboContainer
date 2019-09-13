@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
 using GroboContainer.Impl.ClassCreation;
@@ -39,19 +39,19 @@ namespace GroboContainer.Tests.NewTests
             implementation.Expect(context => context.GetFactory(Type.EmptyTypes, creationContext)).Return(classFactory);
             var instance = GetMock<IDisposable>();
             classFactory.Expect(f => f.Create(injectionContext, new object[0])).Return(instance);
-            var returnedInstance = autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext);
+            var returnedInstance = autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext, implementation.GetType());
             Assert.AreSame(instance, returnedInstance);
 
             injectionContext.Expect(ic => ic.Reused(typeof(int)));
             Assert.AreSame(instance,
-                           autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext));
+                           autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext, implementation.GetType()));
 
             instance.Expect(i => i.Dispose());
             autoImplementationConfiguration.DisposeInstance();
 
             injectionContext.Expect(ic => ic.Reused(typeof(int)));
             Assert.AreSame(instance,
-                           autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext));
+                           autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext, implementation.GetType()));
 
             instance.Expect(i => i.Dispose());
             autoImplementationConfiguration.DisposeInstance();
@@ -96,18 +96,18 @@ namespace GroboContainer.Tests.NewTests
             implementation.Expect(context => context.GetFactory(Type.EmptyTypes, creationContext)).Return(classFactory);
             const string instance = "zzz";
             classFactory.Expect(f => f.Create(injectionContext, new object[0])).Return(instance);
-            var returnedInstance = autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext);
+            var returnedInstance = autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext, implementation.GetType());
             Assert.AreSame(instance, returnedInstance);
 
             injectionContext.Expect(ic => ic.Reused(typeof(int)));
             Assert.AreSame(instance,
-                           autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext));
+                           autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext, implementation.GetType()));
 
             autoImplementationConfiguration.DisposeInstance();
 
             injectionContext.Expect(ic => ic.Reused(typeof(int)));
             Assert.AreSame(instance,
-                           autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext));
+                           autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext, implementation.GetType()));
         }
 
         private IImplementation implementation;

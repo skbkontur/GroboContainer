@@ -159,7 +159,7 @@ namespace GroboContainer.Tests.ImplTests
             var result = new object[] {"xss"};
             abstractionConfiguration.ExpectGetImplementations(implementationConfiguration);
             implementationConfiguration[0].Expect(
-                configuration1 => configuration1.GetOrCreateInstance(context, creationContext)).Return("xss");
+                configuration1 => configuration1.GetOrCreateInstance(context, creationContext, type)).Return("xss");
 
             context.ExpectEndGet(type);
             ordered.Dispose();
@@ -180,9 +180,9 @@ namespace GroboContainer.Tests.ImplTests
                 };
             abstractionConfiguration.ExpectGetImplementations(implementationConfiguration);
             implementationConfiguration[0].Expect(
-                c => c.GetOrCreateInstance(context, creationContext)).Return(1);
+                c => c.GetOrCreateInstance(context, creationContext, type)).Return(1);
             implementationConfiguration[1].Expect(
-                c => c.GetOrCreateInstance(context, creationContext)).Return(2);
+                c => c.GetOrCreateInstance(context, creationContext, type)).Return(2);
             context.ExpectEndGetAll(type);
             ordered.Dispose();
             CollectionAssert.AreEqual(new object[] {1, 2}, internalContainer.GetAll(type, context));

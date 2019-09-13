@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 using GroboContainer.Core;
@@ -30,6 +31,11 @@ namespace GroboContainer.Config.Generic
         {
             var objects = instances.Cast<object>().ToArray();
             worker.UseInstances(objects);
+        }
+
+        public void UseFactory<TImpl>(Func<IContainer, Type, TImpl> factoryFunc) where TImpl : T
+        {
+            worker.UseFactory((container, type) => factoryFunc(container, type));
         }
 
         public void Fail()

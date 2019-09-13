@@ -11,7 +11,7 @@ namespace GroboContainer.Impl.Implementations
     {
         public Type ObjectType => typeof(Container);
 
-        public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext)
+        public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext, Type requestedType)
         {
             context.Reused(typeof(IContainer));
             return context.Container;

@@ -41,7 +41,7 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
             var configuration = new InstanceImplementationConfiguration(new TestClassWrapperCreator(), instance);
             var context = NewMock<IInjectionContext>();
             context.ExpectReused(instance.GetType());
-            Assert.AreSame(instance, configuration.GetOrCreateInstance(context, null));
+            Assert.AreSame(instance, configuration.GetOrCreateInstance(context, null, typeof(object)));
         }
     }
 }

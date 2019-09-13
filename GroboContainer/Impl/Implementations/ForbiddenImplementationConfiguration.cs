@@ -16,7 +16,7 @@ namespace GroboContainer.Impl.Implementations
 
         public Type ObjectType => throw new ForbiddenAbstractionException(abstractionType);
 
-        public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext)
+        public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext, Type requestedType)
         {
             throw new ForbiddenAbstractionException(abstractionType);
         }

@@ -21,7 +21,7 @@ namespace GroboContainer.Impl.Implementations
 
         public Type ObjectType { get; }
 
-        public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext)
+        public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext, Type requestedType)
         {
             context.Reused(ObjectType);
             return instance;

@@ -1,4 +1,6 @@
-﻿using System;
+using System;
+
+using GroboContainer.Core;
 
 namespace GroboContainer.Config
 {
@@ -8,5 +10,6 @@ namespace GroboContainer.Config
         void Fail();
         void UseType(Type type);
         void UseTypes(Type[] types);
+        void UseFactory(Func<IContainer, Type, object> factoryFunc);
     }
 }

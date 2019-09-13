@@ -62,6 +62,12 @@ namespace GroboContainer.Config
             abstractionConfigurationCollection.Add(abstractionType, abstractionConfiguration);
         }
 
+        public void UseFactory(Func<IContainer, Type, object> factoryFunc)
+        {
+            var abstractionConfiguration = new FactoryAbstractionConfiguration(abstractionType, factoryFunc);
+            abstractionConfigurationCollection.Add(abstractionType, abstractionConfiguration);
+        }
+
         #endregion
     }
 }

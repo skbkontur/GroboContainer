@@ -69,7 +69,7 @@ namespace GroboContainer.Impl
             var implementations = GetImplementations(abstractionType);
             var result = new T[implementations.Length];
             for (var i = 0; i < result.Length; i++)
-                result[i] = (T)UnWrap(abstractionType, implementations[i].GetOrCreateInstance(context, creationContext));
+                result[i] = (T)UnWrap(abstractionType, implementations[i].GetOrCreateInstance(context, creationContext, abstractionType));
             return result;
         }
 
@@ -184,7 +184,7 @@ namespace GroboContainer.Impl
             {
                 context.BeginGet(type);
                 var configuration = GetSingleImplementation(type);
-                return UnWrap(type, configuration.GetOrCreateInstance(context, creationContext));
+                return UnWrap(type, configuration.GetOrCreateInstance(context, creationContext, type));
             }
             catch (Exception)
             {

@@ -40,7 +40,7 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
             var container = NewMock<IContainer>();
             context.ExpectGetContainer(container);
             context.ExpectReused(typeof(IContainer));
-            Assert.AreSame(container, configuration.GetOrCreateInstance(context, null));
+            Assert.AreSame(container, configuration.GetOrCreateInstance(context, null, typeof(IContainer)));
         }
 
         private ContainerImplementationConfiguration configuration;

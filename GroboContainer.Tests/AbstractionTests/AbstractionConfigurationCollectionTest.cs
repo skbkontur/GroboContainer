@@ -99,6 +99,20 @@ namespace GroboContainer.Tests.AbstractionTests
             Assert.AreSame(configuration2, actualConfiguration);
         }
 
+        [Test]
+        public void TestUnableReconfigureParametrizedGenericWhenAlreadyRequested()
+        {
+            var configuration = GetMock<IAbstractionConfiguration>();
+            configuration.Expect(c => c.GetImplementations())
+                         .Return(new IImplementationConfiguration[] {new InstanceImplementationConfiguration(null, 1)});
+            configurationCollection.Add(typeof(Nullable<>), configuration);
+            var _ = configurationCollection.Get(typeof(int?));
+            var otherConfiguration = NewMock<IAbstractionConfiguration>();
+            RunMethodWithException<InvalidOperationException>(
+                () => configurationCollection.Add(typeof(int?), otherConfiguration),
+                "Container is already configured for type System.Nullable`1[System.Int32]");
+        }
+
         private IAutoAbstractionConfigurationFactory factory;
         private AbstractionConfigurationCollection configurationCollection;
     }

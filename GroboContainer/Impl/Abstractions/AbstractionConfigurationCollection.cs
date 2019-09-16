@@ -18,8 +18,8 @@ namespace GroboContainer.Impl.Abstractions
             if (abstractionType.IsGenericType && !cache.ContainsKey(abstractionType))
             {
                 var genericTypeDefinition = abstractionType.GetGenericTypeDefinition();
-                if (cache.ContainsKey(genericTypeDefinition))
-                    return cache[genericTypeDefinition];
+                if (cache.TryGetValue(genericTypeDefinition, out var configuration))
+                    return cache.GetOrAdd(abstractionType, configuration);
             }
 
             return cache.GetOrAdd(abstractionType, createByType);

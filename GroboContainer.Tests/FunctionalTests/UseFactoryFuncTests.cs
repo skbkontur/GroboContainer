@@ -47,15 +47,6 @@ namespace GroboContainer.Tests.FunctionalTests
         }
 
         [Test]
-        public void TestFactoryResultNotCached()
-        {
-            container.Configurator.ForAbstraction<SimpleClass>().UseFactory((c, t) => new SimpleClass());
-            var instance1 = container.Get<SimpleClass>();
-            var instance2 = container.Get<SimpleClass>();
-            Assert.AreNotSame(instance1, instance2);
-        }
-
-        [Test]
         public void TestCouldResolveAlreadyRegisteredInFactory()
         {
             var expectedString = Guid.NewGuid().ToString();

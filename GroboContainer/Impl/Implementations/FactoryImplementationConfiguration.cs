@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 
 using GroboContainer.Core;
 using GroboContainer.Impl.ClassCreation;
@@ -19,12 +20,21 @@ namespace GroboContainer.Impl.Implementations
 
         public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext, Type requestedType)
         {
-            return factoryFunc(context.Container, requestedType);
+            return resolvedInstancesCache.AddOrUpdate(
+                requestedType,
+                t => factoryFunc(context.Container, t),
+                (t, i) =>
+                    {
+                        context.Reused(requestedType);
+                        return i;
+                    });
         }
 
         public void DisposeInstance()
         {
-            // no instance is managed by container
+            foreach (var kvp in resolvedInstancesCache)
+                if (kvp.Value is IDisposable disposable)
+                    disposable.Dispose();
         }
 
         public IClassFactory GetFactory(Type[] parameterTypes, ICreationContext creationContext)
@@ -33,5 +43,6 @@ namespace GroboContainer.Impl.Implementations
         }
 
         private readonly Func<IContainer, Type, object> factoryFunc;
+        private readonly ConcurrentDictionary<Type, object> resolvedInstancesCache = new ConcurrentDictionary<Type, object>();
     }
 }

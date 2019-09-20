@@ -28,9 +28,9 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
 
             var injectionContext = NewMock<IInjectionContext>();
             var creationContext = NewMock<ICreationContext>();
-            injectionContext.ExpectGetContainer(null);
+            ExpectConstruction(injectionContext, typeof(ITestGeneric<int>));
             configuration.GetOrCreateInstance(injectionContext, creationContext, typeof(ITestGeneric<int>));
-            injectionContext.ExpectGetContainer(null);
+            ExpectConstruction(injectionContext, typeof(ITestGeneric<string>));
             configuration.GetOrCreateInstance(injectionContext, creationContext, typeof(ITestGeneric<string>));
 
             disposable1.Expect(d => d.Dispose()).Repeat.Once();
@@ -45,7 +45,7 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
             var configuration = new FactoryImplementationConfiguration(typeof(object), (container, type) => new object());
             var injectionContext = NewMock<IInjectionContext>();
             var creationContext = NewMock<ICreationContext>();
-            injectionContext.ExpectGetContainer(null);
+            ExpectConstruction(injectionContext, typeof(object));
             var instance1 = configuration.GetOrCreateInstance(injectionContext, creationContext, typeof(object));
             injectionContext.ExpectReused(typeof(object));
             var instance2 = configuration.GetOrCreateInstance(injectionContext, creationContext, typeof(object));
@@ -69,20 +69,27 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
 
             var injectionContext = NewMock<IInjectionContext>();
             var creationContext = NewMock<ICreationContext>();
-            injectionContext.ExpectGetContainer(null);
+            ExpectConstruction(injectionContext, typeof(ITestGeneric<int>));
             var actualInstance1 = configuration.GetOrCreateInstance(injectionContext, creationContext, typeof(ITestGeneric<int>));
             injectionContext.ExpectReused(typeof(ITestGeneric<int>));
             var actualInstance2 = configuration.GetOrCreateInstance(injectionContext, creationContext, typeof(ITestGeneric<int>));
             Assert.AreSame(actualInstance1, actualInstance2);
             Assert.AreSame(expectedCached1, actualInstance1);
-            
-            injectionContext.ExpectGetContainer(null);
+
+            ExpectConstruction(injectionContext, typeof(ITestGeneric<string>));
             var actualInstance3 = configuration.GetOrCreateInstance(injectionContext, creationContext, typeof(ITestGeneric<string>));
             injectionContext.ExpectReused(typeof(ITestGeneric<string>));
             var actualInstance4 = configuration.GetOrCreateInstance(injectionContext, creationContext, typeof(ITestGeneric<string>));
 
             Assert.AreSame(actualInstance3, actualInstance4);
             Assert.AreSame(expectedCached2, actualInstance3);
+        }
+
+        private static void ExpectConstruction(IInjectionContext injectionContext, Type constructedType)
+        {
+            injectionContext.ExpectGetContainer(null);
+            injectionContext.ExpectBeginConstruct(constructedType);
+            injectionContext.ExpectEndConstruct(constructedType);
         }
 
         // ReSharper disable once MemberCanBePrivate.Global

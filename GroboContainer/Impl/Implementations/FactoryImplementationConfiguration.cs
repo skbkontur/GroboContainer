@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 using GroboContainer.Core;
 using GroboContainer.Impl.ClassCreation;
@@ -20,14 +20,26 @@ namespace GroboContainer.Impl.Implementations
 
         public object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext, Type requestedType)
         {
-            return resolvedInstancesCache.AddOrUpdate(
-                requestedType,
-                t => factoryFunc(context.Container, t),
-                (t, i) =>
+            if (!resolvedInstancesCache.ContainsKey(requestedType))
+            {
+                lock (configurationLock)
+                {
+                    if (!resolvedInstancesCache.ContainsKey(requestedType))
                     {
-                        context.Reused(requestedType);
-                        return i;
-                    });
+                        return resolvedInstancesCache[requestedType] = CreateRequestedTypeInstance(context, requestedType);
+                    }
+                }
+            }
+            context.Reused(requestedType);
+            return resolvedInstancesCache[requestedType];
+        }
+
+        private object CreateRequestedTypeInstance(IInjectionContext context, Type requestedType)
+        {
+            context.BeginConstruct(requestedType);
+            var instance = factoryFunc(context.Container, requestedType);
+            context.EndConstruct(requestedType);
+            return instance;
         }
 
         public void DisposeInstance()
@@ -43,6 +55,7 @@ namespace GroboContainer.Impl.Implementations
         }
 
         private readonly Func<IContainer, Type, object> factoryFunc;
-        private readonly ConcurrentDictionary<Type, object> resolvedInstancesCache = new ConcurrentDictionary<Type, object>();
+        private readonly object configurationLock = new object();
+        private readonly Dictionary<Type, object> resolvedInstancesCache = new Dictionary<Type, object>();
     }
 }

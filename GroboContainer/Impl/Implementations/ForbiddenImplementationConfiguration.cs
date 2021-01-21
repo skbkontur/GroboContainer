@@ -30,6 +30,8 @@ namespace GroboContainer.Impl.Implementations
             throw new ForbiddenAbstractionException(abstractionType);
         }
 
+        public int InstanceCreationOrder => 0;
+
         private readonly Type abstractionType;
     }
 }

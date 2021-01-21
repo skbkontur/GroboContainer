@@ -17,6 +17,7 @@ namespace GroboContainer.Impl.Implementations
             else
                 this.instance = instance;
             ObjectType = instance.GetType();
+            InstanceCreationOrder = InstanceCreationOrderProvider.Next;
         }
 
         public Type ObjectType { get; }
@@ -40,6 +41,8 @@ namespace GroboContainer.Impl.Implementations
         {
             throw new NotSupportedException();
         }
+
+        public int InstanceCreationOrder { get; private set; }
 
         private readonly object instance;
     }

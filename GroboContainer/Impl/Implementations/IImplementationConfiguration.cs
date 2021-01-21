@@ -12,5 +12,6 @@ namespace GroboContainer.Impl.Implementations
         object GetOrCreateInstance(IInjectionContext context, ICreationContext creationContext);
         void DisposeInstance();
         IClassFactory GetFactory(Type[] parameterTypes, ICreationContext creationContext);
+        int InstanceCreationOrder { get; }
     }
 }

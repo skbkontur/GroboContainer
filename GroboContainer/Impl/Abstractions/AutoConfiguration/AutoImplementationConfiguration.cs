@@ -25,7 +25,9 @@ namespace GroboContainer.Impl.Abstractions.AutoConfiguration
                     if (instance == null)
                     {
                         var noParametersFactory = implementation.GetFactory(Type.EmptyTypes, creationContext);
-                        return instance = noParametersFactory.Create(context, EmptyArray<object>.Instance);
+                        instance = noParametersFactory.Create(context, EmptyArray<object>.Instance);
+                        InstanceCreationOrder = InstanceCreationOrderProvider.Next;
+                        return instance;
                     }
                 }
             }
@@ -45,6 +47,8 @@ namespace GroboContainer.Impl.Abstractions.AutoConfiguration
             var classFactory = implementation.GetFactory(parameterTypes, creationContext);
             return classFactory;
         }
+
+        public int InstanceCreationOrder { get; private set; }
 
         private readonly object configurationLock = new object();
         private readonly IImplementation implementation;

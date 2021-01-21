@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Linq;
 
 using GroboContainer.Config;
 using GroboContainer.Core;
@@ -71,15 +72,6 @@ namespace GroboContainer.Impl
             for (var i = 0; i < result.Length; i++)
                 result[i] = (T)UnWrap(abstractionType, implementations[i].GetOrCreateInstance(context, creationContext));
             return result;
-        }
-
-        private static void CallDisposeOnConfiguration(IAbstractionConfiguration configuration)
-        {
-            Debug.WriteLine("CallDisposeOnConfiguration start");
-            var implementations = configuration.GetImplementations();
-            foreach (var implementation in implementations)
-                implementation.DisposeInstance();
-            Debug.WriteLine("CallDisposeOnConfiguration end");
         }
 
         private IImplementationConfiguration[] GetImplementations(Type type)
@@ -250,9 +242,14 @@ namespace GroboContainer.Impl
 
         public void CallDispose()
         {
-            var configurations = abstractionConfigurationCollection.GetAll();
+            var configurations = abstractionConfigurationCollection
+                .GetAll()
+                .Where(x => x != null)
+                .SelectMany(x => x.GetImplementations())
+                .OrderByDescending(x => x.InstanceCreationOrder);
+
             foreach (var configuration in configurations)
-                if (configuration != null) CallDisposeOnConfiguration(configuration);
+                configuration.DisposeInstance();
         }
 
         public IContainerConfigurator Configurator { get; }

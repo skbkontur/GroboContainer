@@ -26,5 +26,7 @@ namespace GroboContainer.Impl.Implementations
         {
             throw new NotSupportedException();
         }
+
+        public int InstanceCreationOrder => 0;
     }
 }

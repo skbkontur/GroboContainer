@@ -77,9 +77,12 @@ namespace GroboContainer.Tests.ImplTests
             var impls2 = new[] {GetMock<IImplementationConfiguration>(), GetMock<IImplementationConfiguration>()};
             configurations[0].ExpectGetImplementations(impls1);
             impls1[0].Expect(impl => impl.DisposeInstance());
+            impls1[0].Expect(x => x.InstanceCreationOrder).Return(0).Repeat.AtLeastOnce();
             configurations[1].ExpectGetImplementations(impls2);
             impls2[0].Expect(impl => impl.DisposeInstance());
+            impls2[0].Expect(x => x.InstanceCreationOrder).Return(0).Repeat.AtLeastOnce();
             impls2[1].Expect(impl => impl.DisposeInstance());
+            impls2[1].Expect(x => x.InstanceCreationOrder).Return(0).Repeat.AtLeastOnce();
             internalContainer.CallDispose();
         }
 

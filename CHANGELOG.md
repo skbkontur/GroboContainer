@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.2.52 - 2021.01.21
+- Closed [issue](https://github.com/skbkontur/GroboContainer/issues/12) about incorrect dispose order
+
 ## v1.2 - 2018.09.15
 - Use [Nerdbank.GitVersioning](https://github.com/AArnott/Nerdbank.GitVersioning) to automate generation of assembly 
   and nuget package versions.

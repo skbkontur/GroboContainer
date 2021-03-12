@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -39,7 +39,7 @@ namespace GroboContainer.Tests.FunctionalTests
 
             const string serviceNamePrefix = "DynamicTest";
             var assemblyName = new AssemblyName {Name = serviceNamePrefix + "Assembly"};
-            var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+            var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
             var module = assemblyBuilder.DefineDynamicModule(serviceNamePrefix + "Module");
 
             const TypeAttributes typeAttributes = TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.Class;

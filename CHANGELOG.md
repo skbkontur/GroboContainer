@@ -1,7 +1,11 @@
 # Changelog
 
+## v1.2.xx - 2021.03.xx
+- Update dependencies.
+- Run tests against net5.0 tfm.
+
 ## v1.2.52 - 2021.01.21
-- Closed [issue](https://github.com/skbkontur/GroboContainer/issues/12) about incorrect dispose order
+- Fix incorrect dispose order [issue](https://github.com/skbkontur/GroboContainer/issues/12).
 
 ## v1.2 - 2018.09.15
 - Use [Nerdbank.GitVersioning](https://github.com/AArnott/Nerdbank.GitVersioning) to automate generation of assembly 

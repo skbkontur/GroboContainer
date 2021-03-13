@@ -61,46 +61,33 @@ namespace GroboContainer.Tests.FunctionalTests
         [Test]
         public void TestBadConfig()
         {
-            RunMethodWithException<ArgumentException>(() =>
-                                                      container.Configurator.ForAbstraction(typeof(I1)).UseInstances(
-                                                          "z"));
-            RunMethodWithException<ArgumentException>(() =>
-                                                      container.Configurator.ForAbstraction(typeof(I1)).UseInstances(
-                                                          null));
-            RunMethodWithException<ArgumentException>(() =>
-                                                      container.Configurator.ForAbstraction(typeof(I1)).UseInstances(
-                                                          new object[0]));
+            RunMethodWithException<ArgumentException>(() => container.Configurator.ForAbstraction(typeof(I1)).UseInstances("z"));
+            RunMethodWithException<ArgumentException>(() => container.Configurator.ForAbstraction(typeof(I1)).UseInstances(null));
+            RunMethodWithException<ArgumentException>(() => container.Configurator.ForAbstraction(typeof(I1)).UseInstances(new object[0]));
         }
 
         [Test]
         public void TestFail()
         {
             container.Configurator.ForAbstraction(typeof(I1)).Fail();
-            RunFail<ForbiddenAbstractionException>(() =>
-                                                   container.Get<I1>());
-            RunFail<ForbiddenAbstractionException>(() =>
-                                                   container.Create<I1>());
+            RunFail<ForbiddenAbstractionException>(() => container.Get<I1>());
+            RunFail<ForbiddenAbstractionException>(() => container.Create<I1>());
         }
 
         [Test]
         public void TestFailGeneric()
         {
             container.Configurator.ForAbstraction<I1>().Fail();
-            RunFail<ForbiddenAbstractionException>(() =>
-                                                   container.Get<I1>());
-            RunFail<ForbiddenAbstractionException>(() =>
-                                                   container.Create<I1>());
-            RunMethodWithException<ForbiddenAbstractionException>(() =>
-                                                                  container.GetImplementationTypes(typeof(I1)));
+            RunFail<ForbiddenAbstractionException>(() => container.Get<I1>());
+            RunFail<ForbiddenAbstractionException>(() => container.Create<I1>());
+            RunMethodWithException<ForbiddenAbstractionException>(() => container.GetImplementationTypes(typeof(I1)));
         }
 
         [Test]
         public void TestIgnoredInterface()
         {
-            RunFail<ForbiddenAbstractionException>(() =>
-                                                   container.Get<IIgnored>());
-            RunFail<ForbiddenAbstractionException>(() =>
-                                                   container.Create<IIgnored>());
+            RunFail<ForbiddenAbstractionException>(() => container.Get<IIgnored>());
+            RunFail<ForbiddenAbstractionException>(() => container.Create<IIgnored>());
         }
 
         [Test]

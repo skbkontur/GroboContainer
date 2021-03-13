@@ -85,8 +85,7 @@ namespace GroboContainer.Tests.FunctionalTests.ChildsTests
             var childContainerA = container.MakeChildContainer();
             var childContainerB = container.MakeChildContainer();
             childContainerA.Configurator.ForAbstraction<Child2>().Fail();
-            RunFail<ForbiddenAbstractionException>(() =>
-                                                   childContainerA.Get<Child2>());
+            RunFail<ForbiddenAbstractionException>(() => childContainerA.Get<Child2>());
             childContainerB.Get<Child2>();
         }
 

@@ -40,8 +40,7 @@ Get<GroboContainer.Tests.FunctionalTests.ContainerLoggingTest+ICrash1>()
    Constructing<GroboContainer.Tests.FunctionalTests.ContainerLoggingTest+Crash2>()
     Get<System.Int32>()
 ";
-            RunMethodWithException<ContainerException>(() =>
-                                                       container.Get<ICrash1>(), log);
+            RunMethodWithException<ContainerException>(() => container.Get<ICrash1>(), log);
             Assert.AreEqual(log, container.LastConstructionLog);
         }
 
@@ -49,8 +48,7 @@ Get<GroboContainer.Tests.FunctionalTests.ContainerLoggingTest+ICrash1>()
         public void TestLogContainsLastOperation()
         {
             Assert.AreEqual("<no>", container.LastConstructionLog);
-            RunFail<NoConstructorException>(() =>
-                                            container.Get(typeof(int)));
+            RunFail<NoConstructorException>(() => container.Get(typeof(int)));
             StringAssert.Contains("Get<System.Int32>()", container.LastConstructionLog);
             container.GetAll<I1>();
             Assert.AreEqual(

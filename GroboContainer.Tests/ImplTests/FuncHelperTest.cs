@@ -51,16 +51,14 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestGetBuildMethodInfoCrash()
         {
-            RunMethodWithException<InvalidOperationException>(() =>
-                                                              helper.GetBuildCreateFuncMethodInfo(typeof(Func<int, long, Guid, string, int[], object>)),
+            RunMethodWithException<InvalidOperationException>(() => helper.GetBuildCreateFuncMethodInfo(typeof(Func<int, long, Guid, string, int[], object>)),
                                                               "Factory functions with 5 args are not supported");
         }
 
         [Test]
         public void TestGetCreateMethodInfoCrash()
         {
-            RunMethodWithException<InvalidOperationException>(() =>
-                                                              helper.GetBuildGetFuncMethodInfo(typeof(Func<int, int[], object>)),
+            RunMethodWithException<InvalidOperationException>(() => helper.GetBuildGetFuncMethodInfo(typeof(Func<int, int[], object>)),
                                                               "Getter functions with 2 args are not supported");
         }
 

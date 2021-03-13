@@ -28,8 +28,7 @@ namespace GroboContainer.Tests.ChildContainerSupportTests
         public void TestAtDepth0()
         {
             Assert.AreEqual(0, selector.Select(typeof(Root), 0));
-            RunMethodWithException<InvalidOperationException>(() =>
-                                                              selector.Select(typeof(IChild), 0));
+            RunMethodWithException<InvalidOperationException>(() => selector.Select(typeof(IChild), 0));
         }
 
         [Test]
@@ -42,23 +41,17 @@ namespace GroboContainer.Tests.ChildContainerSupportTests
         [Test]
         public void TestAtDepthGreaterThan1()
         {
-            RunMethodWithException<NotSupportedException>(() =>
-                                                          selector.Select(typeof(Root), 2));
-            RunMethodWithException<NotSupportedException>(() =>
-                                                          selector.Select(typeof(IChild), 2));
+            RunMethodWithException<NotSupportedException>(() => selector.Select(typeof(Root), 2));
+            RunMethodWithException<NotSupportedException>(() => selector.Select(typeof(IChild), 2));
         }
 
         [Test]
         public void TestNotMarkedTypeBadAtAnyDepth()
         {
-            RunMethodWithException<InvalidOperationException>(() =>
-                                                              selector.Select(typeof(int), 0));
-            RunMethodWithException<InvalidOperationException>(() =>
-                                                              selector.Select(typeof(int), 1));
-            RunMethodWithException<NotSupportedException>(() =>
-                                                          selector.Select(typeof(int), 2));
-            RunMethodWithException<NotSupportedException>(() =>
-                                                          selector.Select(typeof(int), 456));
+            RunMethodWithException<InvalidOperationException>(() => selector.Select(typeof(int), 0));
+            RunMethodWithException<InvalidOperationException>(() => selector.Select(typeof(int), 1));
+            RunMethodWithException<NotSupportedException>(() => selector.Select(typeof(int), 2));
+            RunMethodWithException<NotSupportedException>(() => selector.Select(typeof(int), 456));
         }
 
         private RootAndChildSelector selector;

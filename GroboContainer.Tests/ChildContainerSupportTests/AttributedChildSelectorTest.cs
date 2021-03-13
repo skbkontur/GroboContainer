@@ -28,8 +28,7 @@ namespace GroboContainer.Tests.ChildContainerSupportTests
         public void TestAtDepth0()
         {
             Assert.AreEqual(0, selector.Select(typeof(Root), 0));
-            RunMethodWithException<InvalidOperationException>(() =>
-                                                              selector.Select(typeof(IChild), 0));
+            RunMethodWithException<InvalidOperationException>(() => selector.Select(typeof(IChild), 0));
         }
 
         [Test]
@@ -42,10 +41,8 @@ namespace GroboContainer.Tests.ChildContainerSupportTests
         [Test]
         public void TestAtDepthGreaterThan1()
         {
-            RunMethodWithException<NotSupportedException>(() =>
-                                                          selector.Select(typeof(Root), 2));
-            RunMethodWithException<NotSupportedException>(() =>
-                                                          selector.Select(typeof(IChild), 2));
+            RunMethodWithException<NotSupportedException>(() => selector.Select(typeof(Root), 2));
+            RunMethodWithException<NotSupportedException>(() => selector.Select(typeof(IChild), 2));
         }
 
         private AttributedChildSelector selector;

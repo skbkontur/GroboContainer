@@ -1,9 +1,7 @@
-﻿using GroboContainer.Impl.ClassCreation;
+using GroboContainer.Impl.ClassCreation;
 using GroboContainer.New;
 
 using NUnit.Framework;
-
-using Rhino.Mocks;
 
 namespace GroboContainer.Tests.NewTests
 {
@@ -12,19 +10,18 @@ namespace GroboContainer.Tests.NewTests
         [Test]
         public void TestSimple()
         {
-            var constructorSelector = GetMock<IConstructorSelector>();
-            var classCreator = GetMock<IClassCreator>();
-            var classFactory = GetMock<IClassFactory>();
+            var constructorSelectorMock = GetMock<IConstructorSelector>();
+            var classCreatorMock = GetMock<IClassCreator>();
+            var classFactoryMock = GetMock<IClassFactory>();
 
             var parameterTypes = new[] {typeof(long)};
 
             var containerConstructorInfo = new ContainerConstructorInfo();
-            constructorSelector.Expect(cs => cs.GetConstructor(typeof(int), parameterTypes)).Return(
-                containerConstructorInfo);
-            classCreator.Expect(creator => creator.BuildFactory(containerConstructorInfo, null)).Return(classFactory);
+            constructorSelectorMock.Setup(cs => cs.GetConstructor(typeof(int), parameterTypes)).Returns(containerConstructorInfo);
+            classCreatorMock.Setup(creator => creator.BuildFactory(containerConstructorInfo, null)).Returns(classFactoryMock.Object);
 
-            var creationContext = new CreationContext(classCreator, constructorSelector, null);
-            Assert.AreSame(classFactory, creationContext.BuildFactory(typeof(int), parameterTypes));
+            var creationContext = new CreationContext(classCreatorMock.Object, constructorSelectorMock.Object, null);
+            Assert.AreSame(classFactoryMock.Object, creationContext.BuildFactory(typeof(int), parameterTypes));
         }
     }
 }

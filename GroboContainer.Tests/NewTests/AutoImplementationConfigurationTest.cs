@@ -5,55 +5,51 @@ using GroboContainer.Impl.ClassCreation;
 using GroboContainer.Impl.Injection;
 using GroboContainer.New;
 
-using NUnit.Framework;
+using Moq;
 
-using Rhino.Mocks;
+using NUnit.Framework;
 
 namespace GroboContainer.Tests.NewTests
 {
     public class AutoImplementationConfigurationTest : TestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
-            creationContext = GetMock<ICreationContext>();
+            creationContextMock = GetMock<ICreationContext>();
 
-            implementation = GetMock<IImplementation>();
-            autoImplementationConfiguration = new AutoImplementationConfiguration(implementation);
+            implementationMock = GetMock<IImplementation>();
+            autoImplementationConfiguration = new AutoImplementationConfiguration(implementationMock.Object);
         }
-
-        #endregion
 
         [Test]
         public void TestDisposableInstance()
         {
-            var injectionContext = GetMock<IInjectionContext>();
+            var injectionContextMock = GetMock<IInjectionContext>();
 
             autoImplementationConfiguration.DisposeInstance();
 
-            implementation.Expect(mock => mock.ObjectType).Return(typeof(int)).Repeat.Any();
-            var classFactory = GetMock<IClassFactory>();
+            implementationMock.Setup(mock => mock.ObjectType).Returns(typeof(int));
+            var classFactoryMock = GetMock<IClassFactory>();
 
-            implementation.Expect(context => context.GetFactory(Type.EmptyTypes, creationContext)).Return(classFactory);
-            var instance = GetMock<IDisposable>();
-            classFactory.Expect(f => f.Create(injectionContext, new object[0])).Return(instance);
-            var returnedInstance = autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext);
-            Assert.AreSame(instance, returnedInstance);
+            implementationMock.Setup(context => context.GetFactory(Type.EmptyTypes, creationContextMock.Object)).Returns(classFactoryMock.Object);
+            var instanceMock = GetMock<IDisposable>();
+            classFactoryMock.Setup(f => f.Create(injectionContextMock.Object, new object[0])).Returns(instanceMock.Object);
+            var returnedInstance = autoImplementationConfiguration.GetOrCreateInstance(injectionContextMock.Object, creationContextMock.Object);
+            Assert.AreSame(instanceMock.Object, returnedInstance);
 
-            injectionContext.Expect(ic => ic.Reused(typeof(int)));
-            Assert.AreSame(instance,
-                           autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext));
+            injectionContextMock.Setup(ic => ic.Reused(typeof(int)));
+            Assert.AreSame(instanceMock.Object,
+                           autoImplementationConfiguration.GetOrCreateInstance(injectionContextMock.Object, creationContextMock.Object));
 
-            instance.Expect(i => i.Dispose());
+            instanceMock.Setup(i => i.Dispose());
             autoImplementationConfiguration.DisposeInstance();
 
-            injectionContext.Expect(ic => ic.Reused(typeof(int)));
-            Assert.AreSame(instance,
-                           autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext));
+            injectionContextMock.Setup(ic => ic.Reused(typeof(int)));
+            Assert.AreSame(instanceMock.Object,
+                           autoImplementationConfiguration.GetOrCreateInstance(injectionContextMock.Object, creationContextMock.Object));
 
-            instance.Expect(i => i.Dispose());
+            instanceMock.Setup(i => i.Dispose());
             autoImplementationConfiguration.DisposeInstance();
         }
 
@@ -67,51 +63,50 @@ namespace GroboContainer.Tests.NewTests
         public void TestGetFactory()
         {
             var parameterTypes = new[] {typeof(long)};
-            implementation.Expect(mock => mock.ObjectType).Return(typeof(int)).Repeat.Any();
-            var classFactory = GetMock<IClassFactory>();
+            var classFactoryMock = GetMock<IClassFactory>();
 
-            implementation.Expect(context => context.GetFactory(parameterTypes, creationContext)).Return(classFactory);
-            Assert.AreSame(classFactory, autoImplementationConfiguration.GetFactory(parameterTypes, creationContext));
+            implementationMock.Setup(context => context.GetFactory(parameterTypes, creationContextMock.Object)).Returns(classFactoryMock.Object);
+            Assert.AreSame(classFactoryMock.Object, autoImplementationConfiguration.GetFactory(parameterTypes, creationContextMock.Object));
 
-            var classFactory2 = GetMock<IClassFactory>();
-            implementation.Expect(context => context.GetFactory(parameterTypes, creationContext)).Return(classFactory2);
-            Assert.AreSame(classFactory2, autoImplementationConfiguration.GetFactory(parameterTypes, creationContext));
+            var classFactoryMock2 = GetMock<IClassFactory>();
+            implementationMock.Setup(context => context.GetFactory(parameterTypes, creationContextMock.Object)).Returns(classFactoryMock2.Object);
+            Assert.AreSame(classFactoryMock2.Object, autoImplementationConfiguration.GetFactory(parameterTypes, creationContextMock.Object));
         }
 
         [Test]
         public void TestObjectType()
         {
-            implementation.Expect(mock => mock.ObjectType).Return(typeof(int));
+            implementationMock.Setup(mock => mock.ObjectType).Returns(typeof(int));
             Assert.AreEqual(typeof(int), autoImplementationConfiguration.ObjectType);
         }
 
         [Test]
         public void TestWorkWithNonDisposableInstance()
         {
-            var injectionContext = GetMock<IInjectionContext>();
+            var injectionContextMock = GetMock<IInjectionContext>();
 
-            implementation.Expect(mock => mock.ObjectType).Return(typeof(int)).Repeat.Any();
-            var classFactory = GetMock<IClassFactory>();
+            implementationMock.Setup(mock => mock.ObjectType).Returns(typeof(int));
+            var classFactoryMock = GetMock<IClassFactory>();
 
-            implementation.Expect(context => context.GetFactory(Type.EmptyTypes, creationContext)).Return(classFactory);
+            implementationMock.Setup(context => context.GetFactory(Type.EmptyTypes, creationContextMock.Object)).Returns(classFactoryMock.Object);
             const string instance = "zzz";
-            classFactory.Expect(f => f.Create(injectionContext, new object[0])).Return(instance);
-            var returnedInstance = autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext);
+            classFactoryMock.Setup(f => f.Create(injectionContextMock.Object, new object[0])).Returns(instance);
+            var returnedInstance = autoImplementationConfiguration.GetOrCreateInstance(injectionContextMock.Object, creationContextMock.Object);
             Assert.AreSame(instance, returnedInstance);
 
-            injectionContext.Expect(ic => ic.Reused(typeof(int)));
+            injectionContextMock.Setup(ic => ic.Reused(typeof(int)));
             Assert.AreSame(instance,
-                           autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext));
+                           autoImplementationConfiguration.GetOrCreateInstance(injectionContextMock.Object, creationContextMock.Object));
 
             autoImplementationConfiguration.DisposeInstance();
 
-            injectionContext.Expect(ic => ic.Reused(typeof(int)));
+            injectionContextMock.Setup(ic => ic.Reused(typeof(int)));
             Assert.AreSame(instance,
-                           autoImplementationConfiguration.GetOrCreateInstance(injectionContext, creationContext));
+                           autoImplementationConfiguration.GetOrCreateInstance(injectionContextMock.Object, creationContextMock.Object));
         }
 
-        private IImplementation implementation;
+        private Mock<IImplementation> implementationMock;
         private AutoImplementationConfiguration autoImplementationConfiguration;
-        private ICreationContext creationContext;
+        private Mock<ICreationContext> creationContextMock;
     }
 }

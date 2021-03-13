@@ -10,15 +10,11 @@ namespace GroboContainer.Tests.TypesHelperTests
 {
     public class TypesHelperTest : CoreTestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
             helpers = new TypesHelper();
         }
-
-        #endregion
 
         private interface IInterface
         {
@@ -42,33 +38,33 @@ namespace GroboContainer.Tests.TypesHelperTests
         [Test]
         public void TestIgnoredAbstraction()
         {
-            var provider = NewMock<ICustomAttributeProvider>();
-            provider.ExpectIsDefined<IgnoredAbstractionAttribute>(true);
-            Assert.IsTrue(helpers.IsIgnoredAbstraction(provider));
+            var providerMock = GetMock<ICustomAttributeProvider>();
+            providerMock.Setup(x => x.IsDefined(typeof(IgnoredAbstractionAttribute), false)).Returns(true);
+            Assert.IsTrue(helpers.IsIgnoredAbstraction(providerMock.Object));
         }
 
         [Test]
         public void TestIgnoredAbstractionFalse()
         {
-            var provider = NewMock<ICustomAttributeProvider>();
-            provider.ExpectIsDefined<IgnoredAbstractionAttribute>(false);
-            Assert.IsFalse(helpers.IsIgnoredAbstraction(provider));
+            var providerMock = GetMock<ICustomAttributeProvider>();
+            providerMock.Setup(x => x.IsDefined(typeof(IgnoredAbstractionAttribute), false)).Returns(false);
+            Assert.IsFalse(helpers.IsIgnoredAbstraction(providerMock.Object));
         }
 
         [Test]
         public void TestIsIgnoredImplementationFalse()
         {
-            var provider = NewMock<ICustomAttributeProvider>();
-            provider.ExpectIsDefined<IgnoredImplementationAttribute>(false);
-            Assert.IsFalse(helpers.IsIgnoredImplementation(provider));
+            var providerMock = GetMock<ICustomAttributeProvider>();
+            providerMock.Setup(x => x.IsDefined(typeof(IgnoredImplementationAttribute), false)).Returns(false);
+            Assert.IsFalse(helpers.IsIgnoredImplementation(providerMock.Object));
         }
 
         [Test]
         public void TestIsIgnoredImplementationTrue()
         {
-            var provider = NewMock<ICustomAttributeProvider>();
-            provider.ExpectIsDefined<IgnoredImplementationAttribute>(true);
-            Assert.IsTrue(helpers.IsIgnoredImplementation(provider));
+            var providerMock = GetMock<ICustomAttributeProvider>();
+            providerMock.Setup(x => x.IsDefined(typeof(IgnoredImplementationAttribute), false)).Returns(true);
+            Assert.IsTrue(helpers.IsIgnoredImplementation(providerMock.Object));
         }
 
         [Test]

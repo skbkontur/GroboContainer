@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-using NMock2;
+using Moq;
 
 using NUnit.Framework;
 
@@ -12,18 +12,12 @@ namespace GroboContainer.Tests
         [SetUp]
         public virtual void SetUp()
         {
-            mockery = new Mockery();
-            mockRepository = new MockRepositoryWrapper();
+            mockRepository = new MockRepository(MockBehavior.Strict);
         }
 
-        protected static T NewMock<T>()
+        protected Mock<T> GetMock<T>() where T : class
         {
-            return mockery.NewMock<T>();
-        }
-
-        protected static T GetMock<T>()
-        {
-            return mockRepository.GetMock<T>();
+            return mockRepository.Create<T>();
         }
 
         [TearDown]
@@ -32,23 +26,12 @@ namespace GroboContainer.Tests
             try
             {
                 mockRepository.VerifyAll();
-                mockery.Dispose();
+                mockRepository.VerifyNoOtherCalls();
             }
             finally
             {
-                ClearFields();
+                FieldsCleanerCache.Clean(this);
             }
-        }
-
-        [OneTimeTearDown]
-        public void TestFixtureTearDown()
-        {
-            ClearFields();
-        }
-
-        private void ClearFields()
-        {
-            FieldsCleanerCache.Clean(this);
         }
 
         protected static void RunMethodWithException<TE>(Action method) where TE : Exception
@@ -80,7 +63,6 @@ namespace GroboContainer.Tests
             Assert.Fail("Method didn't thrown expected exception " + typeof(TE));
         }
 
-        protected static Mockery mockery;
-        private static MockRepositoryWrapper mockRepository;
+        private MockRepository mockRepository;
     }
 }

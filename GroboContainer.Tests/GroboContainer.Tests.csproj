@@ -2,26 +2,18 @@
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <TargetFrameworks>net48</TargetFrameworks>
+    <TargetFrameworks>net48;net5.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />
+    <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="NUnit" Version="3.13.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\GroboContainer\GroboContainer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="NMock2">
-      <HintPath>..\Assemblies\NMock2.dll</HintPath>
-    </Reference>
-    <Reference Include="Rhino.Mocks">
-      <HintPath>..\Assemblies\Rhino.Mocks.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

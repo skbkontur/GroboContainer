@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 using GroboContainer.Impl;
 using GroboContainer.Impl.Contexts;
 using GroboContainer.Impl.Injection;
+using GroboContainer.Impl.Logging;
 
 using NUnit.Framework;
-
-using Rhino.Mocks;
 
 namespace GroboContainer.Tests.ContextsTests
 {
@@ -17,16 +17,15 @@ namespace GroboContainer.Tests.ContextsTests
         public void TestAnotherThread()
         {
             var threadId = Thread.CurrentThread.ManagedThreadId;
-            var ic = GetMock<IInternalContainer>();
-            ic.Expect(c => c.CreateNewLog()).Return(null);
-            IContextHolder holder = new ContextHolder(new InjectionContext(ic), threadId);
-            Action check = () =>
+            var internalContainerMock = GetMock<IInternalContainer>();
+            internalContainerMock.Setup(c => c.CreateNewLog()).Returns((IGroboContainerLog)null);
+            IContextHolder holder = new ContextHolder(new InjectionContext(internalContainerMock.Object), threadId);
+            var task = Task.Run(() =>
                 {
                     Assert.AreNotEqual(threadId, Thread.CurrentThread.ManagedThreadId);
                     CheckGet(holder);
-                };
-            var result = check.BeginInvoke(null, null);
-            Assert.That(result.AsyncWaitHandle.WaitOne(1000), "поток завис");
+                });
+            task.Wait(TimeSpan.FromSeconds(1));
             holder.KillContext();
             CheckGet(holder);
         }
@@ -34,13 +33,13 @@ namespace GroboContainer.Tests.ContextsTests
         [Test]
         public void TestCurrentThread()
         {
-            var ic = GetMock<IInternalContainer>();
-            ic.Expect(c => c.CreateNewLog()).Return(null);
-            var context = new InjectionContext(ic);
+            var internalContainerMock = GetMock<IInternalContainer>();
+            internalContainerMock.Setup(c => c.CreateNewLog()).Returns((IGroboContainerLog)null);
+            var context = new InjectionContext(internalContainerMock.Object);
             IContextHolder holder = new ContextHolder(context, Thread.CurrentThread.ManagedThreadId);
 
-            var ic2 = GetMock<IInternalContainer>();
-            Assert.AreSame(context, holder.GetContext(ic2));
+            var internalContainerMock2 = GetMock<IInternalContainer>();
+            Assert.AreSame(context, holder.GetContext(internalContainerMock2.Object));
             holder.KillContext();
             CheckGet(holder);
         }

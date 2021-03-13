@@ -1,8 +1,10 @@
+using System.Linq;
+
 using GroboContainer.New;
 
-using NUnit.Framework;
+using Moq;
 
-using Rhino.Mocks;
+using NUnit.Framework;
 
 namespace GroboContainer.Tests.NewTests
 {
@@ -11,28 +13,28 @@ namespace GroboContainer.Tests.NewTests
         public override void SetUp()
         {
             base.SetUp();
-            implementationTypesCollection = GetMock<IImplementationTypesCollection>();
-            implementationCache = GetMock<IImplementationCache>();
-            abstractionsCollection = new AbstractionsCollection(implementationTypesCollection, implementationCache);
+            implementationTypesCollectionMock = GetMock<IImplementationTypesCollection>();
+            implementationCacheMock = GetMock<IImplementationCache>();
+            abstractionsCollection = new AbstractionsCollection(implementationTypesCollectionMock.Object, implementationCacheMock.Object);
         }
 
         [Test]
         public void TestStupid()
         {
             var implTypes = new[] {typeof(string), typeof(byte)};
-            implementationTypesCollection.Expect(mock => mock.GetImplementationTypes(typeof(int))).Return(implTypes);
-            var expectedImpls = new[] {GetMock<IImplementation>(), GetMock<IImplementation>()};
-            implementationCache.Expect(mock => mock.GetOrCreate(implTypes[0])).Return(expectedImpls[0]);
-            implementationCache.Expect(mock => mock.GetOrCreate(implTypes[1])).Return(expectedImpls[1]);
+            implementationTypesCollectionMock.Setup(mock => mock.GetImplementationTypes(typeof(int))).Returns(implTypes);
+            var expectedImplMocks = new[] {GetMock<IImplementation>(), GetMock<IImplementation>()};
+            implementationCacheMock.Setup(mock => mock.GetOrCreate(implTypes[0])).Returns(expectedImplMocks[0].Object);
+            implementationCacheMock.Setup(mock => mock.GetOrCreate(implTypes[1])).Returns(expectedImplMocks[1].Object);
 
             var abstraction = abstractionsCollection.Get(typeof(int));
             Assert.That(abstraction, Is.InstanceOf<Abstraction>());
-            CollectionAssert.AreEqual(expectedImpls, abstraction.GetImplementations());
-            CollectionAssert.AreEqual(expectedImpls, abstraction.GetImplementations());
+            CollectionAssert.AreEqual(expectedImplMocks.Select(x => x.Object).ToArray(), abstraction.GetImplementations());
+            CollectionAssert.AreEqual(expectedImplMocks.Select(x => x.Object).ToArray(), abstraction.GetImplementations());
         }
 
-        private IImplementationTypesCollection implementationTypesCollection;
-        private IImplementationCache implementationCache;
+        private Mock<IImplementationTypesCollection> implementationTypesCollectionMock;
+        private Mock<IImplementationCache> implementationCacheMock;
         private AbstractionsCollection abstractionsCollection;
     }
 }

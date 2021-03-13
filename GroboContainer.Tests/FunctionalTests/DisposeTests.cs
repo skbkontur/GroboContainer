@@ -9,16 +9,12 @@ namespace GroboContainer.Tests.FunctionalTests
 {
     public class DisposeTests : ContainerTestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
             log = new HashSet<string>();
             z1Count = 0;
         }
-
-        #endregion
 
         private interface I1
         {
@@ -78,16 +74,16 @@ namespace GroboContainer.Tests.FunctionalTests
         {
             disposeOrder = new List<string>();
             var a4 = container.Get<A4>();
-            
+
             container.Dispose();
 
             var a1Index = disposeOrder.IndexOf("A1");
             var a2Index = disposeOrder.IndexOf("A2");
             var a3Index = disposeOrder.IndexOf("A3");
             var a4Index = disposeOrder.IndexOf("A4");
-            
+
             Console.WriteLine(string.Join(" ", disposeOrder));
-            
+
             Assert.That(a1Index, Is.Not.EqualTo(-1));
             Assert.That(a2Index, Is.Not.EqualTo(-1));
             Assert.That(a3Index, Is.Not.EqualTo(-1));
@@ -98,7 +94,6 @@ namespace GroboContainer.Tests.FunctionalTests
 
             Assert.That(a2Index, Is.LessThan(a1Index));
             Assert.That(a2Index, Is.LessThan(a3Index));
-
         }
 
         private static int z1Count;
@@ -193,7 +188,7 @@ namespace GroboContainer.Tests.FunctionalTests
             public A2(A1 a1, A3 a3)
             {
             }
-            
+
             public void Dispose()
             {
                 disposeOrder.Add("A2");
@@ -205,7 +200,7 @@ namespace GroboContainer.Tests.FunctionalTests
             public A4(A1 a1, A2 a2)
             {
             }
-            
+
             public void Dispose()
             {
                 disposeOrder.Add("A4");

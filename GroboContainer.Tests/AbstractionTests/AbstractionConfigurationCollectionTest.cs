@@ -4,64 +4,59 @@ using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
 using GroboContainer.Impl.Implementations;
 
-using NUnit.Framework;
+using Moq;
 
-using Rhino.Mocks;
+using NUnit.Framework;
 
 namespace GroboContainer.Tests.AbstractionTests
 {
     public class AbstractionConfigurationCollectionTest : CoreTestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
-            factory = GetMock<IAutoAbstractionConfigurationFactory>();
-            configurationCollection = new AbstractionConfigurationCollection(factory);
+            factoryMock = GetMock<IAutoAbstractionConfigurationFactory>();
+            configurationCollection = new AbstractionConfigurationCollection(factoryMock.Object);
         }
-
-        #endregion
 
         [Test]
         public void TestAdd()
         {
-            var configuration = GetMock<IAbstractionConfiguration>();
-            configuration
-                .Expect(c => c.GetImplementations())
-                .Return(new IImplementationConfiguration[] {new InstanceImplementationConfiguration(null, 1)});
+            var configurationMock = GetMock<IAbstractionConfiguration>();
+            configurationMock
+                .Setup(c => c.GetImplementations())
+                .Returns(new IImplementationConfiguration[] {new InstanceImplementationConfiguration(null, 1)});
 
-            configurationCollection.Add(typeof(int), configuration);
-            Assert.AreSame(configuration, configurationCollection.Get(typeof(int)));
-            Assert.AreSame(configuration, configurationCollection.Get(typeof(int)));
+            configurationCollection.Add(typeof(int), configurationMock.Object);
+            Assert.AreSame(configurationMock.Object, configurationCollection.Get(typeof(int)));
+            Assert.AreSame(configurationMock.Object, configurationCollection.Get(typeof(int)));
             RunMethodWithException<InvalidOperationException>(
-                () => configurationCollection.Add(typeof(int), configuration),
+                () => configurationCollection.Add(typeof(int), configurationMock.Object),
                 "Container is already configured for type System.Int32");
         }
 
         [Test]
         public void TestBig()
         {
-            var configurationIntShort = NewMock<IAbstractionConfiguration>();
-            var configurationIntInt = NewMock<IAbstractionConfiguration>();
-            var configurationLong = NewMock<IAbstractionConfiguration>();
-            configurationCollection.Add(typeof(short), configurationIntShort);
-            factory.Expect(f => f.CreateByType(typeof(int))).Return(configurationIntInt);
-            Assert.AreSame(configurationIntInt, configurationCollection.Get(typeof(int)));
-            Assert.AreSame(configurationIntShort, configurationCollection.Get(typeof(short)));
+            var configurationIntShortMock = GetMock<IAbstractionConfiguration>();
+            var configurationIntIntMock = GetMock<IAbstractionConfiguration>();
+            var configurationLongMock = GetMock<IAbstractionConfiguration>();
+            configurationCollection.Add(typeof(short), configurationIntShortMock.Object);
+            factoryMock.Setup(f => f.CreateByType(typeof(int))).Returns(configurationIntIntMock.Object);
+            Assert.AreSame(configurationIntIntMock.Object, configurationCollection.Get(typeof(int)));
+            Assert.AreSame(configurationIntShortMock.Object, configurationCollection.Get(typeof(short)));
 
-            //factory.ExpectCreateByType(typeof (long), new[] {"a"}, configurationLong);
-            factory.Expect(f => f.CreateByType(typeof(long))).Return(configurationLong);
-            Assert.AreSame(configurationLong, configurationCollection.Get(typeof(long)));
+            factoryMock.Setup(f => f.CreateByType(typeof(long))).Returns(configurationLongMock.Object);
+            Assert.AreSame(configurationLongMock.Object, configurationCollection.Get(typeof(long)));
         }
 
         [Test]
         public void TestCreate()
         {
-            var configuration = NewMock<IAbstractionConfiguration>();
-            factory.Expect(f => f.CreateByType(typeof(int))).Return(configuration);
-            Assert.AreSame(configuration, configurationCollection.Get(typeof(int)));
-            Assert.AreSame(configuration, configurationCollection.Get(typeof(int)));
+            var configurationMock = GetMock<IAbstractionConfiguration>();
+            factoryMock.Setup(f => f.CreateByType(typeof(int))).Returns(configurationMock.Object);
+            Assert.AreSame(configurationMock.Object, configurationCollection.Get(typeof(int)));
+            Assert.AreSame(configurationMock.Object, configurationCollection.Get(typeof(int)));
         }
 
         [Test]
@@ -69,17 +64,16 @@ namespace GroboContainer.Tests.AbstractionTests
         {
             CollectionAssert.IsEmpty(configurationCollection.GetAll());
 
-            var configuration1 = NewMock<IAbstractionConfiguration>();
-            var configuration2 = NewMock<IAbstractionConfiguration>();
+            var configurationMock1 = GetMock<IAbstractionConfiguration>();
+            var configurationMock2 = GetMock<IAbstractionConfiguration>();
             configurationCollection.Add(typeof(string), null); //hack, тест на != null
-            configurationCollection.Add(typeof(int), configuration1);
-            configurationCollection.Add(typeof(long), configuration2);
+            configurationCollection.Add(typeof(int), configurationMock1.Object);
+            configurationCollection.Add(typeof(long), configurationMock2.Object);
 
-            CollectionAssert.AreEquivalent(new[] {null, configuration1, configuration2},
-                                           configurationCollection.GetAll());
+            CollectionAssert.AreEquivalent(new[] {null, configurationMock1.Object, configurationMock2.Object}, configurationCollection.GetAll());
         }
 
-        private IAutoAbstractionConfigurationFactory factory;
+        private Mock<IAutoAbstractionConfigurationFactory> factoryMock;
         private AbstractionConfigurationCollection configurationCollection;
     }
 }

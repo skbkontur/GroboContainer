@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 using GroboContainer.Config;
 using GroboContainer.Core;
@@ -11,9 +12,9 @@ using GroboContainer.Impl.Implementations;
 using GroboContainer.Impl.Injection;
 using GroboContainer.New;
 
-using NUnit.Framework;
+using Moq;
 
-using Rhino.Mocks;
+using NUnit.Framework;
 
 namespace GroboContainer.Tests.ImplTests
 {
@@ -22,67 +23,61 @@ namespace GroboContainer.Tests.ImplTests
         public override void SetUp()
         {
             base.SetUp();
-            context = NewMock<IInjectionContext>();
-            configuration = NewMock<IContainerConfiguration>();
+            contextMock = GetMock<IInjectionContext>();
 
-            abstractionConfiguration = NewMock<IAbstractionConfiguration>();
+            abstractionConfigurationMock = GetMock<IAbstractionConfiguration>();
             type = typeof(int);
-            abstractionConfigurationCollection = NewMock<IAbstractionConfigurationCollection>();
-            configurator = NewMock<IContainerConfigurator>();
-            creationContext = GetMock<ICreationContext>();
-            classFactory = GetMock<IClassFactory>();
-            var implementationConfigurationCache = GetMock<IImplementationConfigurationCache>();
-            var implementationCache = GetMock<IImplementationCache>();
+            abstractionConfigurationCollectionMock = GetMock<IAbstractionConfigurationCollection>();
+            creationContextMock = GetMock<ICreationContext>();
+            classFactoryMock = GetMock<IClassFactory>();
             internalContainer =
                 new InternalContainer(new TestContext
                     {
-                        AbstractionConfigurationCollection = abstractionConfigurationCollection,
-                        Configuration = configuration,
-                        ContainerConfigurator = configurator,
+                        AbstractionConfigurationCollection = abstractionConfigurationCollectionMock.Object,
+                        Configuration = GetMock<IContainerConfiguration>().Object,
+                        ContainerConfigurator = GetMock<IContainerConfigurator>().Object,
                         FuncBuilder = new FuncBuilder(),
-                        CreationContext = creationContext,
-                        ImplementationConfigurationCache = implementationConfigurationCache,
-                        ImplementationCache = implementationCache
+                        CreationContext = creationContextMock.Object,
+                        ImplementationConfigurationCache = GetMock<IImplementationConfigurationCache>().Object,
+                        ImplementationCache = GetMock<IImplementationCache>().Object
                     });
-            context = NewMock<IInjectionContext>();
         }
 
         [Test]
         public void TestBuildCreateFunc()
         {
-            var func = internalContainer.BuildCreateFunc<int, string>(context);
-            var container = NewMock<IContainerForFuncBuilder>();
-            context.ExpectGetContainerForFunc(container);
-            container.ExpectCreateForFunc(1, "s");
+            var func = internalContainer.BuildCreateFunc<int, string>(contextMock.Object);
+            var containerMock = GetMock<IContainerForFuncBuilder>();
+            contextMock.Setup(x => x.ContainerForFunc).Returns(containerMock.Object);
+            containerMock.Setup(x => x.CreateForFunc<int, string>(1)).Returns("s");
             Assert.AreEqual("s", func(1));
         }
 
         [Test]
         public void TestBuildGetFunc()
         {
-            var func = internalContainer.BuildGetFunc<int>(context);
-            var container = NewMock<IContainerForFuncBuilder>();
-            context.ExpectGetContainerForFunc(container);
-            container.ExpectGetForFunc(1);
+            var func = internalContainer.BuildGetFunc<int>(contextMock.Object);
+            var containerMock = GetMock<IContainerForFuncBuilder>();
+            contextMock.Setup(x => x.ContainerForFunc).Returns(containerMock.Object);
+            containerMock.Setup(x => x.GetForFunc<int>()).Returns(1);
             Assert.AreEqual(1, func());
         }
 
         [Test]
         public void TestCallDispose()
         {
-            var configurations = new[]
-                {NewMock<IAbstractionConfiguration>(), NewMock<IAbstractionConfiguration>(), null};
-            abstractionConfigurationCollection.ExpectGetAll(configurations);
-            var impls1 = new[] {GetMock<IImplementationConfiguration>()};
-            var impls2 = new[] {GetMock<IImplementationConfiguration>(), GetMock<IImplementationConfiguration>()};
-            configurations[0].ExpectGetImplementations(impls1);
-            impls1[0].Expect(impl => impl.DisposeInstance());
-            impls1[0].Expect(x => x.InstanceCreationOrder).Return(0).Repeat.AtLeastOnce();
-            configurations[1].ExpectGetImplementations(impls2);
-            impls2[0].Expect(impl => impl.DisposeInstance());
-            impls2[0].Expect(x => x.InstanceCreationOrder).Return(0).Repeat.AtLeastOnce();
-            impls2[1].Expect(impl => impl.DisposeInstance());
-            impls2[1].Expect(x => x.InstanceCreationOrder).Return(0).Repeat.AtLeastOnce();
+            var configurationMocks = new[] {GetMock<IAbstractionConfiguration>(), GetMock<IAbstractionConfiguration>(), null};
+            abstractionConfigurationCollectionMock.Setup(x => x.GetAll()).Returns(configurationMocks.Select(x => x?.Object).ToArray());
+            var implMocks1 = new[] {GetMock<IImplementationConfiguration>()};
+            var implMocks2 = new[] {GetMock<IImplementationConfiguration>(), GetMock<IImplementationConfiguration>()};
+            configurationMocks[0].Setup(x => x.GetImplementations()).Returns(implMocks1.Select(x => x.Object).ToArray());
+            implMocks1[0].Setup(impl => impl.DisposeInstance());
+            implMocks1[0].Setup(x => x.InstanceCreationOrder).Returns(0);
+            configurationMocks[1].Setup(x => x.GetImplementations()).Returns(implMocks2.Select(x => x.Object).ToArray());
+            implMocks2[0].Setup(impl => impl.DisposeInstance());
+            implMocks2[0].Setup(x => x.InstanceCreationOrder).Returns(0);
+            implMocks2[1].Setup(impl => impl.DisposeInstance());
+            implMocks2[1].Setup(x => x.InstanceCreationOrder).Returns(0);
             internalContainer.CallDispose();
         }
 
@@ -96,168 +91,130 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestCreate()
         {
-            var ordered = mockery.Ordered;
-            {
-                context.ExpectBeginCreate(type);
-                abstractionConfigurationCollection.ExpectGet(type, abstractionConfiguration);
-                var configurations = new[] {GetMock<IImplementationConfiguration>()};
-                abstractionConfiguration.ExpectGetImplementations(configurations);
-                configurations[0].Expect(c => c.GetFactory(Type.EmptyTypes, creationContext)).Return(classFactory);
-                classFactory.Expect(mock => mock.Create(context, new object[0])).Return("instance0");
-
-                context.ExpectEndCreate(type);
-            }
-            ordered.Dispose();
-            Assert.AreEqual("instance0", internalContainer.Create(type, context));
+            contextMock.Setup(x => x.BeginCreate(type));
+            abstractionConfigurationCollectionMock.Setup(x => x.Get(type)).Returns(abstractionConfigurationMock.Object);
+            var configurationMocks = new[] {GetMock<IImplementationConfiguration>()};
+            abstractionConfigurationMock.Setup(x => x.GetImplementations()).Returns(configurationMocks.Select(x => x.Object).ToArray());
+            configurationMocks[0].Setup(c => c.GetFactory(Type.EmptyTypes, creationContextMock.Object)).Returns(classFactoryMock.Object);
+            classFactoryMock.Setup(x => x.Create(contextMock.Object, new object[0])).Returns("instance0");
+            contextMock.Setup(x => x.EndCreate(type));
+            Assert.AreEqual("instance0", internalContainer.Create(type, contextMock.Object));
         }
 
         [Test]
         public void TestCreateGeneric()
         {
-            var ordered = mockery.Ordered;
-            context.ExpectBeginCreate(typeof(string));
-
-            abstractionConfigurationCollection.ExpectGet(typeof(string), abstractionConfiguration);
-            var configurations = new[] {GetMock<IImplementationConfiguration>()};
-            abstractionConfiguration.ExpectGetImplementations(configurations);
-            configurations[0].Expect(c => c.GetFactory(Type.EmptyTypes, creationContext)).Return(classFactory);
-            classFactory.Expect(mock => mock.Create(context, new object[0])).Return("instance0");
-
-            context.ExpectEndCreate(typeof(string));
-            ordered.Dispose();
-            Assert.AreEqual("instance0", internalContainer.Create<string>(context));
+            var stringType = typeof(string);
+            contextMock.Setup(x => x.BeginCreate(stringType));
+            abstractionConfigurationCollectionMock.Setup(x => x.Get(stringType)).Returns(abstractionConfigurationMock.Object);
+            var configurationMocks = new[] {GetMock<IImplementationConfiguration>()};
+            abstractionConfigurationMock.Setup(x => x.GetImplementations()).Returns(configurationMocks.Select(x => x.Object).ToArray());
+            configurationMocks[0].Setup(c => c.GetFactory(Type.EmptyTypes, creationContextMock.Object)).Returns(classFactoryMock.Object);
+            classFactoryMock.Setup(x => x.Create(contextMock.Object, new object[0])).Returns("instance0");
+            contextMock.Setup(x => x.EndCreate(stringType));
+            Assert.AreEqual("instance0", internalContainer.Create<string>(contextMock.Object));
         }
 
         [Test]
         public void TestCreateNullParameter()
         {
             var parameters = new object[] {null};
-            var ordered = mockery.Ordered;
-            {
-                context.ExpectBeginCreate(type);
-                abstractionConfigurationCollection.ExpectGet(type, abstractionConfiguration);
-                var configurations = new[] {GetMock<IImplementationConfiguration>()};
-                abstractionConfiguration.ExpectGetImplementations(configurations);
-                configurations[0].Expect(c => c.GetFactory(new[] {typeof(string)}, creationContext)).Return(
-                    classFactory);
-                classFactory.Expect(mock => mock.Create(context, parameters)).Return("instance0");
-
-                context.ExpectEndCreate(type);
-            }
-            ordered.Dispose();
-            Assert.AreEqual("instance0",
-                            internalContainer.Create(type, context, new[] {typeof(string)},
-                                                     new object[] {null}));
+            contextMock.Setup(x => x.BeginCreate(type));
+            abstractionConfigurationCollectionMock.Setup(x => x.Get(type)).Returns(abstractionConfigurationMock.Object);
+            var configurationMocks = new[] {GetMock<IImplementationConfiguration>()};
+            abstractionConfigurationMock.Setup(x => x.GetImplementations()).Returns(configurationMocks.Select(x => x.Object).ToArray());
+            configurationMocks[0].Setup(c => c.GetFactory(new[] {typeof(string)}, creationContextMock.Object)).Returns(classFactoryMock.Object);
+            classFactoryMock.Setup(x => x.Create(contextMock.Object, parameters)).Returns("instance0");
+            contextMock.Setup(x => x.EndCreate(type));
+            Assert.AreEqual("instance0", internalContainer.Create(type, contextMock.Object, new[] {typeof(string)}, new object[] {null}));
         }
 
         [Test]
         public void TestGet()
         {
-            var ordered = mockery.Ordered;
-            context.ExpectBeginGet(type);
-            abstractionConfigurationCollection.ExpectGet(type, abstractionConfiguration);
-
-            var implementationConfiguration = new[] {GetMock<IImplementationConfiguration>()};
-
+            contextMock.Setup(x => x.BeginGet(type));
+            abstractionConfigurationCollectionMock.Setup(x => x.Get(type)).Returns(abstractionConfigurationMock.Object);
+            var implementationConfigurationMocks = new[] {GetMock<IImplementationConfiguration>()};
             var result = new object[] {"xss"};
-            abstractionConfiguration.ExpectGetImplementations(implementationConfiguration);
-            implementationConfiguration[0].Expect(
-                configuration1 => configuration1.GetOrCreateInstance(context, creationContext)).Return("xss");
-
-            context.ExpectEndGet(type);
-            ordered.Dispose();
-            Assert.AreSame(result[0], internalContainer.Get(type, context));
+            abstractionConfigurationMock.Setup(x => x.GetImplementations()).Returns(implementationConfigurationMocks.Select(x => x.Object).ToArray());
+            implementationConfigurationMocks[0].Setup(x => x.GetOrCreateInstance(contextMock.Object, creationContextMock.Object)).Returns("xss");
+            contextMock.Setup(x => x.EndGet(type));
+            Assert.AreSame(result[0], internalContainer.Get(type, contextMock.Object));
         }
 
         [Test]
         public void TestGetAll()
         {
-            var ordered = mockery.Ordered;
-            context.ExpectBeginGetAll(type);
-            abstractionConfigurationCollection.ExpectGet(type, abstractionConfiguration);
-
-            var implementationConfiguration = new[]
+            contextMock.Setup(x => x.BeginGetAll(type));
+            abstractionConfigurationCollectionMock.Setup(x => x.Get(type)).Returns(abstractionConfigurationMock.Object);
+            var implementationConfigurationMocks = new[]
                 {
                     GetMock<IImplementationConfiguration>(),
                     GetMock<IImplementationConfiguration>()
                 };
-            abstractionConfiguration.ExpectGetImplementations(implementationConfiguration);
-            implementationConfiguration[0].Expect(
-                c => c.GetOrCreateInstance(context, creationContext)).Return(1);
-            implementationConfiguration[1].Expect(
-                c => c.GetOrCreateInstance(context, creationContext)).Return(2);
-            context.ExpectEndGetAll(type);
-            ordered.Dispose();
-            CollectionAssert.AreEqual(new object[] {1, 2}, internalContainer.GetAll(type, context));
+            abstractionConfigurationMock.Setup(x => x.GetImplementations()).Returns(implementationConfigurationMocks.Select(x => x.Object).ToArray());
+            implementationConfigurationMocks[0].Setup(c => c.GetOrCreateInstance(contextMock.Object, creationContextMock.Object)).Returns(1);
+            implementationConfigurationMocks[1].Setup(c => c.GetOrCreateInstance(contextMock.Object, creationContextMock.Object)).Returns(2);
+            contextMock.Setup(x => x.EndGetAll(type));
+            CollectionAssert.AreEqual(new object[] {1, 2}, internalContainer.GetAll(type, contextMock.Object));
         }
 
         [Test]
         public void TestGetAllCrash()
         {
-            var ordered = mockery.Ordered;
-            context.ExpectBeginGetAll(type);
-            abstractionConfigurationCollection.ExpectGet(type, abstractionConfiguration);
-            abstractionConfiguration.ExpectGetImplementations(new MockException());
-            context.ExpectCrash();
-            context.ExpectEndGetAll(type);
-            ordered.Dispose();
-            RunMethodWithException<MockException>(() => internalContainer.GetAll(type, context));
+            contextMock.Setup(x => x.BeginGetAll(type));
+            abstractionConfigurationCollectionMock.Setup(x => x.Get(type)).Returns(abstractionConfigurationMock.Object);
+            abstractionConfigurationMock.Setup(x => x.GetImplementations()).Throws(new MockException());
+            contextMock.Setup(x => x.Crash());
+            contextMock.Setup(x => x.EndGetAll(type));
+            RunMethodWithException<MockException>(() => internalContainer.GetAll(type, contextMock.Object));
         }
 
         [Test]
         public void TestGetAllWhenNoImplementations()
         {
-            context.ExpectBeginGetAll(type);
-            abstractionConfigurationCollection.ExpectGet(type, abstractionConfiguration);
-
-            var implementationConfiguration = new IImplementationConfiguration[0];
-            abstractionConfiguration.ExpectGetImplementations(implementationConfiguration);
-            context.ExpectEndGetAll(type);
-            CollectionAssert.IsEmpty(internalContainer.GetAll(type, context));
+            contextMock.Setup(x => x.BeginGetAll(type));
+            abstractionConfigurationCollectionMock.Setup(x => x.Get(type)).Returns(abstractionConfigurationMock.Object);
+            abstractionConfigurationMock.Setup(x => x.GetImplementations()).Returns(new IImplementationConfiguration[0]);
+            contextMock.Setup(x => x.EndGetAll(type));
+            CollectionAssert.IsEmpty(internalContainer.GetAll(type, contextMock.Object));
         }
 
         [Test]
         public void TestGetCrash()
         {
-            var ordered = mockery.Ordered;
-            context.ExpectBeginGet(type);
-            abstractionConfigurationCollection.ExpectGet(type, abstractionConfiguration);
-            abstractionConfiguration.ExpectGetImplementations(new MockException());
-            context.ExpectCrash();
-            context.ExpectEndGet(type);
-            ordered.Dispose();
-            RunMethodWithException<MockException>(() => internalContainer.Get(type, context));
+            contextMock.Setup(x => x.BeginGet(type));
+            abstractionConfigurationCollectionMock.Setup(x => x.Get(type)).Returns(abstractionConfigurationMock.Object);
+            abstractionConfigurationMock.Setup(x => x.GetImplementations()).Throws(new MockException());
+            contextMock.Setup(x => x.Crash());
+            contextMock.Setup(x => x.EndGet(type));
+            RunMethodWithException<MockException>(() => internalContainer.Get(type, contextMock.Object));
         }
 
         [Test]
         public void TestGetManyImpls()
         {
-            var ordered = mockery.Ordered;
-            context.ExpectBeginGet(type);
-            abstractionConfigurationCollection.ExpectGet(type, abstractionConfiguration);
-
-            var implementationConfiguration = new[]
+            contextMock.Setup(x => x.BeginGet(type));
+            abstractionConfigurationCollectionMock.Setup(x => x.Get(type)).Returns(abstractionConfigurationMock.Object);
+            var implementationConfigurationMocks = new[]
                 {
                     GetMock<IImplementationConfiguration>(),
                     GetMock<IImplementationConfiguration>()
                 };
-            implementationConfiguration[0].Expect(c => c.ObjectType).Return(typeof(int));
-            implementationConfiguration[1].Expect(c => c.ObjectType).Return(typeof(long));
-            abstractionConfiguration.ExpectGetImplementations(implementationConfiguration);
-            context.ExpectCrash();
-            context.ExpectEndGet(type);
-            ordered.Dispose();
-            RunMethodWithException<ManyImplementationsException>(() => internalContainer.Get(type, context));
+            implementationConfigurationMocks[0].Setup(c => c.ObjectType).Returns(typeof(int));
+            implementationConfigurationMocks[1].Setup(c => c.ObjectType).Returns(typeof(long));
+            abstractionConfigurationMock.Setup(x => x.GetImplementations()).Returns(implementationConfigurationMocks.Select(x => x.Object).ToArray());
+            contextMock.Setup(x => x.Crash());
+            contextMock.Setup(x => x.EndGet(type));
+            RunMethodWithException<ManyImplementationsException>(() => internalContainer.Get(type, contextMock.Object));
         }
 
-        private IContainerConfiguration configuration;
-        private IAbstractionConfiguration abstractionConfiguration;
+        private Mock<IAbstractionConfiguration> abstractionConfigurationMock;
         private Type type;
         private InternalContainer internalContainer;
-        private IAbstractionConfigurationCollection abstractionConfigurationCollection;
-        private IInjectionContext context;
-        private static IContainerConfigurator configurator;
-        private ICreationContext creationContext;
-        private IClassFactory classFactory;
+        private Mock<IAbstractionConfigurationCollection> abstractionConfigurationCollectionMock;
+        private Mock<IInjectionContext> contextMock;
+        private Mock<ICreationContext> creationContextMock;
+        private Mock<IClassFactory> classFactoryMock;
     }
 }

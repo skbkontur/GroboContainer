@@ -31,8 +31,7 @@ namespace GroboContainer.Tests.FunctionalTests
         {
             RunMethodWithException<ContainerException>(
                 () => container.Get<MyClass1>(),
-                exception =>
-                Assert.That(exception.InnerException.InnerException, Is.InstanceOf<CyclicDependencyException>()));
+                exception => Assert.That(exception.InnerException.InnerException, Is.InstanceOf<CyclicDependencyException>()));
         }
 
         [Test]
@@ -40,8 +39,7 @@ namespace GroboContainer.Tests.FunctionalTests
         {
             RunMethodWithException<ContainerException>(
                 () => container.Get<I4>(),
-                exception =>
-                Assert.That(exception.InnerException.InnerException, Is.InstanceOf<CyclicDependencyException>()));
+                exception => Assert.That(exception.InnerException.InnerException, Is.InstanceOf<CyclicDependencyException>()));
         }
 
         [Test]

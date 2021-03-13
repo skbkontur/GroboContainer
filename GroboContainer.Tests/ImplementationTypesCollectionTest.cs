@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 
 using GroboContainer.Impl.Implementations;
 using GroboContainer.New;
-using GroboContainer.Tests.TypesHelperTests;
+
+using Moq;
 
 using NUnit.Framework;
 
@@ -10,15 +12,11 @@ namespace GroboContainer.Tests
 {
     public class ImplementationTypesCollectionTest : CoreTestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
-            helper = NewMock<ITypesHelper>();
+            helperMock = GetMock<ITypesHelper>();
         }
-
-        #endregion
 
         private interface I1<T>
         {
@@ -31,13 +29,13 @@ namespace GroboContainer.Tests
             var abstractionType = typeof(long);
             var typeImpl = typeof(long);
 
-            helper.ExpectIsIgnoredImplementation(types[0], false);
-            helper.ExpectTryGetImplementation(abstractionType, types[0], null);
+            helperMock.Setup(x => x.IsIgnoredImplementation(types[0])).Returns(false);
+            helperMock.Setup(x => x.TryGetImplementation(abstractionType, types[0], It.IsAny<Func<Type, IEnumerable<Type>>>())).Returns((Type)null);
 
-            helper.ExpectIsIgnoredImplementation(types[1], false);
-            helper.ExpectTryGetImplementation(abstractionType, types[1], typeImpl);
+            helperMock.Setup(x => x.IsIgnoredImplementation(types[1])).Returns(false);
+            helperMock.Setup(x => x.TryGetImplementation(abstractionType, types[1], It.IsAny<Func<Type, IEnumerable<Type>>>())).Returns(typeImpl);
 
-            var collection = new ImplementationTypesCollection(types, helper);
+            var collection = new ImplementationTypesCollection(types, helperMock.Object);
             CollectionAssert.AreEquivalent(new[] {typeImpl}, collection.GetImplementationTypes(abstractionType));
         }
 
@@ -48,14 +46,14 @@ namespace GroboContainer.Tests
             var abstractionType = typeof(I1<int>);
             var typeImpl = typeof(Guid);
 
-            helper.ExpectIsIgnoredImplementation(types[0], false);
-            helper.ExpectTryGetImplementation(abstractionType, types[0], null);
+            helperMock.Setup(x => x.IsIgnoredImplementation(types[0])).Returns(false);
+            helperMock.Setup(x => x.TryGetImplementation(abstractionType, types[0], It.IsAny<Func<Type, IEnumerable<Type>>>())).Returns((Type)null);
 
             var definition = abstractionType.GetGenericTypeDefinition();
-            helper.ExpectIsIgnoredImplementation(definition, false);
-            helper.ExpectTryGetImplementation(abstractionType, definition, typeImpl);
+            helperMock.Setup(x => x.IsIgnoredImplementation(definition)).Returns(false);
+            helperMock.Setup(x => x.TryGetImplementation(abstractionType, definition, It.IsAny<Func<Type, IEnumerable<Type>>>())).Returns(typeImpl);
 
-            var collection = new ImplementationTypesCollection(types, helper);
+            var collection = new ImplementationTypesCollection(types, helperMock.Object);
             CollectionAssert.AreEquivalent(new[] {typeImpl}, collection.GetImplementationTypes(abstractionType));
         }
 
@@ -66,10 +64,10 @@ namespace GroboContainer.Tests
             var abstractionType = typeof(I1<int>);
             var typeImpl = abstractionType;
 
-            helper.ExpectIsIgnoredImplementation(types[0], false);
-            helper.ExpectTryGetImplementation(abstractionType, types[0], typeImpl);
+            helperMock.Setup(x => x.IsIgnoredImplementation(types[0])).Returns(false);
+            helperMock.Setup(x => x.TryGetImplementation(abstractionType, types[0], It.IsAny<Func<Type, IEnumerable<Type>>>())).Returns(typeImpl);
 
-            var collection = new ImplementationTypesCollection(types, helper);
+            var collection = new ImplementationTypesCollection(types, helperMock.Object);
             CollectionAssert.AreEquivalent(new[] {typeImpl}, collection.GetImplementationTypes(abstractionType));
         }
 
@@ -79,14 +77,14 @@ namespace GroboContainer.Tests
             var types = new[] {typeof(int)};
             var abstractionType = typeof(long);
 
-            helper.ExpectIsIgnoredImplementation(types[0], false);
-            helper.ExpectTryGetImplementation(abstractionType, types[0], null);
-            helper.ExpectIsIgnoredImplementation(abstractionType, true);
+            helperMock.Setup(x => x.IsIgnoredImplementation(types[0])).Returns(false);
+            helperMock.Setup(x => x.TryGetImplementation(abstractionType, types[0], It.IsAny<Func<Type, IEnumerable<Type>>>())).Returns((Type)null);
+            helperMock.Setup(x => x.IsIgnoredImplementation(abstractionType)).Returns(true);
 
-            var collection = new ImplementationTypesCollection(types, helper);
+            var collection = new ImplementationTypesCollection(types, helperMock.Object);
             CollectionAssert.IsEmpty(collection.GetImplementationTypes(abstractionType));
         }
 
-        private ITypesHelper helper;
+        private Mock<ITypesHelper> helperMock;
     }
 }

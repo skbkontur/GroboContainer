@@ -2,53 +2,51 @@ using GroboContainer.Core;
 using GroboContainer.Impl.ClassCreation;
 using GroboContainer.Impl.Injection;
 
+using Moq;
+
 using NUnit.Framework;
 
 namespace GroboContainer.Tests.ImplTests
 {
     public class FuncBuilderTest : CoreTestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
             funcBuilder = new FuncBuilder();
-            context = NewMock<IInjectionContext>();
-            container = NewMock<IContainerForFuncBuilder>();
+            contextMock = GetMock<IInjectionContext>();
+            containerMock = GetMock<IContainerForFuncBuilder>();
         }
-
-        #endregion
 
         [Test]
         public void TestGet()
         {
-            var func = funcBuilder.BuildGetFunc<int>(context);
-            context.ExpectGetContainerForFunc(container);
-            container.ExpectGetForFunc(1);
+            var func = funcBuilder.BuildGetFunc<int>(contextMock.Object);
+            contextMock.Setup(x => x.ContainerForFunc).Returns(containerMock.Object);
+            containerMock.Setup(x => x.GetForFunc<int>()).Returns(1);
             Assert.AreEqual(1, func());
         }
 
         [Test]
         public void TestNoArgs()
         {
-            var func = funcBuilder.BuildCreateFunc<int>(context);
-            context.ExpectGetContainerForFunc(container);
-            container.ExpectCreateForFunc(1);
+            var func = funcBuilder.BuildCreateFunc<int>(contextMock.Object);
+            contextMock.Setup(x => x.ContainerForFunc).Returns(containerMock.Object);
+            containerMock.Setup(x => x.CreateForFunc<int>()).Returns(1);
             Assert.AreEqual(1, func());
         }
 
         [Test]
         public void TestOneArg()
         {
-            var func = funcBuilder.BuildCreateFunc<string, int>(context);
-            context.ExpectGetContainerForFunc(container);
-            container.ExpectCreateForFunc("q", 1);
+            var func = funcBuilder.BuildCreateFunc<string, int>(contextMock.Object);
+            contextMock.Setup(x => x.ContainerForFunc).Returns(containerMock.Object);
+            containerMock.Setup(x => x.CreateForFunc<string, int>("q")).Returns(1);
             Assert.AreEqual(1, func("q"));
         }
 
         private IFuncBuilder funcBuilder;
-        private IInjectionContext context;
-        private IContainerForFuncBuilder container;
+        private Mock<IInjectionContext> contextMock;
+        private Mock<IContainerForFuncBuilder> containerMock;
     }
 }

@@ -3,8 +3,6 @@ using System;
 using GroboContainer.Impl.Implementations;
 using GroboContainer.Impl.Injection;
 
-using NMock2;
-
 using NUnit.Framework;
 
 namespace GroboContainer.Tests.ImplTests.ImplementationTests
@@ -14,9 +12,9 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
         [Test]
         public void TestDispose()
         {
-            var disposable = NewMock<IDisposable>();
-            var configuration = new InstanceImplementationConfiguration(new TestClassWrapperCreator(), disposable);
-            Expect.Once.On(disposable).Method("Dispose");
+            var disposableMock = GetMock<IDisposable>();
+            var configuration = new InstanceImplementationConfiguration(new TestClassWrapperCreator(), disposableMock.Object);
+            disposableMock.Setup(x => x.Dispose());
             configuration.DisposeInstance();
         }
 
@@ -39,9 +37,9 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
         {
             var instance = new object();
             var configuration = new InstanceImplementationConfiguration(new TestClassWrapperCreator(), instance);
-            var context = NewMock<IInjectionContext>();
-            context.ExpectReused(instance.GetType());
-            Assert.AreSame(instance, configuration.GetOrCreateInstance(context, null));
+            var contextMock = GetMock<IInjectionContext>();
+            contextMock.Setup(x => x.Reused(instance.GetType()));
+            Assert.AreSame(instance, configuration.GetOrCreateInstance(contextMock.Object, null));
         }
     }
 }

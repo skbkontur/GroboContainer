@@ -26,8 +26,7 @@ namespace GroboContainer.Impl
         T Create<T1, T2, T>(IInjectionContext context, T1 arg1, T2 arg2);
         T Create<T1, T2, T3, T>(IInjectionContext context, T1 arg1, T2 arg2, T3 arg3);
 
-        T Create<T1, T2, T3, T4, T>(IInjectionContext context, T1 arg1, T2 arg2, T3 arg3,
-                                    T4 arg4);
+        T Create<T1, T2, T3, T4, T>(IInjectionContext context, T1 arg1, T2 arg2, T3 arg3, T4 arg4);
 
         object Create(Type abstractionType, IInjectionContext context);
         object Create(Type abstractionType, IInjectionContext context, Type[] parameterTypes, object[] parameters);

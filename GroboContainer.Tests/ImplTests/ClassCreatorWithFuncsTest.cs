@@ -4,30 +4,26 @@ using GroboContainer.Impl;
 using GroboContainer.Impl.ClassCreation;
 using GroboContainer.Impl.Injection;
 
-using NUnit.Framework;
+using Moq;
 
-using Rhino.Mocks;
+using NUnit.Framework;
 
 namespace GroboContainer.Tests.ImplTests
 {
     public class ClassCreatorWithFuncsTest : CoreTestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
             classCreator = new ClassCreator(new FuncHelper());
-            container = NewMock<IInternalContainer>();
-            context = GetMock<IInjectionContext>();
+            containerMock = GetMock<IInternalContainer>();
+            contextMock = GetMock<IInjectionContext>();
         }
-
-        #endregion
 
         [Test]
         public void TestSimple()
         {
-            IClassFactory classFactory =
+            var classFactory =
                 classCreator.BuildFactory(
                     new ContainerConstructorInfo
                         {
@@ -39,18 +35,18 @@ namespace GroboContainer.Tests.ImplTests
                     Assert.AreEqual(10, arg);
                     return c2;
                 };
-            
-            context.Expect(x => x.InternalContainer).Return(container);
-            context.Expect(x => x.BeginConstruct(typeof(C1)));
-            context.Expect(x => x.EndConstruct(typeof(C1)));
-            container.ExpectBuildCreateFunc(context, func);
-            var c1 = (C1)classFactory.Create(context, new object[0]);
+
+            contextMock.Setup(x => x.InternalContainer).Returns(containerMock.Object);
+            contextMock.Setup(x => x.BeginConstruct(typeof(C1)));
+            contextMock.Setup(x => x.EndConstruct(typeof(C1)));
+            containerMock.Setup(x => x.BuildCreateFunc<int, I2>(contextMock.Object)).Returns(func);
+            var c1 = (C1)classFactory.Create(contextMock.Object, new object[0]);
             Assert.AreSame(c2, c1.i2);
         }
 
         private ClassCreator classCreator;
-        private IInternalContainer container;
-        private IInjectionContext context;
+        private Mock<IInternalContainer> containerMock;
+        private Mock<IInjectionContext> contextMock;
 
         // ReSharper disable UnusedMember.Local
         private interface I1

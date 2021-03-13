@@ -28,8 +28,7 @@ namespace GroboContainer.Tests.FunctionalTests
         [Test]
         public void Test()
         {
-            RunFail<CyclicDependencyException>(() =>
-                                               container.Get<MyClass1>());
+            RunFail<CyclicDependencyException>(() => container.Get<MyClass1>());
         }
 
         [Test]
@@ -50,8 +49,7 @@ namespace GroboContainer.Tests.FunctionalTests
         {
             RunMethodWithException<ContainerException>(
                 () => container.Get<MyClass3>(),
-                exception =>
-                Assert.That(exception.InnerException, Is.InstanceOf<CyclicDependencyException>()));
+                exception => Assert.That(exception.InnerException, Is.InstanceOf<CyclicDependencyException>()));
         }
 
         [Test]

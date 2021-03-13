@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 using GroboContainer.Impl;
 using GroboContainer.Impl.Contexts;
@@ -19,13 +20,12 @@ namespace GroboContainer.Tests.ContextsTests
             var internalContainerMock = GetMock<IInternalContainer>();
             internalContainerMock.Setup(c => c.CreateNewLog()).Returns((IGroboContainerLog)null);
             IContextHolder holder = new ContextHolder(new InjectionContext(internalContainerMock.Object), threadId);
-            Action check = () =>
+            var task = Task.Run(() =>
                 {
                     Assert.AreNotEqual(threadId, Thread.CurrentThread.ManagedThreadId);
                     CheckGet(holder);
-                };
-            var result = check.BeginInvoke(null, null);
-            Assert.That(result.AsyncWaitHandle.WaitOne(1000), "поток завис");
+                });
+            task.Wait(TimeSpan.FromSeconds(1));
             holder.KillContext();
             CheckGet(holder);
         }

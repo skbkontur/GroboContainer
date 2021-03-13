@@ -4,7 +4,6 @@ using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
 using GroboContainer.Impl.Implementations;
 using GroboContainer.New;
-using GroboContainer.Tests.TypesHelperTests;
 
 using Moq;
 
@@ -17,16 +16,16 @@ namespace GroboContainer.Tests.AbstractionTests
         public override void SetUp()
         {
             base.SetUp();
-            typesHelper = NewMock<ITypesHelper>();
+            typesHelperMock = GetMock<ITypesHelper>();
             abstractionsCollectionMock = GetMock<IAbstractionsCollection>();
             implementationConfigurationCacheMock = GetMock<IImplementationConfigurationCache>();
-            factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollectionMock.Object, implementationConfigurationCacheMock.Object);
+            factory = new AutoAbstractionConfigurationFactory(typesHelperMock.Object, abstractionsCollectionMock.Object, implementationConfigurationCacheMock.Object);
         }
 
         [Test]
         public void TestIgnoredAbstraction()
         {
-            typesHelper.ExpectIsIgnoredAbstraction(typeof(int), true);
+            typesHelperMock.Setup(x => x.IsIgnoredAbstraction(typeof(int))).Returns(true);
             var configuration = factory.CreateByType(typeof(int));
             Assert.That(configuration, Is.InstanceOf<StupidAbstractionConfiguration>());
             var implementations = configuration.GetImplementations();
@@ -36,7 +35,7 @@ namespace GroboContainer.Tests.AbstractionTests
         [Test]
         public void TestOk()
         {
-            typesHelper.ExpectIsIgnoredAbstraction(typeof(int), false);
+            typesHelperMock.Setup(x => x.IsIgnoredAbstraction(typeof(int))).Returns(false);
             var abstractionMock = GetMock<IAbstraction>();
             abstractionsCollectionMock.Setup(collection => collection.Get(typeof(int))).Returns(abstractionMock.Object);
             var implementationMocks = new[] {GetMock<IImplementation>(), GetMock<IImplementation>()};
@@ -58,7 +57,7 @@ namespace GroboContainer.Tests.AbstractionTests
             CollectionAssert.AreEqual(implementationConfigMocks.Select(x => x.Object).ToArray(), configurations);
         }
 
-        private ITypesHelper typesHelper;
+        private Mock<ITypesHelper> typesHelperMock;
         private AutoAbstractionConfigurationFactory factory;
         private Mock<IAbstractionsCollection> abstractionsCollectionMock;
         private Mock<IImplementationConfigurationCache> implementationConfigurationCacheMock;

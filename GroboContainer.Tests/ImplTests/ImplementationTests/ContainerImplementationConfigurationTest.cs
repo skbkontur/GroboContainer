@@ -10,15 +10,11 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
 {
     public class ContainerImplementationConfigurationTest : CoreTestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
             configuration = new ContainerImplementationConfiguration();
         }
-
-        #endregion
 
         [Test]
         public void TestDisposeDoNothing()
@@ -29,18 +25,17 @@ namespace GroboContainer.Tests.ImplTests.ImplementationTests
         [Test]
         public void TestGetFactoryNotSupported()
         {
-            RunMethodWithException<NotSupportedException>(() =>
-                                                          configuration.GetFactory(Type.EmptyTypes, null));
+            RunMethodWithException<NotSupportedException>(() => configuration.GetFactory(Type.EmptyTypes, null));
         }
 
         [Test]
         public void TestGetInstance()
         {
-            var context = NewMock<IInjectionContext>();
-            var container = NewMock<IContainer>();
-            context.ExpectGetContainer(container);
-            context.ExpectReused(typeof(IContainer));
-            Assert.AreSame(container, configuration.GetOrCreateInstance(context, null));
+            var contextMock = GetMock<IInjectionContext>();
+            var containerMock = GetMock<IContainer>();
+            contextMock.Setup(x => x.Container).Returns(containerMock.Object);
+            contextMock.Setup(x => x.Reused(typeof(IContainer)));
+            Assert.AreSame(containerMock.Object, configuration.GetOrCreateInstance(contextMock.Object, null));
         }
 
         private ContainerImplementationConfiguration configuration;

@@ -16,7 +16,7 @@ namespace GroboContainer.Tests.ImplTests
         {
             base.SetUp();
             classCreator = new ClassCreator(new FuncHelper());
-            container = NewMock<IInternalContainer>();
+            containerMock = GetMock<IInternalContainer>();
             contextMock = GetMock<IInjectionContext>();
         }
 
@@ -35,17 +35,17 @@ namespace GroboContainer.Tests.ImplTests
                     Assert.AreEqual(10, arg);
                     return c2;
                 };
-            
-            contextMock.Setup(x => x.InternalContainer).Returns(container);
+
+            contextMock.Setup(x => x.InternalContainer).Returns(containerMock.Object);
             contextMock.Setup(x => x.BeginConstruct(typeof(C1)));
             contextMock.Setup(x => x.EndConstruct(typeof(C1)));
-            container.ExpectBuildCreateFunc(contextMock.Object, func);
+            containerMock.Setup(x => x.BuildCreateFunc<int, I2>(contextMock.Object)).Returns(func);
             var c1 = (C1)classFactory.Create(contextMock.Object, new object[0]);
             Assert.AreSame(c2, c1.i2);
         }
 
         private ClassCreator classCreator;
-        private IInternalContainer container;
+        private Mock<IInternalContainer> containerMock;
         private Mock<IInjectionContext> contextMock;
 
         // ReSharper disable UnusedMember.Local

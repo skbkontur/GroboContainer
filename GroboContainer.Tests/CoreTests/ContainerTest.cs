@@ -7,10 +7,12 @@ using GroboContainer.Impl.Contexts;
 using GroboContainer.Impl.Exceptions;
 using GroboContainer.Impl.Injection;
 using GroboContainer.Impl.Logging;
-using GroboContainer.Tests.ImplTests;
-using GroboContainer.Tests.InjectionTests;
+
+using Moq;
 
 using NUnit.Framework;
+
+using MockException = GroboContainer.Tests.ImplTests.MockException;
 
 namespace GroboContainer.Tests.CoreTests
 {
@@ -19,22 +21,21 @@ namespace GroboContainer.Tests.CoreTests
         public override void SetUp()
         {
             base.SetUp();
-            internalContainer = NewMock<IInternalContainer>();
-            holder = NewMock<IContextHolder>();
-            context = NewMock<IInjectionContext>();
-            log = NewMock<IGroboContainerLog>();
-            container = new Container(internalContainer, holder, log);
+            internalContainerMock = GetMock<IInternalContainer>();
+            holderMock = GetMock<IContextHolder>();
+            contextMock = GetMock<IInjectionContext>();
+            logMock = GetMock<IGroboContainerLog>();
+            container = new Container(internalContainerMock.Object, holderMock.Object, logMock.Object);
         }
 
         [Test]
         public void TestCrashGet()
         {
-            holder.ExpectGetContext(internalContainer, context);
-            context.ExpectGetLog(log);
+            holderMock.Setup(x => x.GetContext(internalContainerMock.Object)).Returns(contextMock.Object);
+            contextMock.Setup(x => x.GetLog()).Returns(logMock.Object);
             var mockException = new MockException();
-            internalContainer.ExpectGetAndFail<int>(context, mockException);
-            context.ExpectGetLog(log);
-            log.ExpectGetLog("zzz");
+            internalContainerMock.Setup(x => x.Get<int>(contextMock.Object)).Throws(mockException);
+            logMock.Setup(x => x.GetLog()).Returns("zzz");
             RunMethodWithException<ContainerException>(() => container.Get<int>(),
                                                        exception =>
                                                            {
@@ -46,12 +47,11 @@ namespace GroboContainer.Tests.CoreTests
         [Test]
         public void TestCrashObjectGet()
         {
-            holder.ExpectGetContext(internalContainer, context);
-            context.ExpectGetLog(log);
+            holderMock.Setup(x => x.GetContext(internalContainerMock.Object)).Returns(contextMock.Object);
+            contextMock.Setup(x => x.GetLog()).Returns(logMock.Object);
             var mockException = new MockException();
-            internalContainer.ExpectGetAndFail(typeof(int), context, mockException);
-            context.ExpectGetLog(log);
-            log.ExpectGetLog("zzz");
+            internalContainerMock.Setup(x => x.Get(typeof(int), contextMock.Object)).Throws(mockException);
+            logMock.Setup(x => x.GetLog()).Returns("zzz");
             RunMethodWithException<ContainerException>(() => container.Get(typeof(int)),
                                                        exception =>
                                                            {
@@ -63,60 +63,60 @@ namespace GroboContainer.Tests.CoreTests
         [Test]
         public void TestCreateGeneric()
         {
-            holder.ExpectGetContext(internalContainer, context);
-            context.ExpectGetLog(log);
-            internalContainer.ExpectCreate(context, 1);
+            holderMock.Setup(x => x.GetContext(internalContainerMock.Object)).Returns(contextMock.Object);
+            contextMock.Setup(x => x.GetLog()).Returns(logMock.Object);
+            internalContainerMock.Setup(x => x.Create<int>(contextMock.Object)).Returns(1);
             Assert.AreEqual(1, container.Create<int>());
-            log.ExpectGetLog("zzz");
+            logMock.Setup(x => x.GetLog()).Returns("zzz");
             Assert.AreEqual("zzz", container.LastConstructionLog);
         }
 
         [Test]
         public void TestCreateGeneric2Args()
         {
-            holder.ExpectGetContext(internalContainer, context);
-            context.ExpectGetLog(log);
+            holderMock.Setup(x => x.GetContext(internalContainerMock.Object)).Returns(contextMock.Object);
+            contextMock.Setup(x => x.GetLog()).Returns(logMock.Object);
             var arg2 = Guid.NewGuid();
-            internalContainer.ExpectCreate(context, "s", arg2, 1);
+            internalContainerMock.Setup(x => x.Create<string, Guid, int>(contextMock.Object, "s", arg2)).Returns(1);
             Assert.AreEqual(1, container.Create<string, Guid, int>("s", arg2));
         }
 
         [Test]
         public void TestCreateGeneric3Args()
         {
-            holder.ExpectGetContext(internalContainer, context);
-            context.ExpectGetLog(log);
+            holderMock.Setup(x => x.GetContext(internalContainerMock.Object)).Returns(contextMock.Object);
+            contextMock.Setup(x => x.GetLog()).Returns(logMock.Object);
             var arg2 = Guid.NewGuid();
-            internalContainer.ExpectCreate(context, "s", arg2, true, 1);
+            internalContainerMock.Setup(x => x.Create<string, Guid, bool, int>(contextMock.Object, "s", arg2, true)).Returns(1);
             Assert.AreEqual(1, container.Create<string, Guid, bool, int>("s", arg2, true));
         }
 
         [Test]
         public void TestCreateGeneric4Args()
         {
-            holder.ExpectGetContext(internalContainer, context);
-            context.ExpectGetLog(log);
+            holderMock.Setup(x => x.GetContext(internalContainerMock.Object)).Returns(contextMock.Object);
+            contextMock.Setup(x => x.GetLog()).Returns(logMock.Object);
             var arg2 = Guid.NewGuid();
             var ints = new[] {2};
-            internalContainer.ExpectCreate(context, "s", arg2, true, ints, 1);
+            internalContainerMock.Setup(x => x.Create<string, Guid, bool, int[], int>(contextMock.Object, "s", arg2, true, ints)).Returns(1);
             Assert.AreEqual(1, container.Create<string, Guid, bool, int[], int>("s", arg2, true, ints));
         }
 
         [Test]
         public void TestCreateGenericOneArg()
         {
-            holder.ExpectGetContext(internalContainer, context);
-            context.ExpectGetLog(log);
-            internalContainer.ExpectCreate(context, "s", 1);
+            holderMock.Setup(x => x.GetContext(internalContainerMock.Object)).Returns(contextMock.Object);
+            contextMock.Setup(x => x.GetLog()).Returns(logMock.Object);
+            internalContainerMock.Setup(x => x.Create<string, int>(contextMock.Object, "s")).Returns(1);
             Assert.AreEqual(1, container.Create<string, int>("s"));
         }
 
         [Test]
         public void TestDispose()
         {
-            holder.ExpectGetContext(internalContainer, context);
-            context.ExpectGetInternalContainer(internalContainer);
-            internalContainer.ExpectCallDispose();
+            holderMock.Setup(x => x.GetContext(internalContainerMock.Object)).Returns(contextMock.Object);
+            contextMock.Setup(x => x.InternalContainer).Returns(internalContainerMock.Object);
+            internalContainerMock.Setup(x => x.CallDispose());
             container.Dispose();
         }
 
@@ -130,18 +130,19 @@ namespace GroboContainer.Tests.CoreTests
         [Test]
         public void TestStupid()
         {
-            holder.ExpectGetContext(internalContainer, context);
-            context.ExpectGetLog(log);
-            internalContainer.ExpectGet(context, 1);
+            holderMock.Setup(x => x.GetContext(internalContainerMock.Object)).Returns(contextMock.Object);
+            contextMock.Setup(x => x.GetLog()).Returns(logMock.Object);
+            internalContainerMock.Setup(x => x.Get<int>(contextMock.Object)).Returns(1);
             Assert.AreEqual(1, container.Get<int>());
-            log.ExpectGetLog("zzz");
+
+            logMock.Setup(x => x.GetLog()).Returns("zzz");
             Assert.AreEqual("zzz", container.LastConstructionLog);
         }
 
         private Container container;
-        private IInternalContainer internalContainer;
-        private IContextHolder holder;
-        private IInjectionContext context;
-        private IGroboContainerLog log;
+        private Mock<IInternalContainer> internalContainerMock;
+        private Mock<IContextHolder> holderMock;
+        private Mock<IInjectionContext> contextMock;
+        private Mock<IGroboContainerLog> logMock;
     }
 }

@@ -3,8 +3,6 @@ using System.Threading;
 
 using Moq;
 
-using NMock2;
-
 using NUnit.Framework;
 
 namespace GroboContainer.Tests
@@ -14,13 +12,7 @@ namespace GroboContainer.Tests
         [SetUp]
         public virtual void SetUp()
         {
-            mockery = new Mockery();
             mockRepository = new MockRepository(MockBehavior.Strict);
-        }
-
-        protected static T NewMock<T>()
-        {
-            return mockery.NewMock<T>();
         }
 
         protected Mock<T> GetMock<T>() where T : class
@@ -35,8 +27,6 @@ namespace GroboContainer.Tests
             {
                 mockRepository.VerifyAll();
                 mockRepository.VerifyNoOtherCalls();
-
-                mockery.Dispose();
             }
             finally
             {
@@ -73,7 +63,6 @@ namespace GroboContainer.Tests
             Assert.Fail("Method didn't thrown expected exception " + typeof(TE));
         }
 
-        protected static Mockery mockery;
         private MockRepository mockRepository;
     }
 }

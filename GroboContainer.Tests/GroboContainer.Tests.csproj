@@ -16,10 +16,4 @@
     <ProjectReference Include="..\GroboContainer\GroboContainer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="NMock2">
-      <HintPath>..\Assemblies\NMock2.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

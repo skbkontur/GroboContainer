@@ -5,7 +5,8 @@ using GroboContainer.Impl;
 using GroboContainer.Impl.Contexts;
 using GroboContainer.Impl.Injection;
 using GroboContainer.Impl.Logging;
-using GroboContainer.Tests.ImplTests;
+
+using Moq;
 
 using NUnit.Framework;
 
@@ -16,53 +17,51 @@ namespace GroboContainer.Tests.InjectionTests
         public override void SetUp()
         {
             base.SetUp();
-            internalContainer = NewMock<IInternalContainer>();
-            log = NewMock<IGroboContainerLog>();
-            holder = null;
-            injectionContext = new InjectionContext(internalContainer, log, GetHolder);
+            internalContainerMock = GetMock<IInternalContainer>();
+            logMock = GetMock<IGroboContainerLog>();
+            holderMock = null;
+            injectionContext = new InjectionContext(internalContainerMock.Object, logMock.Object, GetHolder);
         }
 
         private IContextHolder GetHolder(IInjectionContext context, int threadId)
         {
             Assert.AreSame(injectionContext, context);
-            Assert.IsNull(holder, "duplicate call");
-            holder = NewMock<IContextHolder>();
-            return holder;
+            Assert.IsNull(holderMock, "duplicate call");
+            holderMock = GetMock<IContextHolder>();
+            return holderMock.Object;
         }
 
         [Test]
         public void TestCycle()
         {
             var type = typeof(int);
-            log.ExpectBeginConstruct(type);
+            logMock.Setup(x => x.BeginConstruct(type));
             injectionContext.BeginConstruct(type);
 
-            log.ExpectBeginConstruct(typeof(long));
+            logMock.Setup(x => x.BeginConstruct(typeof(long)));
             injectionContext.BeginConstruct(typeof(long));
-            log.ExpectGetLog("zzz");
-            log.ExpectBeginConstruct(type);
+            logMock.Setup(x => x.GetLog()).Returns("zzz");
+            logMock.Setup(x => x.BeginConstruct(type));
             RunMethodWithException<CyclicDependencyException>(() => injectionContext.BeginConstruct(type), "zzz");
         }
 
         [Test]
         public void TestGetContainers()
         {
-            Assert.IsNull(holder);
+            Assert.IsNull(holderMock);
             var returnedContainer = injectionContext.Container;
-            var contextHolder = holder;
-            Assert.IsNotNull(contextHolder);
+            Assert.IsNotNull(holderMock?.Object);
             Assert.That(returnedContainer, Is.InstanceOf<Container>());
             Assert.AreSame(returnedContainer, injectionContext.Container);
-            Assert.AreSame(contextHolder, holder);
         }
 
         [Test]
         public void TestKillNoHolder()
         {
             var type = typeof(int);
-            log.ExpectBeginConstruct(type);
+            logMock.Setup(x => x.BeginConstruct(type));
             injectionContext.BeginConstruct(type);
-            log.ExpectEndConstruct(type);
+            logMock.Setup(x => x.EndConstruct(type));
             injectionContext.EndConstruct(type);
         }
 
@@ -70,11 +69,11 @@ namespace GroboContainer.Tests.InjectionTests
         public void TestKillWithContainer()
         {
             var type = typeof(int);
-            log.ExpectBeginConstruct(type);
+            logMock.Setup(x => x.BeginConstruct(type));
             injectionContext.BeginConstruct(type);
             injectionContext.Container.ToString(); //container created
-            log.ExpectEndConstruct(type);
-            holder.ExpectKillContext();
+            logMock.Setup(x => x.EndConstruct(type));
+            holderMock.Setup(x => x.KillContext());
             injectionContext.EndConstruct(type);
         }
 
@@ -82,44 +81,44 @@ namespace GroboContainer.Tests.InjectionTests
         public void TestLogging()
         {
             var type = typeof(int);
-            log.ExpectBeginConstruct(type);
+            logMock.Setup(x => x.BeginConstruct(type));
             injectionContext.BeginConstruct(type);
 
-            log.ExpectEndConstruct(type);
+            logMock.Setup(x => x.EndConstruct(type));
             injectionContext.EndConstruct(type);
 
-            log.ExpectBeginCreate(type);
+            logMock.Setup(x => x.BeginCreate(type));
             injectionContext.BeginCreate(type);
 
-            log.ExpectEndCreate(type);
+            logMock.Setup(x => x.EndCreate(type));
             injectionContext.EndCreate(type);
 
-            log.ExpectCrash();
+            logMock.Setup(x => x.Crash());
             injectionContext.Crash();
 
             var type1 = typeof(long);
-            log.ExpectBeginGet(type1);
+            logMock.Setup(x => x.BeginGet(type1));
             injectionContext.BeginGet(type1);
 
-            log.ExpectEndGet(type1);
+            logMock.Setup(x => x.EndGet(type1));
             injectionContext.EndGet(type1);
 
-            log.ExpectBeginGetAll(type1);
+            logMock.Setup(x => x.BeginGetAll(type1));
             injectionContext.BeginGetAll(type1);
 
-            log.ExpectEndGetAll(type1);
+            logMock.Setup(x => x.EndGetAll(type1));
             injectionContext.EndGetAll(type1);
 
-            log.ExpectReused(type1);
+            logMock.Setup(x => x.Reused(type1));
             injectionContext.Reused(type1);
         }
 
         [Test]
         public void TestRealConstructor()
         {
-            var internalContainerMock = GetMock<IInternalContainer>();
-            internalContainerMock.Setup(c => c.CreateNewLog()).Returns(new GroboContainerLog("root"));
-            injectionContext = new InjectionContext(internalContainerMock.Object);
+            var internalContainerMock2 = GetMock<IInternalContainer>();
+            internalContainerMock2.Setup(c => c.CreateNewLog()).Returns(new GroboContainerLog("root"));
+            injectionContext = new InjectionContext(internalContainerMock2.Object);
             Assert.That(injectionContext.Container, Is.InstanceOf<Container>());
             Assert.That(((ContextHolder)((IContainerInternals)injectionContext.Container).ContextHolder).OwnerThreadId, Is.EqualTo(Thread.CurrentThread.ManagedThreadId));
         }
@@ -127,13 +126,13 @@ namespace GroboContainer.Tests.InjectionTests
         [Test]
         public void TestStupid()
         {
-            Assert.AreSame(internalContainer, injectionContext.InternalContainer);
-            Assert.AreSame(log, injectionContext.GetLog());
+            Assert.AreSame(internalContainerMock.Object, injectionContext.InternalContainer);
+            Assert.AreSame(logMock.Object, injectionContext.GetLog());
         }
 
-        private IInternalContainer internalContainer;
-        private IGroboContainerLog log;
+        private Mock<IInternalContainer> internalContainerMock;
+        private Mock<IGroboContainerLog> logMock;
         private InjectionContext injectionContext;
-        private IContextHolder holder;
+        private Mock<IContextHolder> holderMock;
     }
 }

@@ -1,5 +1,9 @@
 <Project>
 
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
   <!-- source line mappings are not supported in portable pdb format yet (https://github.com/dotnet/core/blob/master/Documentation/diagnostics/portable_pdb.md) -->
   <PropertyGroup>
     <DebugType>full</DebugType>

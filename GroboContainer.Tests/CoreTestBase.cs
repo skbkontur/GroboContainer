@@ -1,5 +1,7 @@
-﻿using System;
+using System;
 using System.Threading;
+
+using Moq;
 
 using NMock2;
 
@@ -13,7 +15,7 @@ namespace GroboContainer.Tests
         public virtual void SetUp()
         {
             mockery = new Mockery();
-            mockRepository = new MockRepositoryWrapper();
+            mockRepository = new MockRepository(MockBehavior.Strict);
         }
 
         protected static T NewMock<T>()
@@ -21,9 +23,9 @@ namespace GroboContainer.Tests
             return mockery.NewMock<T>();
         }
 
-        protected static T GetMock<T>()
+        protected Mock<T> GetMock<T>() where T : class
         {
-            return mockRepository.GetMock<T>();
+            return mockRepository.Create<T>();
         }
 
         [TearDown]
@@ -32,23 +34,14 @@ namespace GroboContainer.Tests
             try
             {
                 mockRepository.VerifyAll();
+                mockRepository.VerifyNoOtherCalls();
+
                 mockery.Dispose();
             }
             finally
             {
-                ClearFields();
+                FieldsCleanerCache.Clean(this);
             }
-        }
-
-        [OneTimeTearDown]
-        public void TestFixtureTearDown()
-        {
-            ClearFields();
-        }
-
-        private void ClearFields()
-        {
-            FieldsCleanerCache.Clean(this);
         }
 
         protected static void RunMethodWithException<TE>(Action method) where TE : Exception
@@ -81,6 +74,6 @@ namespace GroboContainer.Tests
         }
 
         protected static Mockery mockery;
-        private static MockRepositoryWrapper mockRepository;
+        private MockRepository mockRepository;
     }
 }

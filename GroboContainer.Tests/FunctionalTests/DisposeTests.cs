@@ -9,16 +9,12 @@ namespace GroboContainer.Tests.FunctionalTests
 {
     public class DisposeTests : ContainerTestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
             log = new HashSet<string>();
             z1Count = 0;
         }
-
-        #endregion
 
         private interface I1
         {

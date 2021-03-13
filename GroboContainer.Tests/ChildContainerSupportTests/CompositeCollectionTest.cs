@@ -1,149 +1,142 @@
 using System;
+using System.Linq;
 
 using GroboContainer.Core;
 using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.ChildContainersSupport;
 using GroboContainer.Impl.ChildContainersSupport.Selectors;
 
-using NUnit.Framework;
+using Moq;
 
-using Rhino.Mocks;
+using NUnit.Framework;
 
 namespace GroboContainer.Tests.ChildContainerSupportTests
 {
     public class CompositeCollectionTest : TestBase
     {
-        #region Setup/Teardown
-
         public override void SetUp()
         {
             base.SetUp();
-            selector = GetMock<IContainerSelector>();
-            abstractionConfiguration = GetMock<IAbstractionConfiguration>();
+            selectorMock = GetMock<IContainerSelector>();
+            abstractionConfigurationMock = GetMock<IAbstractionConfiguration>();
         }
-
-        #endregion
 
         [Test]
         public void TestAddOnlyToLeafCollection()
         {
-            var rootToChildCollections = new[]
+            var rootToChildCollectionMocks = new[]
                 {
                     GetMock<IAbstractionConfigurationCollection>(),
                     GetMock<IAbstractionConfigurationCollection>()
                 };
-            var compositeCollection = new CompositeCollection(rootToChildCollections, selector);
+            var compositeCollection = new CompositeCollection(rootToChildCollectionMocks.Select(x => x.Object).ToArray(), selectorMock.Object);
 
-            selector.Expect(s => s.Select(typeof(int), 1)).Return(0);
-            RunMethodWithException<InvalidOperationException>(() =>
-                                                              compositeCollection.Add(typeof(int),
-                                                                                      abstractionConfiguration));
+            selectorMock.Setup(s => s.Select(typeof(int), 1)).Returns(0);
+            RunMethodWithException<InvalidOperationException>(() => compositeCollection.Add(typeof(int), abstractionConfigurationMock.Object));
         }
 
         [Test]
         public void TestBadSelector()
         {
-            var rootToChildCollections = new[]
+            var rootToChildCollectionMocks = new[]
                 {
                     GetMock<IAbstractionConfigurationCollection>(),
                     GetMock<IAbstractionConfigurationCollection>()
                 };
-            var compositeCollection = new CompositeCollection(rootToChildCollections, selector);
+            var compositeCollection = new CompositeCollection(rootToChildCollectionMocks.Select(x => x.Object).ToArray(), selectorMock.Object);
 
-            selector.Expect(s => s.Select(typeof(int), 1)).Return(2);
+            selectorMock.Setup(s => s.Select(typeof(int), 1)).Returns(2);
             RunMethodWithException<BadSelectorException>(() => compositeCollection.Get(typeof(int)));
 
-            selector.Expect(s => s.Select(typeof(int), 1)).Return(-1);
+            selectorMock.Setup(s => s.Select(typeof(int), 1)).Returns(-1);
             RunMethodWithException<BadSelectorException>(() => compositeCollection.Get(typeof(int)));
         }
 
         [Test]
         public void TestMakeChildCollection()
         {
-            var rootToChildCollections = new[] {GetMock<IAbstractionConfigurationCollection>()};
-            var compositeCollection = new CompositeCollection(rootToChildCollections, selector);
+            var rootToChildCollectionMocks = new[] {GetMock<IAbstractionConfigurationCollection>()};
+            var compositeCollection = new CompositeCollection(rootToChildCollectionMocks.Select(x => x.Object).ToArray(), selectorMock.Object);
 
-            var abstractionConfigurationCollection = GetMock<IAbstractionConfigurationCollection>();
-            var childCollection = compositeCollection.MakeChildCollection(abstractionConfigurationCollection);
+            var abstractionConfigurationCollectionMock = GetMock<IAbstractionConfigurationCollection>();
+            var childCollection = compositeCollection.MakeChildCollection(abstractionConfigurationCollectionMock.Object);
 
-            var configs = new[] {GetMock<IAbstractionConfiguration>()};
-            abstractionConfigurationCollection.Expect(c => c.GetAll()).Return(configs);
-            Assert.AreSame(configs, childCollection.GetAll());
+            var configMocks = new[] {GetMock<IAbstractionConfiguration>()};
+            abstractionConfigurationCollectionMock.Setup(c => c.GetAll()).Returns(configMocks.Select(x => x.Object).ToArray());
+            Assert.AreSame(configMocks.Single().Object, childCollection.GetAll().Single());
         }
 
         [Test]
         public void TestNoItems()
         {
-            RunMethodWithException<ArgumentException>(() => new CompositeCollection(null, selector));
-            RunMethodWithException<ArgumentException>(
-                () => new CompositeCollection(new IAbstractionConfigurationCollection[0], selector));
+            RunMethodWithException<ArgumentException>(() => new CompositeCollection(null, selectorMock.Object));
+            RunMethodWithException<ArgumentException>(() => new CompositeCollection(new IAbstractionConfigurationCollection[0], selectorMock.Object));
         }
 
         [Test]
         public void TestOneCollection()
         {
-            var rootToChildCollections = new[] {GetMock<IAbstractionConfigurationCollection>()};
-            var compositeCollection = new CompositeCollection(rootToChildCollections, selector);
+            var rootToChildCollectionMocks = new[] {GetMock<IAbstractionConfigurationCollection>()};
+            var compositeCollection = new CompositeCollection(rootToChildCollectionMocks.Select(x => x.Object).ToArray(), selectorMock.Object);
 
-            selector.Expect(s => s.Select(typeof(int), 0)).Return(0);
-            rootToChildCollections[0].Expect(c => c.Add(typeof(int), abstractionConfiguration));
-            compositeCollection.Add(typeof(int), abstractionConfiguration);
+            selectorMock.Setup(s => s.Select(typeof(int), 0)).Returns(0);
+            rootToChildCollectionMocks[0].Setup(c => c.Add(typeof(int), abstractionConfigurationMock.Object));
+            compositeCollection.Add(typeof(int), abstractionConfigurationMock.Object);
 
-            selector.Expect(s => s.Select(typeof(int), 0)).Return(0);
-            rootToChildCollections[0].Expect(c => c.Get(typeof(int))).Return(abstractionConfiguration);
-            Assert.AreSame(abstractionConfiguration, compositeCollection.Get(typeof(int)));
+            selectorMock.Setup(s => s.Select(typeof(int), 0)).Returns(0);
+            rootToChildCollectionMocks[0].Setup(c => c.Get(typeof(int))).Returns(abstractionConfigurationMock.Object);
+            Assert.AreSame(abstractionConfigurationMock.Object, compositeCollection.Get(typeof(int)));
 
-            var configs = new[] {GetMock<IAbstractionConfiguration>()};
-            rootToChildCollections[0].Expect(c => c.GetAll()).Return(configs);
-            Assert.AreSame(configs, compositeCollection.GetAll());
+            var configMocks = new[] {GetMock<IAbstractionConfiguration>()};
+            rootToChildCollectionMocks[0].Setup(c => c.GetAll()).Returns(configMocks.Select(x => x.Object).ToArray());
+            Assert.AreSame(configMocks.Single().Object, compositeCollection.GetAll().Single());
         }
 
         [Test]
         public void TestTwoCollections()
         {
-            var rootToChildCollections = new[]
+            var rootToChildCollectionMocks = new[]
                 {
                     GetMock<IAbstractionConfigurationCollection>(),
                     GetMock<IAbstractionConfigurationCollection>()
                 };
-            var compositeCollection = new CompositeCollection(rootToChildCollections, selector);
+            var compositeCollection = new CompositeCollection(rootToChildCollectionMocks.Select(x => x.Object).ToArray(), selectorMock.Object);
 
-            selector.Expect(s => s.Select(typeof(int), 1)).Return(1);
-            rootToChildCollections[1].Expect(c => c.Add(typeof(int), abstractionConfiguration));
-            compositeCollection.Add(typeof(int), abstractionConfiguration);
+            selectorMock.Setup(s => s.Select(typeof(int), 1)).Returns(1);
+            rootToChildCollectionMocks[1].Setup(c => c.Add(typeof(int), abstractionConfigurationMock.Object));
+            compositeCollection.Add(typeof(int), abstractionConfigurationMock.Object);
 
-            selector.Expect(s => s.Select(typeof(int), 1)).Return(0);
-            rootToChildCollections[0].Expect(c => c.Get(typeof(int))).Return(abstractionConfiguration);
-            Assert.AreSame(abstractionConfiguration, compositeCollection.Get(typeof(int)));
+            selectorMock.Setup(s => s.Select(typeof(int), 1)).Returns(0);
+            rootToChildCollectionMocks[0].Setup(c => c.Get(typeof(int))).Returns(abstractionConfigurationMock.Object);
+            Assert.AreSame(abstractionConfigurationMock.Object, compositeCollection.Get(typeof(int)));
 
-            selector.Expect(s => s.Select(typeof(int), 1)).Return(1);
-            rootToChildCollections[1].Expect(c => c.Get(typeof(int))).Return(abstractionConfiguration);
-            Assert.AreSame(abstractionConfiguration, compositeCollection.Get(typeof(int)));
+            selectorMock.Setup(s => s.Select(typeof(int), 1)).Returns(1);
+            rootToChildCollectionMocks[1].Setup(c => c.Get(typeof(int))).Returns(abstractionConfigurationMock.Object);
+            Assert.AreSame(abstractionConfigurationMock.Object, compositeCollection.Get(typeof(int)));
 
-            var configs = new[] {GetMock<IAbstractionConfiguration>()};
-            rootToChildCollections[1].Expect(c => c.GetAll()).Return(configs);
-            Assert.AreSame(configs, compositeCollection.GetAll());
+            var configMocks = new[] {GetMock<IAbstractionConfiguration>()};
+            rootToChildCollectionMocks[1].Setup(c => c.GetAll()).Returns(configMocks.Select(x => x.Object).ToArray());
+            Assert.AreSame(configMocks.Single().Object, compositeCollection.GetAll().Single());
         }
 
         [Test]
         public void TestWorkWithIContainer()
         {
-            var rootToChildCollections = new[]
+            var rootToChildCollectionMocks = new[]
                 {
                     GetMock<IAbstractionConfigurationCollection>(),
                     GetMock<IAbstractionConfigurationCollection>()
                 };
-            var compositeCollection = new CompositeCollection(rootToChildCollections, selector);
+            var compositeCollection = new CompositeCollection(rootToChildCollectionMocks.Select(x => x.Object).ToArray(), selectorMock.Object);
 
-            rootToChildCollections[1].Expect(c => c.Add(typeof(IContainer),
-                                                        abstractionConfiguration));
-            compositeCollection.Add(typeof(IContainer), abstractionConfiguration);
+            rootToChildCollectionMocks[1].Setup(c => c.Add(typeof(IContainer), abstractionConfigurationMock.Object));
+            compositeCollection.Add(typeof(IContainer), abstractionConfigurationMock.Object);
 
-            rootToChildCollections[1].Expect(c => c.Get(typeof(IContainer))).Return(abstractionConfiguration);
-            Assert.AreSame(abstractionConfiguration, compositeCollection.Get(typeof(IContainer)));
+            rootToChildCollectionMocks[1].Setup(c => c.Get(typeof(IContainer))).Returns(abstractionConfigurationMock.Object);
+            Assert.AreSame(abstractionConfigurationMock.Object, compositeCollection.Get(typeof(IContainer)));
         }
 
-        private IContainerSelector selector;
-        private IAbstractionConfiguration abstractionConfiguration;
+        private Mock<IContainerSelector> selectorMock;
+        private Mock<IAbstractionConfiguration> abstractionConfigurationMock;
     }
 }

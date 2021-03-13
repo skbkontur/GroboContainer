@@ -9,8 +9,6 @@ using GroboContainer.Tests.ImplTests;
 
 using NUnit.Framework;
 
-using Rhino.Mocks;
-
 namespace GroboContainer.Tests.InjectionTests
 {
     public class InjectionContextTest : CoreTestBase
@@ -119,9 +117,9 @@ namespace GroboContainer.Tests.InjectionTests
         [Test]
         public void TestRealConstructor()
         {
-            var container = GetMock<IInternalContainer>();
-            container.Expect(c => c.CreateNewLog()).Return(new GroboContainerLog("root"));
-            injectionContext = new InjectionContext(container);
+            var internalContainerMock = GetMock<IInternalContainer>();
+            internalContainerMock.Setup(c => c.CreateNewLog()).Returns(new GroboContainerLog("root"));
+            injectionContext = new InjectionContext(internalContainerMock.Object);
             Assert.That(injectionContext.Container, Is.InstanceOf<Container>());
             Assert.That(((ContextHolder)((IContainerInternals)injectionContext.Container).ContextHolder).OwnerThreadId, Is.EqualTo(Thread.CurrentThread.ManagedThreadId));
         }

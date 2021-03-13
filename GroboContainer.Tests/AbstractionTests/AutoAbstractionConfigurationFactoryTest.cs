@@ -1,12 +1,14 @@
+using System.Linq;
+
 using GroboContainer.Impl.Abstractions;
 using GroboContainer.Impl.Abstractions.AutoConfiguration;
 using GroboContainer.Impl.Implementations;
 using GroboContainer.New;
 using GroboContainer.Tests.TypesHelperTests;
 
-using NUnit.Framework;
+using Moq;
 
-using Rhino.Mocks;
+using NUnit.Framework;
 
 namespace GroboContainer.Tests.AbstractionTests
 {
@@ -16,10 +18,9 @@ namespace GroboContainer.Tests.AbstractionTests
         {
             base.SetUp();
             typesHelper = NewMock<ITypesHelper>();
-            abstractionsCollection = GetMock<IAbstractionsCollection>();
-            implementationConfigurationCache = GetMock<IImplementationConfigurationCache>();
-            factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollection,
-                                                              implementationConfigurationCache);
+            abstractionsCollectionMock = GetMock<IAbstractionsCollection>();
+            implementationConfigurationCacheMock = GetMock<IImplementationConfigurationCache>();
+            factory = new AutoAbstractionConfigurationFactory(typesHelper, abstractionsCollectionMock.Object, implementationConfigurationCacheMock.Object);
         }
 
         [Test]
@@ -36,30 +37,30 @@ namespace GroboContainer.Tests.AbstractionTests
         public void TestOk()
         {
             typesHelper.ExpectIsIgnoredAbstraction(typeof(int), false);
-            var abstraction = GetMock<IAbstraction>();
-            abstractionsCollection.Expect(collection => collection.Get(typeof(int))).Return(abstraction);
-            var implementations = new[] {GetMock<IImplementation>(), GetMock<IImplementation>()};
-            var implementationConfigs = new[]
+            var abstractionMock = GetMock<IAbstraction>();
+            abstractionsCollectionMock.Setup(collection => collection.Get(typeof(int))).Returns(abstractionMock.Object);
+            var implementationMocks = new[] {GetMock<IImplementation>(), GetMock<IImplementation>()};
+            var implementationConfigMocks = new[]
                 {
                     GetMock<IImplementationConfiguration>(),
                     GetMock<IImplementationConfiguration>()
                 };
-            abstraction.Expect(abstraction1 => abstraction1.GetImplementations()).Return(implementations);
+            abstractionMock.Setup(abstraction1 => abstraction1.GetImplementations()).Returns(implementationMocks.Select(x => x.Object).ToArray());
 
-            implementationConfigurationCache.Expect(icc => icc.GetOrCreate(implementations[0])).Return(
-                implementationConfigs[0]);
-            implementationConfigurationCache.Expect(icc => icc.GetOrCreate(implementations[1])).Return(
-                implementationConfigs[1]);
+            implementationConfigurationCacheMock.Setup(icc => icc.GetOrCreate(implementationMocks[0].Object)).Returns(
+                implementationConfigMocks[0].Object);
+            implementationConfigurationCacheMock.Setup(icc => icc.GetOrCreate(implementationMocks[1].Object)).Returns(
+                implementationConfigMocks[1].Object);
 
             var configuration = factory.CreateByType(typeof(int));
             Assert.That(configuration, Is.InstanceOf<AutoAbstractionConfiguration>());
             var configurations = configuration.GetImplementations();
-            CollectionAssert.AreEqual(implementationConfigs, configurations);
+            CollectionAssert.AreEqual(implementationConfigMocks.Select(x => x.Object).ToArray(), configurations);
         }
 
         private ITypesHelper typesHelper;
         private AutoAbstractionConfigurationFactory factory;
-        private IAbstractionsCollection abstractionsCollection;
-        private IImplementationConfigurationCache implementationConfigurationCache;
+        private Mock<IAbstractionsCollection> abstractionsCollectionMock;
+        private Mock<IImplementationConfigurationCache> implementationConfigurationCacheMock;
     }
 }

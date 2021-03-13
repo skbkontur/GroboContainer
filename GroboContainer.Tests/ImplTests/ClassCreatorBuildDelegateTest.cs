@@ -4,9 +4,9 @@ using GroboContainer.Impl;
 using GroboContainer.Impl.ClassCreation;
 using GroboContainer.Impl.Injection;
 
-using NUnit.Framework;
+using Moq;
 
-using Rhino.Mocks;
+using NUnit.Framework;
 
 namespace GroboContainer.Tests.ImplTests
 {
@@ -17,8 +17,7 @@ namespace GroboContainer.Tests.ImplTests
             base.SetUp();
             classCreator = new ClassCreator(new FuncHelper());
             internalContainer = NewMock<IInternalContainer>();
-            context = GetMock<IInjectionContext>();
-            context.Stub(x => x.InternalContainer).Return(internalContainer);
+            contextMock = GetMock<IInjectionContext>();
         }
 
         public interface I1
@@ -31,10 +30,12 @@ namespace GroboContainer.Tests.ImplTests
 
         private void DoTestWithParameters(object[] objects)
         {
+            contextMock.Setup(x => x.InternalContainer).Returns(internalContainer);
+
             var i2Mock = NewMock<I2>();
-            internalContainer.ExpectGet(context, i2Mock);
-            context.Expect(c => c.BeginConstruct(typeof(C3)));
-            context.Expect(c => c.EndConstruct(typeof(C3)));
+            internalContainer.ExpectGet(contextMock.Object, i2Mock);
+            contextMock.Setup(c => c.BeginConstruct(typeof(C3)));
+            contextMock.Setup(c => c.EndConstruct(typeof(C3)));
             var factoryConstructorInfo = new ContainerConstructorInfo
                 {
                     ConstructorInfo =
@@ -46,8 +47,8 @@ namespace GroboContainer.Tests.ImplTests
                     ParametersInfo = new[] {1, -1, 0}
                 };
 
-            IClassFactory classFactory = classCreator.BuildFactory(factoryConstructorInfo, null);
-            object instance = classFactory.Create(context, objects);
+            var classFactory = classCreator.BuildFactory(factoryConstructorInfo, null);
+            var instance = classFactory.Create(contextMock.Object, objects);
             Assert.That(instance, Is.InstanceOf<C3>());
             Assert.AreSame(i2Mock, ((C3)instance).z);
             Assert.AreSame(objects[0], ((C3)instance).b);
@@ -56,10 +57,12 @@ namespace GroboContainer.Tests.ImplTests
 
         private void DoTestWithParametersBig(object[] objects)
         {
+            contextMock.Setup(x => x.InternalContainer).Returns(internalContainer);
+
             var i1Mock = NewMock<I1>();
-            internalContainer.ExpectGet(context, i1Mock);
-            context.Expect(c => c.BeginConstruct(typeof(C3)));
-            context.Expect(c => c.EndConstruct(typeof(C3)));
+            internalContainer.ExpectGet(contextMock.Object, i1Mock);
+            contextMock.Setup(c => c.BeginConstruct(typeof(C3)));
+            contextMock.Setup(c => c.EndConstruct(typeof(C3)));
             var factoryConstructorInfo = new ContainerConstructorInfo
                 {
                     ConstructorInfo =
@@ -72,8 +75,8 @@ namespace GroboContainer.Tests.ImplTests
                     ParametersInfo = new[] {3, 1, -1, 0, 2}
                 };
 
-            IClassFactory classFactory = classCreator.BuildFactory(factoryConstructorInfo, null);
-            object instance = classFactory.Create(context, objects);
+            var classFactory = classCreator.BuildFactory(factoryConstructorInfo, null);
+            var instance = classFactory.Create(contextMock.Object, objects);
             Assert.That(instance, Is.InstanceOf<C3>());
             Assert.AreSame(i1Mock, ((C3)instance).i1Field);
             Assert.AreEqual(objects[0], ((C3)instance).intField);
@@ -85,16 +88,18 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestArray()
         {
-            var i1Mock = new[] {NewMock<I1>(), NewMock<I1>()};
-            internalContainer.ExpectGetAll(context, i1Mock);
-            context.Expect(c => c.BeginConstruct(testType));
-            context.Expect(c => c.EndConstruct(testType));
+            contextMock.Setup(x => x.InternalContainer).Returns(internalContainer);
 
-            IClassFactory classFactory = classCreator.BuildFactory(new ContainerConstructorInfo
-                    {
-                        ConstructorInfo = testType.GetConstructor(new[] {typeof(I1[])})
-                    }, null);
-            object instance = classFactory.Create(context, new object[0]);
+            var i1Mock = new[] {NewMock<I1>(), NewMock<I1>()};
+            internalContainer.ExpectGetAll(contextMock.Object, i1Mock);
+            contextMock.Setup(c => c.BeginConstruct(testType));
+            contextMock.Setup(c => c.EndConstruct(testType));
+
+            var classFactory = classCreator.BuildFactory(new ContainerConstructorInfo
+                {
+                    ConstructorInfo = testType.GetConstructor(new[] {typeof(I1[])})
+                }, null);
+            var instance = classFactory.Create(contextMock.Object, new object[0]);
             Assert.That(instance, Is.InstanceOf(testType));
             Assert.AreSame(i1Mock, ((I2Impl)instance).i1Array);
         }
@@ -102,19 +107,18 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestBadFunc()
         {
-            RunMethodWithException<NotSupportedException>(
-                () =>
-                classCreator.BuildFactory(
-                    new ContainerConstructorInfo
-                        {
-                            ConstructorInfo =
-                                testType.GetConstructor(new[] {typeof(Func<I1>), typeof(long)})
-                        }, null));
+            var constructorInfo = new ContainerConstructorInfo
+                {
+                    ConstructorInfo = testType.GetConstructor(new[] {typeof(Func<I1>), typeof(long)})
+                };
+            RunMethodWithException<NotSupportedException>(() => classCreator.BuildFactory(constructorInfo, wrapperType : null));
         }
 
         [Test]
         public void TestCrashWhenValueObjectIsNull()
         {
+            contextMock.Setup(x => x.InternalContainer).Returns(internalContainer);
+
             var objects = new object[] {null};
             var factoryConstructorInfo = new ContainerConstructorInfo
                 {
@@ -125,29 +129,31 @@ namespace GroboContainer.Tests.ImplTests
                             }),
                     ParametersInfo = new[] {0}
                 };
-            context.Expect(c => c.BeginConstruct(typeof(C3)));
-            context.Expect(c => c.EndConstruct(typeof(C3)));
-            context.Expect(x => x.Crash());
-            IClassFactory classFactory = classCreator.BuildFactory(factoryConstructorInfo, null);
-            RunMethodWithException<ArgumentException>(() => classFactory.Create(context, objects), "bad parameter");
+            contextMock.Setup(c => c.BeginConstruct(typeof(C3)));
+            contextMock.Setup(c => c.EndConstruct(typeof(C3)));
+            contextMock.Setup(x => x.Crash());
+            var classFactory = classCreator.BuildFactory(factoryConstructorInfo, null);
+            RunMethodWithException<ArgumentException>(() => classFactory.Create(contextMock.Object, objects), "bad parameter");
         }
 
         [Test]
         public void TestCreateFunc()
         {
+            contextMock.Setup(x => x.InternalContainer).Returns(internalContainer);
+
             var i1Mock = new I1[1];
             Func<I1> func = () => i1Mock[0];
-            internalContainer.ExpectBuildCreateFunc(context, func);
-            internalContainer.ExpectGet(context, 1);
-            context.Expect(c => c.BeginConstruct(testType));
-            context.Expect(c => c.EndConstruct(testType));
-            IClassFactory classFactory = classCreator.BuildFactory(
-                    new ContainerConstructorInfo
-                        {
-                            ConstructorInfo =
-                                testType.GetConstructor(new[] {typeof(Func<I1>), typeof(int)})
-                        }, null);
-            object instance = classFactory.Create(context, new object[0]);
+            internalContainer.ExpectBuildCreateFunc(contextMock.Object, func);
+            internalContainer.ExpectGet(contextMock.Object, 1);
+            contextMock.Setup(c => c.BeginConstruct(testType));
+            contextMock.Setup(c => c.EndConstruct(testType));
+            var classFactory = classCreator.BuildFactory(
+                new ContainerConstructorInfo
+                    {
+                        ConstructorInfo =
+                            testType.GetConstructor(new[] {typeof(Func<I1>), typeof(int)})
+                    }, null);
+            var instance = classFactory.Create(contextMock.Object, new object[0]);
             Assert.That(instance, Is.InstanceOf(testType));
 
             Assert.AreSame(func, ((I2Impl)instance).i1Func);
@@ -158,16 +164,18 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestGet()
         {
+            contextMock.Setup(x => x.InternalContainer).Returns(internalContainer);
+
             var i1Mock = NewMock<I1>();
-            internalContainer.ExpectGet(context, i1Mock);
-            context.Expect(c => c.BeginConstruct(testType));
-            context.Expect(c => c.EndConstruct(testType));
-            IClassFactory classFactory = classCreator.BuildFactory(
-                    new ContainerConstructorInfo
-                        {
-                            ConstructorInfo = testType.GetConstructor(new[] {typeof(I1)})
-                        }, null);
-            object instance = classFactory.Create(context, new object[0]);
+            internalContainer.ExpectGet(contextMock.Object, i1Mock);
+            contextMock.Setup(c => c.BeginConstruct(testType));
+            contextMock.Setup(c => c.EndConstruct(testType));
+            var classFactory = classCreator.BuildFactory(
+                new ContainerConstructorInfo
+                    {
+                        ConstructorInfo = testType.GetConstructor(new[] {typeof(I1)})
+                    }, null);
+            var instance = classFactory.Create(contextMock.Object, new object[0]);
             Assert.That(instance, Is.InstanceOf(testType));
             Assert.AreSame(i1Mock, ((I2Impl)instance).i1);
         }
@@ -175,16 +183,18 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestWithWrap()
         {
+            contextMock.Setup(x => x.InternalContainer).Returns(internalContainer);
+
             var i1Mock = NewMock<I1>();
-            internalContainer.ExpectGet(context, i1Mock);
-            context.Expect(c => c.BeginConstruct(testType));
-            context.Expect(c => c.EndConstruct(testType));
-            IClassFactory classFactory = classCreator.BuildFactory(
-                    new ContainerConstructorInfo
-                        {
-                            ConstructorInfo = testType.GetConstructor(new[] {typeof(I1)})
-                        }, typeof(I2ImplWrapper));
-            object instance = classFactory.Create(context, new object[0]);
+            internalContainer.ExpectGet(contextMock.Object, i1Mock);
+            contextMock.Setup(c => c.BeginConstruct(testType));
+            contextMock.Setup(c => c.EndConstruct(testType));
+            var classFactory = classCreator.BuildFactory(
+                new ContainerConstructorInfo
+                    {
+                        ConstructorInfo = testType.GetConstructor(new[] {typeof(I1)})
+                    }, typeof(I2ImplWrapper));
+            var instance = classFactory.Create(contextMock.Object, new object[0]);
             Assert.That(instance, Is.InstanceOf<I2ImplWrapper>());
             Assert.AreSame(i1Mock, ((I2ImplWrapper)instance).I1);
         }
@@ -192,16 +202,18 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestClassFactoryWorks()
         {
+            contextMock.Setup(x => x.InternalContainer).Returns(internalContainer);
+
             var i1Mock = NewMock<I1>();
-            internalContainer.ExpectGet(context, i1Mock);
-            context.Expect(c => c.BeginConstruct(testType));
-            context.Expect(c => c.EndConstruct(testType));
+            internalContainer.ExpectGet(contextMock.Object, i1Mock);
+            contextMock.Setup(c => c.BeginConstruct(testType));
+            contextMock.Setup(c => c.EndConstruct(testType));
             var classFactory = classCreator.BuildFactory(
                 new ContainerConstructorInfo
                     {
                         ConstructorInfo = testType.GetConstructor(new[] {typeof(I1)})
                     }, null);
-            var instance = classFactory.Create(context, new object[0]);
+            var instance = classFactory.Create(contextMock.Object, new object[0]);
             Assert.That(instance, Is.InstanceOf(testType));
             Assert.AreSame(i1Mock, ((I2Impl)instance).i1);
         }
@@ -209,18 +221,20 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestGetFunc()
         {
+            contextMock.Setup(x => x.InternalContainer).Returns(internalContainer);
+
             var i1Mock = new I1[1];
             Func<I1> func = () => i1Mock[0];
-            internalContainer.ExpectBuildGetFunc(context, func);
-            context.Expect(c => c.BeginConstruct(testType));
-            context.Expect(c => c.EndConstruct(testType));
-            IClassFactory classFactory =
+            internalContainer.ExpectBuildGetFunc(contextMock.Object, func);
+            contextMock.Setup(c => c.BeginConstruct(testType));
+            contextMock.Setup(c => c.EndConstruct(testType));
+            var classFactory =
                 classCreator.BuildFactory(
                     new ContainerConstructorInfo
                         {
                             ConstructorInfo = testType.GetConstructor(new[] {typeof(Func<I1>)})
                         }, null);
-            object instance = classFactory.Create(context, new object[0]);
+            var instance = classFactory.Create(contextMock.Object, new object[0]);
             Assert.That(instance, Is.InstanceOf(testType));
 
             Assert.AreSame(func, ((I2Impl)instance).i1Func);
@@ -231,17 +245,19 @@ namespace GroboContainer.Tests.ImplTests
         [Test]
         public void TestGetWithRequireContracts()
         {
+            contextMock.Setup(x => x.InternalContainer).Returns(internalContainer);
+
             var i1Mock = NewMock<I1>();
-            internalContainer.ExpectGet(context, i1Mock);
-            internalContainer.ExpectGet(context, 5);
-            context.Expect(c => c.BeginConstruct(testType));
-            context.Expect(c => c.EndConstruct(testType));
-            IClassFactory classFactory = classCreator.BuildFactory(
-                    new ContainerConstructorInfo
-                        {
-                            ConstructorInfo = testType.GetConstructor(new[] {typeof(I1), typeof(int)})
-                        }, null);
-            object instance = classFactory.Create(context, new object[0]);
+            internalContainer.ExpectGet(contextMock.Object, i1Mock);
+            internalContainer.ExpectGet(contextMock.Object, 5);
+            contextMock.Setup(c => c.BeginConstruct(testType));
+            contextMock.Setup(c => c.EndConstruct(testType));
+            var classFactory = classCreator.BuildFactory(
+                new ContainerConstructorInfo
+                    {
+                        ConstructorInfo = testType.GetConstructor(new[] {typeof(I1), typeof(int)})
+                    }, null);
+            var instance = classFactory.Create(contextMock.Object, new object[0]);
             Assert.That(instance, Is.InstanceOf(testType));
             Assert.AreSame(i1Mock, ((I2Impl)instance).i1);
         }
@@ -272,7 +288,7 @@ namespace GroboContainer.Tests.ImplTests
 
         private ClassCreator classCreator;
         private IInternalContainer internalContainer;
-        private IInjectionContext context;
+        private Mock<IInjectionContext> contextMock;
         private readonly Type testType = typeof(I2Impl);
 
         private class I2Impl : I2

@@ -80,7 +80,7 @@ namespace GroboContainer.Tests.TypesHelperTests.GenericConstraints
         {
             CheckTrue<IGenericFromManyArguments<ConstrainedEntity2, ConstrainedEntity, Constraint, Constraint>,
                 GenericFromManyArguments<ConstrainedEntity2, ConstrainedEntity, Constraint, Constraint>>(
-                    typeof(GenericFromManyArguments<,,,>));
+                typeof(GenericFromManyArguments<,,,>));
         }
 
         [Test]
@@ -114,7 +114,7 @@ namespace GroboContainer.Tests.TypesHelperTests.GenericConstraints
         {
             CheckTrue<IAbstract1<Entity2, Entity1>,
                 GenericClassWithTypeConstraint<Entity1, Entity2>>(
-                    typeof(GenericClassWithTypeConstraint<,>));
+                typeof(GenericClassWithTypeConstraint<,>));
         }
 
         [Test]

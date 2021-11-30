@@ -242,10 +242,10 @@ namespace GroboContainer.Impl
         public void CallDispose()
         {
             var configurations = abstractionConfigurationCollection
-                .GetAll()
-                .Where(x => x != null)
-                .SelectMany(x => x.GetImplementations())
-                .OrderByDescending(x => x.InstanceCreationOrder);
+                                 .GetAll()
+                                 .Where(x => x != null)
+                                 .SelectMany(x => x.GetImplementations())
+                                 .OrderByDescending(x => x.InstanceCreationOrder);
 
             foreach (var configuration in configurations)
                 configuration.DisposeInstance();

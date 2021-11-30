@@ -55,9 +55,9 @@ namespace GroboContainer.Config
         public void UseTypes(Type[] types)
         {
             var implementationConfigurations = types
-                .Select(x => implementationCache.GetOrCreate(x))
-                .Select(x => implementationConfigurationCache.GetOrCreate(x))
-                .ToArray();
+                                               .Select(x => implementationCache.GetOrCreate(x))
+                                               .Select(x => implementationConfigurationCache.GetOrCreate(x))
+                                               .ToArray();
             var abstractionConfiguration = new StupidAbstractionConfiguration(implementationConfigurations);
             abstractionConfigurationCollection.Add(abstractionType, abstractionConfiguration);
         }

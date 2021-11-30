@@ -14,7 +14,9 @@ namespace GroboContainer.Impl
         IImplementationConfigurationCache ImplementationConfigurationCache { get; }
         IImplementationCache ImplementationCache { get; }
         IClassWrapperCreator ClassWrapperCreator { get; }
+
         IContainerContext MakeChildContext();
+
         //IContainerConfigurator ContainerConfigurator { get; }
         IContainerConfiguration Configuration { get; }
     }

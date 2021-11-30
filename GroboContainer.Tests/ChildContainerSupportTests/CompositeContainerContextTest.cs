@@ -21,12 +21,10 @@ namespace GroboContainer.Tests.ChildContainerSupportTests
             Assert.That(compositeContainerContext.AbstractionConfigurationCollection, Is.InstanceOf<CompositeCollection>());
 
             var childContextA = compositeContainerContext.MakeChildContext();
-            var factoryFromA = childContextA.AbstractionConfigurationCollection.Get(typeof(CChild)).
-                                             GetImplementations()[0].GetFactory(Type.EmptyTypes, compositeContainerContext.CreationContext);
+            var factoryFromA = childContextA.AbstractionConfigurationCollection.Get(typeof(CChild)).GetImplementations()[0].GetFactory(Type.EmptyTypes, compositeContainerContext.CreationContext);
 
             var childContextB = compositeContainerContext.MakeChildContext();
-            var factoryFromB = childContextB.AbstractionConfigurationCollection.Get(typeof(CChild)).
-                                             GetImplementations()[0].GetFactory(Type.EmptyTypes, compositeContainerContext.CreationContext);
+            var factoryFromB = childContextB.AbstractionConfigurationCollection.Get(typeof(CChild)).GetImplementations()[0].GetFactory(Type.EmptyTypes, compositeContainerContext.CreationContext);
             Assert.AreSame(factoryFromA, factoryFromB);
         }
 

@@ -93,8 +93,8 @@ namespace GroboContainer.Impl.Implementations
                     continue;
 
                 var validatedImplementations = possibleImplementations
-                    .Where(impl => ValidateGenericParameterAttributes(candidateArguments[i], impl))
-                    .ToArray();
+                                               .Where(impl => ValidateGenericParameterAttributes(candidateArguments[i], impl))
+                                               .ToArray();
 
                 if (validatedImplementations.Length == 0)
                     continue;
@@ -115,8 +115,8 @@ namespace GroboContainer.Impl.Implementations
         {
             if (constraint.IsGenericParameter)
                 return resolvedArguments
-                    .Where((arg, i) => arg != null && candidateArguments[i] == constraint)
-                    .FirstOrDefault();
+                       .Where((arg, i) => arg != null && candidateArguments[i] == constraint)
+                       .FirstOrDefault();
             if (!constraint.IsGenericType)
                 return constraint;
             var genericArgumentTypes = new Type[constraint.GetGenericArguments().Length];

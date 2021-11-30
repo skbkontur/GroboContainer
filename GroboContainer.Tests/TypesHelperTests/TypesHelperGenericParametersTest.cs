@@ -62,7 +62,7 @@ namespace GroboContainer.Tests.TypesHelperTests
             I1<I2<int>>,
             I2<I1<I3<I2<T1>>>>,
             I3<I1<I2<T2>>>
-            >
+        >
         {
         }
 
@@ -70,7 +70,7 @@ namespace GroboContainer.Tests.TypesHelperTests
             I1<I2<int>>,
             I2<I1<I2<I2<T1>>>>,
             I3<I1<I2<T2>>>
-            >
+        >
         {
         }
 
@@ -78,7 +78,7 @@ namespace GroboContainer.Tests.TypesHelperTests
             I1<I2<int>>,
             I2<I1<I2<I2<I1<T1>>>>>,
             I3<I1<I2<T2>>>
-            >
+        >
         {
         }
 
@@ -86,7 +86,7 @@ namespace GroboContainer.Tests.TypesHelperTests
             I2<int>,
             I2<I1<I2<I2<T1>>>>,
             I3<I1<I2<T2>>>
-            >
+        >
         {
         }
 
